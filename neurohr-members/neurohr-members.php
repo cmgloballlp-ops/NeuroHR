@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       NeuroHR Members
  * Description:       Membership levels with billing terms, company accounts with seats, invoices (PDF), expiry and reminders, login / registration / account pages by shortcode, page protection, a member-area layout, menu and Elementor visibility, and a hidden WordPress login. Replaces MemberPress for NeuroHR and supplies the level to the Knowledge Hub and Simple Payroll.
- * Version:           0.4.3
+ * Version:           0.4.4
  * Author:            NeuroHR
  * Requires at least: 6.0
  * Requires PHP:      7.4
@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'NHM_VERSION', '0.4.3' );
+define( 'NHM_VERSION', '0.4.4' );
 define( 'NHM_API_VERSION', 1 );
 define( 'NHM_FILE', __FILE__ );
 define( 'NHM_DIR', plugin_dir_path( __FILE__ ) );

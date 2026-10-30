@@ -238,36 +238,37 @@ class NHM_Refunds {
 	/** Small link + dialog on an invoice row in My account. */
 	public static function invoice_actions( $inv, $user_id ) {
 		$h    = '';
+		$dlg  = '';
 		$done = self::query( array( 'invoice_id' => $inv['id'], 'limit' => 5 ) );
 		foreach ( $done as $r ) {
 			if ( 'refunded' === $r['status'] && '' !== $r['number'] ) {
 				/* translators: %s: Refund Note number */
-				$h .= ' <a class="nhm-invoice__link" href="' . esc_url( self::member_pdf_url( $r ) ) . '" target="_blank" rel="noopener">' . esc_html( sprintf( __( 'Refund Note %s', 'neurohr-members' ), $r['number'] ) ) . '</a>';
+				$h .= '<a class="nhm-btn nhm-btn--small nhm-btn--ghost" href="' . esc_url( self::member_pdf_url( $r ) ) . '" target="_blank" rel="noopener">' . esc_html( sprintf( __( 'Refund Note %s', 'neurohr-members' ), $r['number'] ) ) . '</a>';
 			} elseif ( in_array( $r['status'], array( 'requested', 'approved' ), true ) ) {
-				$h .= ' <span class="nhm-pill nhm-pill--wait">' . esc_html( self::statuses()[ $r['status'] ] ) . '</span>';
+				$h .= '<span class="nhm-pill nhm-pill--wait">' . esc_html( self::statuses()[ $r['status'] ] ) . '</span>';
 			}
 		}
 		if ( self::can_request( $inv, $user_id ) ) {
 			$did = 'nhm-refund-' . (int) $inv['id'];
-			$h  .= ' <a href="#' . esc_attr( $did ) . '" class="nhm-link-muted" data-nhm-dialog="' . esc_attr( $did ) . '">' . esc_html__( 'Request a refund', 'neurohr-members' ) . '</a>';
-			$h  .= '<dialog class="nhm-modal" id="' . esc_attr( $did ) . '" aria-labelledby="' . esc_attr( $did ) . '-t"><div class="nhm-modal__box"><a href="#" class="nhm-modal__close" data-nhm-close aria-label="' . esc_attr__( 'Close', 'neurohr-members' ) . '">&times;</a>';
+			$h  .= '<a href="#' . esc_attr( $did ) . '" class="nhm-btn nhm-btn--small nhm-btn--ghost" data-nhm-dialog="' . esc_attr( $did ) . '">' . esc_html__( 'Request a refund', 'neurohr-members' ) . '</a>';
+			$dlg .= '<dialog class="nhm-modal" id="' . esc_attr( $did ) . '" aria-labelledby="' . esc_attr( $did ) . '-t"><div class="nhm-modal__box"><a href="#" class="nhm-modal__close" data-nhm-close aria-label="' . esc_attr__( 'Close', 'neurohr-members' ) . '">&times;</a>';
 			/* translators: %s: invoice number */
-			$h .= '<h3 class="nhm-modal__title" id="' . esc_attr( $did ) . '-t">' . esc_html( sprintf( __( 'Request a refund for %s', 'neurohr-members' ), $inv['number'] ) ) . '</h3>';
+			$dlg .= '<h3 class="nhm-modal__title" id="' . esc_attr( $did ) . '-t">' . esc_html( sprintf( __( 'Request a refund for %s', 'neurohr-members' ), $inv['number'] ) ) . '</h3>';
 			/* translators: 1: date and time, 2: number of working days */
-			$h .= '<p class="nhm-lead">' . esc_html( sprintf( __( 'You can ask until %1$s. While we review your request, access to members-only content is paused. If we approve it, the refund is completed within %2$d working days and your plan ends.', 'neurohr-members' ), mysql2date( 'j M Y, H:i', self::deadline( $inv ) ), (int) NHM_Settings::get( 'refund_days' ) ) ) . '</p>';
-			$h .= NHM_Forms::open( 'refund_request' ) . '<input type="hidden" name="nhm_invoice" value="' . (int) $inv['id'] . '">';
-			$h .= '<p class="nhm-field"><label for="' . esc_attr( $did ) . '-r">' . esc_html__( 'Reason', 'neurohr-members' ) . ' <span class="nhm-req">*</span></label><select id="' . esc_attr( $did ) . '-r" name="nhm_reason" class="nhm-input" required><option value="">' . esc_html__( 'Choose a reason', 'neurohr-members' ) . '</option>';
+			$dlg .= '<p class="nhm-lead">' . esc_html( sprintf( __( 'You can ask until %1$s. While we review your request, access to members-only content is paused. If we approve it, the refund is completed within %2$d working days and your plan ends.', 'neurohr-members' ), mysql2date( 'j M Y, H:i', self::deadline( $inv ) ), (int) NHM_Settings::get( 'refund_days' ) ) ) . '</p>';
+			$dlg .= NHM_Forms::open( 'refund_request' ) . '<input type="hidden" name="nhm_invoice" value="' . (int) $inv['id'] . '">';
+			$dlg .= '<p class="nhm-field"><label for="' . esc_attr( $did ) . '-r">' . esc_html__( 'Reason', 'neurohr-members' ) . ' <span class="nhm-req">*</span></label><select id="' . esc_attr( $did ) . '-r" name="nhm_reason" class="nhm-input" required><option value="">' . esc_html__( 'Choose a reason', 'neurohr-members' ) . '</option>';
 			foreach ( self::reasons() as $k => $label ) {
-				$h .= '<option value="' . esc_attr( $k ) . '">' . esc_html( $label ) . '</option>';
+				$dlg .= '<option value="' . esc_attr( $k ) . '">' . esc_html( $label ) . '</option>';
 			}
-			$h .= '</select></p><p class="nhm-field"><label for="' . esc_attr( $did ) . '-d">' . esc_html__( 'Tell us more', 'neurohr-members' ) . '</label><textarea id="' . esc_attr( $did ) . '-d" name="nhm_details" class="nhm-input" rows="3"></textarea></p>';
+			$dlg .= '</select></p><p class="nhm-field"><label for="' . esc_attr( $did ) . '-d">' . esc_html__( 'Tell us more', 'neurohr-members' ) . '</label><textarea id="' . esc_attr( $did ) . '-d" name="nhm_details" class="nhm-input" rows="3"></textarea></p>';
 			$refund = NHM_Settings::legal_url( 'refund' );
 			if ( $refund ) {
-				$h .= '<p class="nhm-muted">' . sprintf( /* translators: %s: link */ esc_html__( 'See our %s.', 'neurohr-members' ), '<a href="' . esc_url( $refund ) . '" target="_blank" rel="noopener">' . esc_html__( 'Refund Policy', 'neurohr-members' ) . '</a>' ) . '</p>';
+				$dlg .= '<p class="nhm-muted">' . sprintf( /* translators: %s: link */ esc_html__( 'See our %s.', 'neurohr-members' ), '<a href="' . esc_url( $refund ) . '" target="_blank" rel="noopener">' . esc_html__( 'Refund Policy', 'neurohr-members' ) . '</a>' ) . '</p>';
 			}
-			$h .= NHM_Forms::button( __( 'Send refund request', 'neurohr-members' ), 'nhm-btn nhm-btn--primary nhm-btn--block' ) . '</form></div></dialog>';
+			$dlg .= NHM_Forms::button( __( 'Send refund request', 'neurohr-members' ), 'nhm-btn nhm-btn--primary nhm-btn--block' ) . '</form></div></dialog>';
 		}
-		return $h;
+		return array( $h, $dlg );
 	}
 
 	/* ---------- Staff decisions ---------- */
