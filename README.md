@@ -4,7 +4,7 @@ Plugins for [neurohr.com.my](https://www.neurohr.com.my) (WordPress, Blocksy, El
 
 | Folder | Plugin | Version | What it does |
 |---|---|---|---|
-| `neurohr-members/` | NeuroHR Members | 0.4.3 | Membership levels, personal and company plans, login / registration / My account, member-area layout, invoices (PDF), payments (Stripe card / FPX / GrabPay, bank transfer, DuitNow QR), card auto-renew, refunds with Refund Notes. Replaces MemberPress. |
+| `neurohr-members/` | NeuroHR Members | 0.4.4 | Membership levels, personal and company plans, login / registration / My account, member-area layout, invoices (PDF), payments (Stripe card / FPX / GrabPay, bank transfer, DuitNow QR), card auto-renew, refunds with Refund Notes. Replaces MemberPress. |
 | `neurohr-hub/` | NeuroHR Knowledge Hub | 0.8.2 | Knowledge Hub, Legal Case Insights, FAQ, Templates (protected downloads) and Videos, with level-based access from NeuroHR Members. |
 | `neurohr-payroll/` | Simple Payroll | 0.5.0 | Malaysian payslip calculator; payslip extras for higher levels. |
 
@@ -19,7 +19,14 @@ Version history of each plugin: `includes/changelog.php` (also shown in the plug
 
 ## Releases
 
-Tags per plugin: `members-v0.4.3`, `hub-v0.8.2`, `payroll-v0.5.0`. Changes come in as pull requests, so each change can be reviewed before it is merged.
+Changes come in as pull requests, so each change can be reviewed before it is merged. The version of each plugin is in the table above and in every commit message.
+
+To mark a version in GitHub (optional): **Releases → Create a new release → Choose a tag**, type e.g. `members-v0.4.4`, pick *Create new tag on publish*, target `main`, title `NeuroHR Members 0.4.4`, paste the changelog lines, **Publish release**. You can attach the plugin zip to the release so it is easy to download later.
+
+## Tests
+
+`tests/` holds the checks run before every release: a small WordPress stand-in (SQLite) and scripts per version. Run them with PHP 8:
+`php tests/test-v7.php .` (the argument is the folder that contains `neurohr-members/`). `python3 tests/xref.py neurohr-members` checks that every `Class::method` used exists.
 
 ## Not in this repository
 

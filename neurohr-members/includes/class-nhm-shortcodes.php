@@ -15,6 +15,7 @@ class NHM_Shortcodes {
 	public static function init() {
 		add_shortcode( 'nhm_login', array( 'NHM_Auth', 'render_login' ) );
 		add_shortcode( 'nhm_register', array( 'NHM_Auth', 'render_register' ) );
+		add_shortcode( 'nhm_invite', array( 'NHM_Auth', 'render_invite' ) );
 		add_shortcode( 'nhm_lost_password', array( 'NHM_Auth', 'render_lost' ) );
 		add_shortcode( 'nhm_account', array( 'NHM_Account', 'render' ) );
 		add_shortcode( 'nhm_pricing', array( __CLASS__, 'pricing' ) );

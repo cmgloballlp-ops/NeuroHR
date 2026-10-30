@@ -720,25 +720,27 @@ class NHM_Account {
 		/* translators: 1: used, 2: total */
 		$h .= '<p class="nhm-seats"><strong>' . esc_html( sprintf( __( '%1$d of %2$d seats used', 'neurohr-members' ), $used, $company['seats'] ) ) . '</strong></p>';
 
-		$h .= '<div class="nhm-table-wrap"><table class="nhm-table"><thead><tr><th>' . esc_html__( 'Name', 'neurohr-members' ) . '</th><th>' . esc_html__( 'Email', 'neurohr-members' ) . '</th><th></th></tr></thead><tbody>';
+		$h .= '<div class="nhm-table-wrap"><table class="nhm-table"><thead><tr><th>' . esc_html__( 'Name', 'neurohr-members' ) . '</th><th>' . esc_html__( 'Email', 'neurohr-members' ) . '</th><th class="nhm-table__actions"><span class="screen-reader-text">' . esc_html__( 'Actions', 'neurohr-members' ) . '</span></th></tr></thead><tbody>';
 		foreach ( NHM_Companies::members( $company['id'] ) as $member ) {
 			$h .= '<tr><td>' . esc_html( $member->display_name );
 			if ( (int) $member->ID === (int) $company['owner_id'] ) {
 				$h .= ' <span class="nhm-pill">' . esc_html__( 'Owner', 'neurohr-members' ) . '</span>';
 			}
-			$h .= '</td><td>' . esc_html( $member->user_email ) . '</td><td class="nhm-table__actions">';
+			$h .= '</td><td>' . esc_html( $member->user_email ) . '</td><td class="nhm-table__actions"><div class="nhm-row-actions">';
 			if ( (int) $member->ID !== (int) $company['owner_id'] ) {
 				$h .= NHM_Forms::open( 'remove_member', 'nhm-inline' ) . '<input type="hidden" name="nhm_user" value="' . (int) $member->ID . '">';
 				/* translators: %s: name */
-				$h .= '<button type="submit" class="nhm-btn nhm-btn--small" data-nhm-confirm="' . esc_attr( sprintf( __( 'Remove %s from the company?', 'neurohr-members' ), $member->display_name ) ) . '">' . esc_html__( 'Remove', 'neurohr-members' ) . '</button></form>';
+				$h .= '<button type="submit" class="nhm-btn nhm-btn--small nhm-btn--danger" data-nhm-confirm="' . esc_attr( sprintf( __( 'Remove %1$s from %2$s? They lose the company access but keep their own account.', 'neurohr-members' ), $member->display_name, $company['name'] ) ) . '" data-nhm-confirm-ok="' . esc_attr__( 'Remove', 'neurohr-members' ) . '">' . esc_html__( 'Remove', 'neurohr-members' ) . '</button></form>';
+			} else {
+				$h .= '<span class="nhm-muted nhm-small">' . esc_html__( 'You', 'neurohr-members' ) . '</span>';
 			}
-			$h .= '</td></tr>';
+			$h .= '</div></td></tr>';
 		}
 		foreach ( NHM_Companies::invites( $company['id'] ) as $invite ) {
-			$h .= '<tr class="nhm-table__pending"><td><span class="nhm-pill nhm-pill--muted">' . esc_html__( 'Invited', 'neurohr-members' ) . '</span></td><td>' . esc_html( $invite['email'] ) . '</td><td class="nhm-table__actions">';
+			$h .= '<tr class="nhm-table__pending"><td><span class="nhm-pill nhm-pill--muted">' . esc_html__( 'Invited', 'neurohr-members' ) . '</span></td><td>' . esc_html( $invite['email'] ) . '</td><td class="nhm-table__actions"><div class="nhm-row-actions">';
 			$h .= NHM_Forms::open( 'resend', 'nhm-inline' ) . '<input type="hidden" name="nhm_invite_id" value="' . (int) $invite['id'] . '"><button type="submit" class="nhm-btn nhm-btn--small">' . esc_html__( 'Send again', 'neurohr-members' ) . '</button></form> ';
-			$h .= NHM_Forms::open( 'cancel_invite', 'nhm-inline' ) . '<input type="hidden" name="nhm_invite_id" value="' . (int) $invite['id'] . '"><button type="submit" class="nhm-btn nhm-btn--small">' . esc_html__( 'Cancel', 'neurohr-members' ) . '</button></form>';
-			$h .= '</td></tr>';
+			$h .= NHM_Forms::open( 'cancel_invite', 'nhm-inline' ) . '<input type="hidden" name="nhm_invite_id" value="' . (int) $invite['id'] . '"><button type="submit" class="nhm-btn nhm-btn--small" data-nhm-confirm="' . esc_attr( sprintf( /* translators: %s: email */ __( 'Cancel the invitation to %s? The link stops working.', 'neurohr-members' ), $invite['email'] ) ) . '" data-nhm-confirm-ok="' . esc_attr__( 'Cancel invitation', 'neurohr-members' ) . '">' . esc_html__( 'Cancel', 'neurohr-members' ) . '</button></form>';
+			$h .= '</div></td></tr>';
 		}
 		$h .= '</tbody></table></div>';
 
@@ -963,17 +965,20 @@ class NHM_Account {
 		}
 		$h  = '<section class="nhm-card nhm-invoices" id="nhm-invoices">';
 		$h .= '<h3 class="nhm-card__title">' . esc_html__( 'Invoices', 'neurohr-members' ) . '</h3>' . NHM_Forms::render_messages( 'refund' );
-		$h .= '<div class="nhm-table-wrap"><table class="nhm-table"><thead><tr><th>' . esc_html__( 'Invoice', 'neurohr-members' ) . '</th><th>' . esc_html__( 'Date', 'neurohr-members' ) . '</th><th>' . esc_html__( 'Total', 'neurohr-members' ) . '</th><th>' . esc_html__( 'Status', 'neurohr-members' ) . '</th><th></th></tr></thead><tbody>';
+		$h .= '<div class="nhm-table-wrap"><table class="nhm-table"><thead><tr><th>' . esc_html__( 'Invoice', 'neurohr-members' ) . '</th><th>' . esc_html__( 'Date', 'neurohr-members' ) . '</th><th class="nhm-table__num">' . esc_html__( 'Total', 'neurohr-members' ) . '</th><th>' . esc_html__( 'Status', 'neurohr-members' ) . '</th><th class="nhm-table__actions"><span class="screen-reader-text">' . esc_html__( 'Actions', 'neurohr-members' ) . '</span></th></tr></thead><tbody>';
+		$dialogs = '';
 		foreach ( $list as $inv ) {
 			$status = NHM_Invoices::status_label( $inv );
 			$h     .= '<tr><td>' . esc_html( $inv['number'] ) . ( $inv['company_id'] && ! empty( $inv['bill_to']['name'] ) ? '<br><span class="nhm-muted">' . esc_html( $inv['bill_to']['name'] ) . '</span>' : '' ) . '</td>';
 			$h     .= '<td>' . esc_html( NHM_Emails::format_date( $inv['issue_date'] ) ) . '</td>';
-			$h     .= '<td>' . esc_html( NHM_Settings::money( $inv['total'] ) ) . '</td>';
+			$h     .= '<td class="nhm-table__num">' . esc_html( NHM_Settings::money( $inv['total'] ) ) . '</td>';
 			$h     .= '<td><span class="nhm-status nhm-status--' . esc_attr( $inv['status'] ) . '">' . esc_html( $status ) . '</span></td>';
 			$pay    = NHM_Payments::payable( $inv ) && ! NHM_Payments::waiting_for( $inv['id'] ) ? '<a class="nhm-btn nhm-btn--small nhm-btn--primary" href="' . esc_url( NHM_Payments::pay_url( $inv ) ) . '">' . esc_html__( 'Pay now', 'neurohr-members' ) . '</a> ' : '';
-			$h     .= '<td class="nhm-table__actions">' . $pay . '<a class="nhm-btn nhm-btn--small" href="' . esc_url( NHM_Invoices::download_url( $inv ) ) . '" target="_blank" rel="noopener">' . esc_html__( 'PDF', 'neurohr-members' ) . '</a>' . NHM_Refunds::invoice_actions( $inv, get_current_user_id() ) . '</td></tr>';
+			list( $extra, $dialog ) = NHM_Refunds::invoice_actions( $inv, get_current_user_id() );
+			$dialogs .= $dialog;
+			$h       .= '<td class="nhm-table__actions"><div class="nhm-row-actions">' . $pay . '<a class="nhm-btn nhm-btn--small" href="' . esc_url( NHM_Invoices::download_url( $inv ) ) . '" target="_blank" rel="noopener">' . esc_html__( 'View invoice', 'neurohr-members' ) . '</a>' . $extra . '</div></td></tr>';
 		}
-		return $h . '</tbody></table></div></section>';
+		return $h . '</tbody></table></div>' . $dialogs . '</section>';
 	}
 
 	private static function billing_card() {

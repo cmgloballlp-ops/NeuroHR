@@ -1,8 +1,14 @@
-# NeuroHR Members — v0.4.3
+# NeuroHR Members — v0.4.4
 
 Replaces MemberPress on neurohr.com.my. It manages levels, personal plans, company accounts with seats, plan end dates and reminders, the login / registration / account pages (as shortcodes on your own pages), and members-only pages.
 It also tells the Knowledge Hub (0.8.1) and Simple Payroll (0.5.0) which level each person has, gives logged-in people one member-area layout on every page, and hides WordPress's own login screens.
 Members pay their invoice online (Stripe: card, FPX, GrabPay), by bank transfer or by DuitNow QR (with a slip you approve). The plan starts when the invoice is paid. Card auto-renew (personal plans) and refunds are in since 0.4.3.
+
+## New in 0.4.4
+
+- **Invitation page**: Settings → Pages & login → *Invitation page* (`[nhm_invite]`, *Create page*). Invitation links open it: company name, who invited them, fixed email, name + password, Terms tick box; no plans or prices. Without it, invitations use the registration page.
+- My account tables (Invoices, Company seats) redone; *View invoice*; refund window fixed; seats: *Remove* (not the owner), invitations *Send again* / *Cancel*, with a confirmation window in the site style.
+- Change password boxes aligned; labels stay left whatever the theme does.
 
 ## New in 0.4.3
 

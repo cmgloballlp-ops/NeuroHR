@@ -933,6 +933,67 @@ class NHM_Auth {
 		return NHM_Forms::wrap( $html, 'nhm-register' );
 	}
 
+	/**
+	 * [nhm_invite]: the page behind invitation links. Only the invitation: company name, the
+	 * invited email (fixed), name and password. No plans or prices.
+	 */
+	public static function render_invite( $atts ) {
+		$atts = shortcode_atts( array( 'title' => '' ), $atts, 'nhm_invite' );
+		NHM_Forms::no_cache();
+		// phpcs:ignore WordPress.Security.NonceVerification
+		$token  = isset( $_GET['nhm_invite'] ) ? sanitize_text_field( wp_unslash( $_GET['nhm_invite'] ) ) : NHM_Forms::value( 'register', 'nhm_invite' );
+		$invite = $token ? NHM_Companies::find_invite( $token ) : null;
+		if ( ! $invite ) {
+			$h  = '<div class="nhm-invite-hero nhm-invite-hero--empty"><h2 class="nhm-invite-hero__title">' . esc_html__( 'This invitation link has expired or was already used', 'neurohr-members' ) . '</h2>';
+			$h .= '<p class="nhm-lead">' . esc_html__( 'Please ask the person who manages your company account to send you a new invitation.', 'neurohr-members' ) . '</p>';
+			if ( ! is_user_logged_in() && nhm_login_url() ) {
+				$h .= '<p class="nhm-actions"><a class="nhm-btn" href="' . esc_url( nhm_login_url() ) . '">' . esc_html__( 'Log in', 'neurohr-members' ) . '</a></p>';
+			}
+			return NHM_Forms::wrap( $h . '</div>', 'nhm-register nhm-invite-page' );
+		}
+		$company = NHM_Companies::get( $invite['company_id'] );
+		$by      = ! empty( $invite['invited_by'] ) ? get_userdata( $invite['invited_by'] ) : null;
+		$h       = '<div class="nhm-invite-hero"><p class="nhm-invite-hero__kicker">' . esc_html__( 'You are invited', 'neurohr-members' ) . '</p>';
+		/* translators: 1: company, 2: site name */
+		$h .= '<h2 class="nhm-invite-hero__title">' . esc_html( sprintf( __( 'Join %1$s on %2$s', 'neurohr-members' ), $company ? $company['name'] : '', wp_specialchars_decode( get_bloginfo( 'name' ), ENT_QUOTES ) ) ) . '</h2>';
+		$bits = array();
+		if ( $by && ! user_can( $by, NHM_CAP ) ) {
+			/* translators: %s: name */
+			$bits[] = sprintf( __( 'Invited by %s', 'neurohr-members' ), $by->display_name );
+		}
+		if ( $company ) {
+			/* translators: %s: plan */
+			$bits[] = sprintf( __( '%s access, paid by your company', 'neurohr-members' ), NHM_Levels::name( $company['level_id'] ) );
+		}
+		$h .= $bits ? '<p class="nhm-muted">' . esc_html( implode( ' · ', $bits ) ) . '</p>' : '';
+		$h .= '</div>';
+		if ( is_user_logged_in() ) {
+			return NHM_Forms::wrap( $h . NHM_Account::render_invite_box( $token ), 'nhm-register nhm-invite-page' );
+		}
+		$h .= NHM_Forms::render_messages( 'register' );
+		$h .= NHM_Forms::open( 'register' ) . '<input type="hidden" name="nhm_invite" value="' . esc_attr( $token ) . '"><input type="hidden" name="redirect_to" value="">';
+		$h .= NHM_Forms::field( array( 'name' => 'nhm_email', 'label' => __( 'Email address', 'neurohr-members' ), 'type' => 'email', 'value' => $invite['email'], 'required' => true, 'attrs' => 'readonly', 'help' => __( 'Your account uses the address the invitation was sent to.', 'neurohr-members' ) ) );
+		$h .= NHM_Forms::field( array( 'name' => 'nhm_name', 'label' => __( 'Full name', 'neurohr-members' ), 'value' => NHM_Forms::value( 'register', 'nhm_name' ), 'required' => true, 'autocomplete' => 'name' ) );
+		$min = max( 6, (int) NHM_Settings::get( 'min_password' ) );
+		/* translators: %d: number of characters */
+		$h .= NHM_Forms::field( array( 'name' => 'nhm_password', 'label' => __( 'Choose a password', 'neurohr-members' ), 'type' => 'password', 'required' => true, 'autocomplete' => 'new-password', 'help' => sprintf( __( 'At least %d characters.', 'neurohr-members' ), $min ), 'attrs' => 'minlength="' . (int) $min . '"' ) );
+		foreach ( NHM_Fields::for_register() as $key => $f ) {
+			$value = NHM_Forms::raw( 'register', 'nhm_' . $key, 'checkboxes' === $f['type'] ? array() : '' );
+			if ( 'company' === $key && '' === $value && $company ) {
+				$value = $company['name'];
+			}
+			$h .= NHM_Fields::render( $f, $value );
+		}
+		$terms = self::consent_label();
+		if ( $terms ) {
+			$h .= '<p class="nhm-field nhm-field--terms"><label class="nhm-check"><input type="checkbox" name="nhm_terms" value="1" required' . checked( '1', NHM_Forms::value( 'register', 'nhm_terms' ), false ) . '> <span>' . wp_kses( $terms, array( 'a' => array( 'href' => array(), 'target' => array(), 'rel' => array() ), 'span' => array( 'class' => array() ) ) ) . ' <span class="nhm-req">*</span></span></label></p>';
+		}
+		$h .= NHM_Forms::spam_fields();
+		$h .= NHM_Forms::button( __( 'Join and log in', 'neurohr-members' ), 'nhm-btn nhm-btn--primary nhm-btn--block' ) . '</form>';
+		$h .= '<p class="nhm-switch">' . esc_html__( 'Already have an account with this email?', 'neurohr-members' ) . ' <a href="' . esc_url( self::login_url( NHM_Companies::invite_url( $token ) ) ) . '">' . esc_html__( 'Log in to accept', 'neurohr-members' ) . '</a></p>';
+		return NHM_Forms::wrap( $h, 'nhm-register nhm-invite-page' );
+	}
+
 	public static function render_lost( $atts ) {
 		$atts = shortcode_atts( array( 'title' => '' ), $atts, 'nhm_lost_password' );
 		NHM_Forms::no_cache();

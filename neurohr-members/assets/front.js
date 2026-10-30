@@ -48,9 +48,43 @@
 			return;
 		}
 		var confirmBtn = e.target.closest( '[data-nhm-confirm]' );
-		if ( confirmBtn && ! window.confirm( confirmBtn.getAttribute( 'data-nhm-confirm' ) ) ) {
+		if ( confirmBtn ) {
+			if ( confirmBtn.getAttribute( 'data-nhm-confirmed' ) ) {
+				confirmBtn.removeAttribute( 'data-nhm-confirmed' );
+				return;
+			}
 			e.preventDefault();
+			askConfirm( confirmBtn );
 		}
+	} );
+
+	/* Our own "Are you sure?" window instead of the browser's grey box. */
+	function askConfirm( el ) {
+		var dlg = document.getElementById( 'nhm-confirm' );
+		if ( ! dlg || ! dlg.showModal ) {
+			if ( window.confirm( el.getAttribute( 'data-nhm-confirm' ) ) ) { el.setAttribute( 'data-nhm-confirmed', '1' ); el.click(); }
+			return;
+		}
+		dlg.querySelector( 'p' ).textContent = el.getAttribute( 'data-nhm-confirm' );
+		var ok = dlg.querySelector( '[data-nhm-ok]' );
+		ok.textContent = el.getAttribute( 'data-nhm-confirm-ok' ) || ok.getAttribute( 'data-nhm-ok' );
+		ok.onclick = function () {
+			dlg.close();
+			el.setAttribute( 'data-nhm-confirmed', '1' );
+			el.click();
+		};
+		dlg.showModal();
+		dlg.querySelector( '[data-nhm-cancel]' ).focus();
+	}
+	document.addEventListener( 'DOMContentLoaded', function () {
+		if ( document.getElementById( 'nhm-confirm' ) || ! document.querySelector( '.nhm [data-nhm-confirm]' ) ) { return; }
+		var d = document.createElement( 'dialog' );
+		d.id = 'nhm-confirm';
+		d.className = 'nhm nhm-modal nhm-modal--confirm';
+		d.innerHTML = '<div class="nhm-modal__box"><p></p><div class="nhm-confirm__actions"><button type="button" class="nhm-btn" data-nhm-cancel>Cancel</button><button type="button" class="nhm-btn nhm-btn--primary" data-nhm-ok="OK">OK</button></div></div>';
+		d.querySelector( '[data-nhm-cancel]' ).addEventListener( 'click', function () { d.close(); } );
+		d.addEventListener( 'click', function ( e ) { if ( e.target === d ) { d.close(); } } );
+		document.body.appendChild( d );
 	} );
 
 	// A window that should already be open (reset link, result) opens as a real modal.

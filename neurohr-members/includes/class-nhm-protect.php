@@ -53,7 +53,7 @@ class NHM_Protect {
 
 	/** Pages that must stay open, whatever their setting says. */
 	private static function always_open( $post_id ) {
-		foreach ( array( 'login', 'register', 'lost', 'pricing', 'pay' ) as $key ) {
+		foreach ( array( 'login', 'register', 'lost', 'pricing', 'pay', 'invite' ) as $key ) {
 			if ( (int) NHM_Settings::get( 'page_' . $key ) === (int) $post_id ) {
 				return true;
 			}

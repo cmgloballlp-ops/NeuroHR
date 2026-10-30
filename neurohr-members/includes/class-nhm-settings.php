@@ -78,6 +78,7 @@ class NHM_Settings {
 			'min_password'       => 8,
 			'terms_text'         => '',      // Own text for the consent tick box (empty = built from the pages below).
 			'consent_on'         => 1,       // Registration: must agree to the Terms of Use and Privacy Policy.
+			'page_invite'        => 0,       // Page with [nhm_invite]: company invitations only (no plans).
 			'page_terms'         => 0,
 			'page_privacy'       => 0,       // 0 = WordPress Settings → Privacy page.
 			'page_refund'        => 0,       // Refund policy page: a required tick box on the payment page.

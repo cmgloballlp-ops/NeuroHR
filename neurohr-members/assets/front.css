@@ -230,7 +230,7 @@
 
 /* Billing forms: three fields a row, labels on one line where possible, boxes lined up. */
 .nhm-account .nhm-billing .nhm-grid, .nhm-account .nhm-company-billing .nhm-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0 18px; }
-.nhm-account .nhm-grid { align-items: end; }
+.nhm-account .nhm-grid { align-items: start; }
 @media (max-width: 900px) { .nhm-account .nhm-billing .nhm-grid, .nhm-account .nhm-company-billing .nhm-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 600px) { .nhm-account .nhm-billing .nhm-grid, .nhm-account .nhm-company-billing .nhm-grid { grid-template-columns: minmax(0, 1fr); } }
 
@@ -400,3 +400,51 @@
 .nhm-pick.is-sheet .nhm-pick__col { height: 260px; }
 .nhm-pick.is-sheet .nhm-pick__t { height: 40px; font-size: 16px; }
 .nhm-pick.is-sheet .nhm-pick__tfoot span { visibility: hidden; }
+
+/* 0.4.4: tables, actions, dialogs, invitation page (kept strong so the theme's table and form styles do not leak in) */
+.nhm .nhm-table-wrap { border: 1px solid var(--nhm-line); border-radius: 14px; overflow: hidden; overflow-x: auto; background: #fff; }
+.nhm table.nhm-table { width: 100%; margin: 0; border: 0; border-collapse: separate; border-spacing: 0; background: transparent; table-layout: auto; }
+.nhm table.nhm-table th, .nhm table.nhm-table td { border: 0; border-bottom: 1px solid var(--nhm-line); background: transparent; padding: 14px 18px; text-align: left; vertical-align: middle; line-height: 1.4; }
+.nhm table.nhm-table thead th { background: var(--nhm-soft); color: var(--nhm-muted); font-size: 12px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; padding-top: 11px; padding-bottom: 11px; }
+.nhm table.nhm-table tbody tr:last-child td { border-bottom: 0; }
+.nhm table.nhm-table td { color: var(--nhm-ink); font-size: 15px; }
+.nhm table.nhm-table .nhm-table__num { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.nhm table.nhm-table .nhm-table__actions { width: 1%; white-space: nowrap; text-align: right; }
+.nhm .nhm-row-actions { display: flex; align-items: center; justify-content: flex-end; gap: 8px; flex-wrap: nowrap; }
+.nhm .nhm-row-actions form { margin: 0; }
+.nhm .nhm-btn--ghost { background: transparent !important; border-color: transparent !important; color: var(--nhm-muted) !important; text-decoration: underline; text-underline-offset: 3px; }
+.nhm .nhm-btn--ghost:hover { color: var(--nhm-ink) !important; background: var(--nhm-soft) !important; }
+.nhm .nhm-btn--danger { color: #b42318 !important; border-color: #f3c3bf !important; background: #fff !important; }
+.nhm .nhm-btn--danger:hover { background: #fdecea !important; border-color: #e8a29b !important; }
+.nhm .nhm-small { font-size: 13px; }
+@media (max-width: 640px) {
+	.nhm .nhm-table-wrap { border: 0; border-radius: 0; overflow: visible; }
+	.nhm table.nhm-table thead { display: none; }
+	.nhm table.nhm-table, .nhm table.nhm-table tbody, .nhm table.nhm-table tr, .nhm table.nhm-table td { display: block; width: auto; }
+	.nhm table.nhm-table tr { border: 1px solid var(--nhm-line); border-radius: 12px; padding: 12px 14px; margin: 0 0 10px; }
+	.nhm table.nhm-table td { border: 0; padding: 2px 0; text-align: left; }
+	.nhm table.nhm-table .nhm-table__num { text-align: left; }
+	.nhm table.nhm-table .nhm-table__actions { width: auto; padding-top: 10px; }
+	.nhm .nhm-row-actions { justify-content: flex-start; flex-wrap: wrap; }
+}
+/* Dialogs: reset what they might inherit from where they sit on the page. */
+.nhm-modal, .nhm-modal * { text-align: left; white-space: normal; }
+.nhm-modal { overflow: hidden auto; }
+.nhm-modal .nhm-modal__title { padding-right: 36px; font-size: 1.25em; }
+.nhm-modal .nhm-field > label { text-align: left; }
+.nhm-modal .nhm-lead { font-size: 15px; line-height: 1.55; }
+.nhm-modal textarea.nhm-input { min-height: 96px; resize: vertical; }
+.nhm-modal--confirm { width: min(400px, calc(100vw - 32px)); }
+.nhm-modal--confirm .nhm-modal__box { padding: 26px 24px 20px; }
+.nhm-modal--confirm p { margin: 0 0 20px; color: var(--nhm-ink); font-size: 15px; line-height: 1.55; }
+.nhm-modal--confirm .nhm-confirm__actions { display: flex; justify-content: flex-end; gap: 10px; flex-wrap: wrap; }
+.nhm-modal--confirm .nhm-btn { min-width: 96px; justify-content: center; }
+/* Invitation page */
+.nhm-invite-page { max-width: 480px; margin: 0 auto; }
+.nhm-invite-hero { text-align: center; margin: 0 0 24px; }
+.nhm-invite-hero__kicker { margin: 0 0 6px; font-size: 12px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--nhm-primary); }
+.nhm .nhm-invite-hero__title { margin: 0 0 8px; font-size: 1.6em; line-height: 1.25; color: var(--nhm-ink); }
+.nhm-invite-hero .nhm-muted { margin: 0; }
+.nhm-invite-page input[readonly] { background: var(--nhm-soft); color: var(--nhm-muted); }
+.nhm label, .nhm .nhm-field > label, .nhm .nhm-check { text-align: left; }
+.nhm .nhm-invite-form { align-items: flex-end; }

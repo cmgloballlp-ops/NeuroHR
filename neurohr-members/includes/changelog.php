@@ -8,6 +8,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 return array(
+	'0.4.4' => array(
+		'date'  => '31 Oct 2026',
+		'items' => array(
+			'Invitation page for company staff: Settings → Pages & login → "Invitation page" ([nhm_invite], or click Create page). It shows only the invitation: company name, who invited them, the invited email (fixed), name and password, and the Terms tick box. No plans or prices. People with an account log in to accept. Without this page, invitations still open the registration page.',
+			'My account tables (Invoices, Company seats) redone: proper spacing, aligned columns, numbers on the right, and cards on phones. The theme\'s table borders no longer show through.',
+			'Invoices: "PDF" is now "View invoice"; "Request a refund" lines up next to it. The refund window is fixed (it was inheriting the table\'s right alignment and running off the side).',
+			'Company seats: Remove for each colleague (not the owner), and Send again / Cancel for invitations, all with a clear confirmation window in the site style instead of the browser\'s grey box.',
+			'Security → Change password: the two boxes line up again. Form labels stay left-aligned whatever the theme does.',
+		),
+	),
 	'0.4.3' => array(
 		'date'  => '30 Oct 2026',
 		'items' => array(

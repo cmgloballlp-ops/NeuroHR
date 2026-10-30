@@ -43,6 +43,7 @@ class NHM_Admin_Settings {
 				'page_lost'        => 'int',
 				'page_account'     => 'int',
 				'page_pricing'     => 'int',
+				'page_invite'      => 'int',
 				'page_terms'       => 'int',
 				'page_privacy'     => 'int',
 				'page_refund'      => 'int',
@@ -352,6 +353,7 @@ class NHM_Admin_Settings {
 			'lost'     => array( __( 'Lost password page (optional: the login page has a pop-up)', 'neurohr-members' ), '[nhm_lost_password]', __( 'Reset your password', 'neurohr-members' ) ),
 			'account'  => array( __( 'My account page', 'neurohr-members' ), '[nhm_account]', __( 'My account', 'neurohr-members' ) ),
 			'pricing'  => array( __( 'Pricing page', 'neurohr-members' ), '[nhm_pricing]', __( 'Plans and pricing', 'neurohr-members' ) ),
+			'invite'   => array( __( 'Invitation page (company staff; optional, else the registration page is used)', 'neurohr-members' ), '[nhm_invite]', __( 'Join your company on NeuroHR', 'neurohr-members' ) ),
 		);
 	}
 

@@ -400,7 +400,10 @@ class NHM_Companies {
 	}
 
 	public static function invite_url( $token ) {
-		$page = NHM_Settings::page_url( 'register' );
+		$page = NHM_Settings::page_url( 'invite' );
+		if ( ! $page ) {
+			$page = NHM_Settings::page_url( 'register' );
+		}
 		if ( ! $page ) {
 			$page = NHM_Settings::page_url( 'account' );
 		}
