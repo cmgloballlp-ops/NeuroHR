@@ -1,0 +1,121 @@
+/* NeuroHR Knowledge Hub — admin screens (settings, dashboard, resource list). */
+
+.nh-admin { --nh-a: #f47b20; --nh-a-soft: #fff3ea; --nh-line: #e4e6eb; --nh-muted: #646970; max-width: 1280px; }
+
+/* Tabs (settings and resource list) */
+.nh-admin-tabs { display: flex; flex-wrap: wrap; gap: 4px; margin: 16px 0 8px; border-bottom: 1px solid var(--nh-line, #e4e6eb); }
+.nh-admin-tabs a { display: inline-flex; align-items: center; gap: 6px; padding: 10px 14px; margin-bottom: -1px; border-bottom: 3px solid transparent; color: #50575e; text-decoration: none; font-weight: 500; }
+.nh-admin-tabs a:hover { color: #1d2327; }
+.nh-admin-tabs a:focus { box-shadow: none; outline: 2px solid #f47b2066; }
+.nh-admin-tabs a.is-active { border-bottom-color: #f47b20; color: #1d2327; }
+.nh-admin-tabs .dashicons { font-size: 18px; width: 18px; height: 18px; color: #8c8f94; }
+.nh-admin-tabs a.is-active .dashicons { color: #f47b20; }
+.nh-admin-tabs .count { display: inline-block; min-width: 18px; padding: 1px 7px; border-radius: 999px; background: #f0f0f1; color: #50575e; font-size: 12px; font-weight: 600; text-align: center; }
+.nh-admin-tabs a.is-active .count { background: #fff3ea; color: #b45309; }
+.nh-admin-tabs a.is-warning .count { background: #fcf0f1; color: #b32d2e; }
+
+/* Cards and fields */
+.nh-admin-card { background: #fff; border: 1px solid #e4e6eb; border-radius: 10px; padding: 18px 22px 20px; margin: 16px 0; box-shadow: 0 1px 2px rgba(0, 0, 0, .03); }
+.nh-admin-card h2 { margin: 0 0 4px; font-size: 15px; display: flex; align-items: center; gap: 8px; }
+.nh-admin-card__intro { margin: 0 0 14px; color: #646970; }
+.nh-admin-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 0 16px; }
+.nh-fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 0 20px; }
+.nh-field { margin: 12px 0 0; }
+.nh-field > label { display: block; font-weight: 600; margin-bottom: 6px; }
+.nh-field input[type="text"], .nh-field input[type="url"], .nh-field textarea, .nh-field select { width: 100%; max-width: 640px; }
+.nh-field--short input { width: 90px; }
+.nh-toggle { display: flex; gap: 12px; align-items: flex-start; padding: 6px 0; line-height: 1.5; }
+.nh-toggle input { margin-top: 3px; }
+.nh-toggle span { color: #50575e; }
+.nh-toggle strong { color: #1d2327; }
+.nh-advanced { margin-top: 16px; border-top: 1px solid #f0f0f1; padding-top: 12px; }
+.nh-advanced summary { cursor: pointer; color: #2271b1; font-weight: 500; }
+.nh-code-block { display: block; padding: 10px 12px; background: #f6f7f7; border-radius: 6px; word-break: break-all; }
+.nh-color-row { display: flex; align-items: center; gap: 12px; }
+.nh-color-row input[type="color"] { width: 56px; height: 40px; padding: 2px; border: 1px solid #c3c4c7; border-radius: 6px; cursor: pointer; }
+.nh-admin-table { width: 100%; max-width: 760px; border-collapse: collapse; }
+.nh-admin-table th { text-align: left; font-weight: 600; padding: 8px 10px 8px 0; border-bottom: 1px solid #e4e6eb; }
+.nh-admin-table td { padding: 10px 10px 10px 0; border-bottom: 1px solid #f0f0f1; }
+.nh-changelog h3 { margin: 18px 0 6px; font-size: 14px; }
+.nh-changelog h3 span { font-weight: 400; color: #646970; margin-left: 6px; }
+.nh-changelog ul { list-style: disc; margin: 0 0 0 20px; }
+
+/* Resource list: section tabs + buttons */
+.nh-list-tabs { display: flex; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin: 4px 0 12px; }
+.nh-list-tabs .nh-admin-tabs { margin: 0; flex: 1 1 auto; }
+.nh-list-tabs .button { margin-bottom: 6px; }
+.edit-php.post-type-nh_resource .wp-list-table .column-title { width: 34%; }
+
+/* Dashboard */
+.nh-dash__head { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap; margin: 12px 0 18px; }
+.nh-dash__head h1 { font-size: 26px; margin: 0; padding: 0; }
+.nh-dash__head p { margin: 4px 0 0; color: #646970; }
+.nh-dash__actions { display: flex; gap: 8px; }
+.nh-dash .button-primary { background: #f47b20; border-color: #f47b20; }
+.nh-dash .button-primary:hover, .nh-dash .button-primary:focus { background: #d9661a; border-color: #d9661a; }
+.nh-dash__tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+.nh-dash__tile { display: flex; flex-direction: column; gap: 2px; padding: 16px 18px; background: #fff; border: 1px solid #e4e6eb; border-radius: 10px; color: #1d2327; text-decoration: none; transition: border-color .15s, box-shadow .15s; }
+a.nh-dash__tile:hover { border-color: #f47b20; color: #1d2327; box-shadow: 0 4px 14px rgba(244, 123, 32, .12); }
+.nh-dash__tile .dashicons { color: #f47b20; font-size: 22px; width: 22px; height: 22px; margin-bottom: 6px; }
+.nh-dash__tile strong { font-size: 26px; line-height: 1.15; }
+.nh-dash__tile span:last-child { color: #646970; }
+.nh-dash__tile--stat { background: #f6f7f7; }
+.nh-dash__tile--stat .dashicons { color: #8c8f94; }
+.nh-dash__row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0 16px; }
+.nh-dash__row--main { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); }
+.nh-badge-count { display: inline-block; min-width: 20px; padding: 1px 7px; border-radius: 999px; background: #b32d2e; color: #fff; font-size: 12px; text-align: center; }
+
+.nh-rank { margin: 10px 0 0; padding: 0; list-style: none; counter-reset: nh-rank; }
+.nh-rank li { display: flex; align-items: center; gap: 12px; padding: 9px 0; border-top: 1px solid #f0f0f1; counter-increment: nh-rank; }
+.nh-rank li:first-child { border-top: 0; }
+.nh-rank li::before { content: counter(nh-rank); flex: 0 0 22px; height: 22px; border-radius: 50%; background: #f6f7f7; color: #646970; font-size: 11px; font-weight: 600; display: grid; place-items: center; }
+.nh-rank li:nth-child(-n+3)::before { background: #fff3ea; color: #b45309; }
+.nh-rank__title { flex: 1 1 auto; min-width: 0; }
+.nh-rank__title a { text-decoration: none; }
+.nh-rank__num { flex: 0 0 auto; font-weight: 600; color: #1d2327; font-variant-numeric: tabular-nums; }
+.nh-pill { display: inline-block; margin-left: 4px; padding: 1px 8px; border-radius: 999px; background: #f0f0f1; color: #50575e; font-size: 11px; white-space: nowrap; vertical-align: 1px; }
+
+.nh-check { border-top: 1px solid #f0f0f1; }
+.nh-check:first-of-type { border-top: 0; }
+.nh-check summary { display: flex; gap: 12px; align-items: flex-start; padding: 10px 0; cursor: pointer; list-style: none; }
+.nh-check summary::-webkit-details-marker { display: none; }
+.nh-check__count { flex: 0 0 auto; min-width: 30px; height: 24px; padding: 0 6px; border-radius: 999px; background: #fcf0f1; color: #b32d2e; font-weight: 700; font-size: 12px; display: grid; place-items: center; }
+.nh-check.is-ok .nh-check__count { background: #edfaef; color: #008a20; }
+.nh-check.is-ok summary { cursor: default; opacity: .75; }
+.nh-check__text { display: flex; flex-direction: column; }
+.nh-check__text small { color: #646970; }
+.nh-check ul { margin: 0 0 10px 42px; max-height: 260px; overflow: auto; }
+.nh-check li { margin: 4px 0; }
+
+.nh-empty-note { display: flex; gap: 10px; align-items: flex-start; color: #646970; margin: 10px 0 0; }
+.nh-empty-note .dashicons { color: #c3c4c7; }
+
+.nh-bars { margin: 12px 0 0; padding: 0; list-style: none; }
+.nh-bars li { display: grid; grid-template-columns: 80px 1fr 36px; align-items: center; gap: 10px; margin: 8px 0; }
+.nh-bars__label { color: #50575e; }
+.nh-bars__track { height: 10px; background: #f0f0f1; border-radius: 999px; overflow: hidden; }
+.nh-bars__track span { display: block; height: 100%; background: #f47b20; border-radius: 999px; }
+.nh-bars__num { text-align: right; font-weight: 600; }
+
+@media (max-width: 1100px) {
+	.nh-dash__row, .nh-dash__row--main { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* Brand accents on hub admin screens. */
+.nh-admin, .post-type-nh_resource .nh-list-tabs { accent-color: #f47b20; }
+.nh-admin .button-primary, .nh-list-tabs .button-primary { background: #f47b20; border-color: #f47b20; color: #fff; }
+.nh-admin .button-primary:hover, .nh-admin .button-primary:focus,
+.nh-list-tabs .button-primary:hover, .nh-list-tabs .button-primary:focus { background: #d9661a; border-color: #d9661a; color: #fff; }
+.nh-list-tabs__actions { display: flex; gap: 8px; flex: 0 0 auto; margin-bottom: 6px; }
+.nh-list-tabs__actions .button { margin: 0; }
+
+/* Upgrade interest table, review column. */
+.nh-interest { width: 100%; border-collapse: collapse; margin-top: 4px; }
+.nh-interest th { text-align: left; font-weight: 600; color: #50575e; padding: 8px 10px 8px 0; border-bottom: 1px solid #e4e6eb; white-space: nowrap; }
+.nh-interest td { padding: 9px 10px 9px 0; border-bottom: 1px solid #f0f0f1; vertical-align: top; }
+.nh-interest td a { text-decoration: none; }
+.nh-interest .num { text-align: right; font-variant-numeric: tabular-nums; width: 90px; }
+.nh-interest tfoot td { border-bottom: 0; color: #646970; padding-top: 12px; }
+.nh-muted { color: #c3c4c7; }
+.nh-due { color: #b32d2e; }
+.post-type-nh_resource .column-nh_reviewed { width: 100px; }

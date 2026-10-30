@@ -1,0 +1,184 @@
+/* NeuroHR Members — member area layout (logged-in people). Colours follow the approved preview. */
+:root {
+	--nhs-brand: #f47b20;
+	--nhs-brand-dark: #c2570c;
+	--nhs-brand-hover: #d9661a;
+	--nhs-ink: #1d2330;
+	--nhs-text: #3c4250;
+	--nhs-muted: #6b7280;
+	--nhs-bg: #f6f5f3;
+	--nhs-card: #ffffff;
+	--nhs-line: #ece9e5;
+	--nhs-soft: #fdeee2;
+	--nhs-promo: #fff4ea;
+	--nhs-side: 260px;
+	--nhs-font: 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+}
+body.nhm-shell-on { margin: 0; background: var(--nhs-bg); color: var(--nhs-ink); font-family: var(--nhs-font); font-size: 15px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+body.nhm-shell-on *, body.nhm-shell-on *::before, body.nhm-shell-on *::after { box-sizing: border-box; }
+.nhm-shell-on a { color: var(--nhs-brand-dark); text-decoration: none; }
+.nhm-shell-on a:hover { color: #9a4508; }
+.nhm-shell-on img { max-width: 100%; height: auto; }
+.nhs-skip { position: absolute; left: -9999px; top: 8px; z-index: 1000; background: #fff; padding: 8px 14px; border-radius: 8px; }
+.nhs-skip:focus { left: 8px; }
+.nhs-ico { flex: 0 0 20px; width: 20px; height: 20px; }
+
+.nhs { min-height: 100vh; display: flex; flex-direction: column; }
+
+/* Top bar */
+.nhs-top { position: sticky; top: 0; z-index: 50; display: flex; align-items: center; gap: 20px; padding: 12px 28px; background: #fff; border-bottom: 1px solid var(--nhs-line); }
+.admin-bar .nhs-top { top: 32px; }
+.nhs-logo { display: inline-flex; align-items: center; width: calc(var(--nhs-side) - 48px); flex: 0 0 auto; font-size: 26px; font-weight: 800; letter-spacing: -.02em; color: var(--nhs-ink) !important; line-height: 1; }
+.nhs-logo span { color: var(--nhs-brand); }
+.nhs-logo img { max-height: 40px; width: auto; }
+.nhs-search { flex: 1 1 320px; max-width: 520px; display: flex; align-items: center; gap: 10px; margin: 0; padding: 0 16px; min-height: 44px; border: 1px solid #e4e0db; border-radius: 999px; background: #faf9f7; color: #8b909a; }
+.nhs-search:focus-within { border-color: var(--nhs-brand); box-shadow: 0 0 0 3px rgba(244,123,32,.18); background: #fff; }
+.nhs-search input { flex: 1; min-width: 0; border: 0 !important; background: transparent !important; box-shadow: none !important; font: inherit; font-size: 14px; color: var(--nhs-ink); outline: none; padding: 0; height: 42px; }
+.nhs-search--side { display: none; }
+
+.nhs-user { position: relative; margin-left: auto; }
+.nhs-user > summary { list-style: none; display: flex; align-items: center; gap: 12px; cursor: pointer; padding: 4px 6px; min-height: 44px; border-radius: 12px; }
+.nhs-user > summary::-webkit-details-marker { display: none; }
+.nhs-user > summary:hover { background: #faf7f4; }
+.nhs-user > summary:focus-visible { outline: 2px solid var(--nhs-brand); outline-offset: 2px; }
+.nhs-user__avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; flex: 0 0 40px; background: var(--nhs-soft); }
+.nhs-user__text { display: flex; flex-direction: column; line-height: 1.25; text-align: left; min-width: 0; }
+.nhs-user__name { font-size: 14px; font-weight: 700; color: var(--nhs-ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 220px; }
+.nhs-user__plan { font-size: 12px; color: var(--nhs-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 240px; }
+.nhs-user > summary .nhs-ico { width: 16px; height: 16px; flex-basis: 16px; color: #5b6170; transition: transform .15s; }
+.nhs-user[open] > summary .nhs-ico:last-child { transform: rotate(180deg); }
+.nhs-user__menu { position: absolute; right: 0; top: calc(100% + 8px); min-width: 230px; padding: 8px; background: #fff; border: 1px solid var(--nhs-line); border-radius: 14px; box-shadow: 0 16px 40px rgba(29,35,48,.12); z-index: 60; }
+.nhs-user__menu a { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 10px; color: var(--nhs-text) !important; font-size: 14px; font-weight: 500; }
+.nhs-user__menu a:hover { background: #fbf3ec; color: var(--nhs-ink) !important; }
+.nhs-user__menu .nhs-ico { width: 18px; height: 18px; flex-basis: 18px; }
+
+.nhs-burger, .nhs-close { display: none; align-items: center; justify-content: center; width: 44px; height: 44px; border: 0; border-radius: 12px; background: transparent; color: var(--nhs-ink); cursor: pointer; padding: 0; }
+.nhs-burger:hover, .nhs-close:hover { background: #faf7f4; }
+
+/* Body */
+.nhs-body { display: flex; flex: 1 1 auto; align-items: stretch; }
+.nhs-side { flex: 0 0 var(--nhs-side); width: var(--nhs-side); background: #fff; border-right: 1px solid var(--nhs-line); padding: 22px 16px; display: flex; flex-direction: column; gap: 4px; }
+.nhs-side__head { display: none; }
+.nhs-nav ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+.nhs-nav a { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-radius: 10px; color: var(--nhs-text) !important; font-size: 14px; font-weight: 500; min-height: 44px; }
+.nhs-nav a:hover { background: #fbf3ec; color: var(--nhs-ink) !important; }
+.nhs-nav li.is-on > a, .nhs-nav li.current-menu-item > a { background: var(--nhs-soft); color: var(--nhs-brand-dark) !important; font-weight: 700; }
+.nhs-nav__caret { margin-left: auto; display: inline-flex; }
+.nhs-nav__caret .nhs-ico { width: 16px; height: 16px; flex-basis: 16px; }
+.nhs-nav__sub { padding-left: 32px !important; margin: 2px 0 4px !important; }
+.nhs-nav__sub a { min-height: 36px; padding: 6px 12px; font-size: 13.5px; }
+.nhs-nav li.menu-item-has-children:not(.is-on) > .nhs-nav__sub { display: none; }
+.nhs-nav li.menu-item-has-children.is-open > .nhs-nav__sub { display: flex; }
+.nhs-nav li.is-open > a .nhs-nav__caret, .nhs-nav li.is-on > a .nhs-nav__caret { transform: rotate(180deg); }
+.nhs-nav .nhm-avatar { width: 24px; height: 24px; border-radius: 50%; }
+.nhs-sep { height: 1px; background: var(--nhs-line); margin: 12px 8px; }
+
+.nhs-promo { margin-top: auto; border-radius: 16px; padding: 22px 20px; background: var(--nhs-promo); border: 1px solid #fbe1cc; display: flex; flex-direction: column; gap: 10px; }
+.nhs-side .nhs-promo { margin-top: auto; }
+.nhs-nav + .nhs-promo, .nhs-sep + .nhs-nav + .nhs-promo { margin-top: auto; }
+.nhs-promo__title { font-size: 19px; font-weight: 800; line-height: 1.2; color: var(--nhs-ink); }
+.nhs-promo__text { font-size: 13px; color: #5b6170; line-height: 1.5; }
+.nhs-promo__go { width: 44px; height: 44px; border-radius: 50%; background: #fff; border: 1px solid #f4cfae; display: grid; place-items: center; color: var(--nhs-brand-dark) !important; }
+.nhs-promo__go:hover { background: var(--nhs-brand); color: #fff !important; border-color: var(--nhs-brand); }
+.nhs-side { position: sticky; top: 69px; align-self: flex-start; height: calc(100vh - 69px); overflow-y: auto; }
+.admin-bar .nhs-side { top: 101px; height: calc(100vh - 101px); }
+
+.nhs-main { flex: 1 1 auto; min-width: 0; padding: 28px 40px 48px; outline: none; }
+.nhs-main > * { max-width: 1200px; margin-left: auto; margin-right: auto; }
+.nhs-main > .nhs-page--builder, .nhs-main > .nh-hub { max-width: none; }
+
+/* Page content */
+.nhs-head { margin: 0 0 22px; }
+.nhs-crumb { margin: 0 0 6px; font-size: 13px; color: #8b909a; }
+.nhs-title { margin: 0; font-size: 34px; line-height: 1.15; font-weight: 800; letter-spacing: -.02em; color: var(--nhs-ink); }
+.nhs-lead { margin: 6px 0 0; color: #5b6170; font-size: 15px; }
+.nhs-cover { margin: 0 0 24px; }
+.nhs-cover img { border-radius: 16px; display: block; width: 100%; max-height: 420px; object-fit: cover; }
+.nhs-prose { background: #fff; border: 1px solid var(--nhs-line); border-radius: 16px; padding: 28px 32px; color: var(--nhs-text); }
+.nhs-app .nhm-account, .nhs-app .nhm-pricing { max-width: none; }
+.nhs-prose > :first-child { margin-top: 0; }
+.nhs-prose > :last-child { margin-bottom: 0; }
+.nhs-prose h2, .nhs-prose h3, .nhs-prose h4 { color: var(--nhs-ink); line-height: 1.3; margin: 1.6em 0 .5em; }
+.nhs-prose h2 { font-size: 24px; } .nhs-prose h3 { font-size: 19px; }
+.nhs-prose p, .nhs-prose ul, .nhs-prose ol { margin: 0 0 1em; }
+.nhs-prose a { text-decoration: underline; text-underline-offset: 2px; }
+.nhs-prose blockquote { margin: 1.2em 0; padding: 4px 0 4px 18px; border-left: 3px solid var(--nhs-brand); color: var(--nhs-ink); }
+.nhs-prose table { width: 100%; border-collapse: collapse; margin: 0 0 1em; font-size: 14px; }
+.nhs-prose th, .nhs-prose td { border-bottom: 1px solid var(--nhs-line); padding: 10px 12px 10px 0; text-align: left; }
+.nhs-prose .nhm { max-width: none; }
+.nhs-page--builder .nhs-content { margin: -28px -40px 0; } /* Elementor sections run edge to edge in the main area. */
+
+.nhs-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+.nhs-card { background: #fff; border: 1px solid var(--nhs-line); border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; }
+.nhs-card__img img { display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: cover; }
+.nhs-card__body { padding: 18px 20px 20px; }
+.nhs-card__title { margin: 0 0 6px; font-size: 17px; line-height: 1.35; }
+.nhs-card__title a { color: var(--nhs-ink) !important; }
+.nhs-card__title a:hover { color: var(--nhs-brand-dark) !important; }
+.nhs-card__text { margin: 0; color: #5b6170; font-size: 14px; }
+.nhs-pages { margin-top: 28px; }
+.nhs-pages .nav-links { display: flex; gap: 6px; flex-wrap: wrap; }
+.nhs-pages .page-numbers { display: inline-grid; place-items: center; min-width: 40px; height: 40px; padding: 0 12px; border-radius: 999px; background: #fff; border: 1px solid var(--nhs-line); color: var(--nhs-text) !important; font-weight: 600; }
+.nhs-pages .page-numbers.current { background: var(--nhs-brand); border-color: var(--nhs-brand); color: #fff !important; }
+.nhs-empty { background: #fff; border: 1px solid var(--nhs-line); border-radius: 16px; padding: 40px 32px; max-width: 640px; }
+.nhs-empty .nhs-title { font-size: 28px; margin-bottom: 8px; }
+
+/* Footer */
+.nhs-footer { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 24px; padding: 18px 28px; border-top: 1px solid var(--nhs-line); background: #fff; color: var(--nhs-muted); font-size: 13px; }
+.nhs-footer__nav ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 4px 18px; }
+.nhs-footer__nav a { color: var(--nhs-muted) !important; }
+.nhs-footer__nav a:hover { color: var(--nhs-ink) !important; }
+
+/* The forms from the plugin pick up the member-area colours. */
+.nhm-shell-on .nhm { --nhm-primary: var(--nhs-brand); --nhm-ink: var(--nhs-ink); font-family: var(--nhs-font); }
+
+/* Tablet and phone: the sidebar becomes a drawer. */
+@media (max-width: 900px) {
+	.nhs-top { padding: 10px 16px; gap: 10px; }
+	.nhs-burger, .nhs-close { display: inline-flex; }
+	.nhs-logo { width: auto; font-size: 22px; }
+	.nhs-top > .nhs-search { display: none; }
+	.nhs-search--side { display: flex; flex: 0 0 auto; max-width: none; margin: 0 0 12px; }
+	.nhs-user__text { display: none; }
+	.nhs-side { position: fixed; top: 0; left: 0; bottom: 0; height: 100%; z-index: 100; width: min(320px, 86vw); transform: translateX(-100%); transition: transform .2s ease, visibility .2s; visibility: hidden; }
+	.admin-bar .nhs-side { top: 0; height: 100%; }
+	.nhs-side__head { display: flex; align-items: center; justify-content: space-between; margin: -8px 0 12px; }
+	.nhs-side__head .nhs-logo { font-size: 22px; }
+	.nhs.is-drawer .nhs-side { transform: none; visibility: visible; box-shadow: 0 0 40px rgba(29,35,48,.2); }
+	.nhs-scrim { position: fixed; inset: 0; z-index: 90; background: rgba(29,35,48,.45); }
+	.nhs-main { padding: 20px 16px 40px; }
+	.nhs-page--builder .nhs-content { margin: -20px -16px 0; }
+	.nhs-title { font-size: 26px; }
+	.nhs-prose { padding: 20px 18px; }
+	.nhs-footer { padding: 16px; }
+}
+@media (max-width: 782px) {
+	.admin-bar .nhs-top { top: 46px; }
+}
+@media (max-width: 600px) {
+	.admin-bar .nhs-top { top: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+	.nhs-side { transition: none; }
+}
+
+/* Account tabs: one row that scrolls sideways on small screens, no scroll arrows. */
+.nhm-shell-on .nhm-tabs { overflow-x: auto; overflow-y: hidden; scrollbar-width: none; flex-wrap: nowrap; }
+.nhm-shell-on .nhm-tabs::-webkit-scrollbar { display: none; }
+.nhm-shell-on .nhm .nhm-tab { margin-bottom: 0; }
+/* Theme headings rules must not reach the plugin's cards. */
+.nhm-shell-on .nhm h2, .nhm-shell-on .nhm h3 { font-family: inherit; letter-spacing: normal; }
+.nhm-shell-on .nhm .nhm-card__title { margin: 0 0 14px; line-height: 1.3; }
+
+/* Live search list under the top-bar search (Knowledge Hub). */
+.nhs-search { position: relative; }
+.nhs-search .nhs-live { position: absolute; z-index: 70; left: 0; right: 0; top: calc(100% + 8px); background: #fff; border: 1px solid var(--nhs-line); border-radius: 16px; box-shadow: 0 16px 40px rgba(29,35,48,.14); padding: 6px; max-height: min(440px, 70vh); overflow: auto; text-align: left; }
+.nhs-search .nhs-live[hidden] { display: none; }
+.nhs-search .nhs-live a.nh-live__item { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 10px 14px; border-radius: 12px; color: var(--nhs-ink) !important; font-size: 14px; text-decoration: none; }
+.nhs-search .nhs-live a.nh-live__item:hover, .nhs-search .nhs-live a.nh-live__item.is-active { background: var(--nhs-soft); color: var(--nhs-brand-dark) !important; }
+.nhs-search .nhs-live .nh-live__title { line-height: 1.4; }
+.nhs-search .nhs-live .nh-live__title mark { background: transparent; color: var(--nhs-brand); font-weight: 700; padding: 0; }
+.nhs-search .nhs-live .nh-live__meta { flex: 0 0 auto; color: var(--nhs-muted); font-size: 12px; white-space: nowrap; }
+.nhs-search .nhs-live a.nh-live__all { display: block; margin-top: 4px; padding: 10px 12px; border-top: 1px solid var(--nhs-line); color: var(--nhs-brand-dark) !important; font-weight: 600; font-size: 14px; }
+.nhs-search .nhs-live .nh-live__empty { margin: 0; padding: 12px; color: var(--nhs-muted); font-size: 14px; }
+@media (max-width: 600px) { .nhs-search .nhs-live a.nh-live__item { flex-direction: column; gap: 2px; } }
