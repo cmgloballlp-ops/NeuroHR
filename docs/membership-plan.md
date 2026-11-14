@@ -133,11 +133,15 @@ Refunds (phase 2, to build):
 - Reports: received / refunded / net; auto-renewals due in the next 30 days.
 - Later: Privacy Policy text (usage logging), Google login.
 
-## Backlog — noted 30 Oct 2026 (after 0.4.3), build together later
+## Done since 30 Oct 2026
 
-1. **My account → Invoices table UI**: cells have no padding / poor alignment (first column touches the border, actions column too wide). Rename "PDF" to **View invoice**; make "Request a refund" a proper button style that lines up with it.
-2. **Request a refund pop-up**: broken layout on the live site: labels right-aligned, intro text runs off to the side with a horizontal scrollbar, title crowds the × button. Likely theme (Blocksy/Elementor) styles leaking into the dialog; restyle like the approved modal design.
-3. **Invitation page** (replaces item 3 above; owner confirmed the invite already works through the register page): build a separate, invitation-only page. It shows the company name, the email (locked) and name / password / optional profile fields, plus the Terms tick box. No plans or pricing. People who already have an account see "Log in to accept".
-4. **Company tab → seats table**: add padding and alignment. Add a **Remove** button per person (with a confirm pop-up; not for the owner), and pending invitations with Resend / Cancel.
-5. **Security → Change password**: the two fields are misaligned; align the boxes and put the help text under them.
-6. **GitHub**: push Members, Knowledge Hub and Simple Payroll to the owner's repositories once the repo names are given.
+- 0.4.4 (PR #1): invoices table, refund pop-up, invitation page `[nhm_invite]`, seats table with Remove / Send again / Cancel, change-password alignment, code on GitHub (cmgloballlp-ops/NeuroHR).
+- 0.4.5 (PR #2): Bill To Individual / Company (NRIC / Passport No.), Title Case everywhere, full-width admin lists.
+
+## Backlog — to build together later
+
+1. **Top-bar search box**: when typing, a rectangular box shows inside the rounded search field (the theme's focus outline/border on the input). Remove it so only the rounded orange ring shows. Likely fix: `.nhs-search input:focus, .nhs-search input:focus-visible { outline: none !important; box-shadow: none !important; border: 0 !important; }`.
+
+## Ideas, not decided
+
+- Payment gateways: possibly Billplz for FPX, Curlec for auto-renew, Stripe for the rest. Needs a gateway layer first. Owner's own comparison of fees comes first.
