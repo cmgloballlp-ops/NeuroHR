@@ -142,7 +142,9 @@ Refunds (phase 2, to build):
 
 1. **Top-bar search box**: when typing, a rectangular box shows inside the rounded search field (the theme's focus outline/border on the input). Remove it so only the rounded orange ring shows. Likely fix: `.nhs-search input:focus, .nhs-search input:focus-visible { outline: none !important; box-shadow: none !important; border: 0 !important; }`.
 
-2. **Dashboard greeting by time of day**: new `[nhm_greeting]` shortcode (or `[nhm_user field="greeting"]`) to replace "Welcome back, [nhm_user field="first_name"]!". Good morning (5:00–11:59) / Good afternoon (12:00–17:59) / Good evening (18:00–21:59) / late-night line (22:00–4:59), in the member's time zone (My account preference, else the site's Asia/Kuala_Lumpur). Optional warm second line that changes by day. Texts editable in Settings. Owner to confirm the wording.
+2. **Dashboard greeting by time of day** (owner confirmed 15 Nov 2026): `[nhm_greeting]` replaces "Welcome back, [nhm_user field="first_name"]!".
+   - Good morning 5:00–11:59 · Good afternoon 12:00–17:59 · Good evening 18:00–20:59 · "Working late, {name}?" 21:00–4:59. Member's time zone, else Asia/Kuala_Lumpur. No first name → "Good morning!".
+   - Plus one warm line under it, picked at random from **20 lines**, never the same as the one shown last time (remember the last one per member). Lines editable in Settings (one per line). Draft list sent to the owner for approval.
 
 ## Ideas, not decided
 
