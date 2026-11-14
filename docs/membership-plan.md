@@ -144,7 +144,27 @@ Refunds (phase 2, to build):
 
 2. **Dashboard greeting by time of day** (owner confirmed 15 Nov 2026): `[nhm_greeting]` replaces "Welcome back, [nhm_user field="first_name"]!".
    - Good morning 5:00–11:59 · Good afternoon 12:00–17:59 · Good evening 18:00–20:59 · "Working late, {name}?" 21:00–4:59. Member's time zone, else Asia/Kuala_Lumpur. No first name → "Good morning!".
-   - Plus one warm line under it, picked at random from **20 lines**, never the same as the one shown last time (remember the last one per member). Lines editable in Settings (one per line). Draft list sent to the owner for approval.
+   - Plus one warm line under it, picked at random from **20 lines**, never the same as the one shown last time (remember the last one per member). Lines editable in Settings (one per line). Approved default lines (15 Nov 2026):
+     1. Here's what's new in Malaysian HR today.
+     2. Ready to make HR a little easier today?
+     3. Your next great HR decision starts here.
+     4. Good HR is built one small step at a time.
+     5. Let's turn today's HR questions into answers.
+     6. Great teams start with great HR. You've got this.
+     7. A quick read today can save a big headache tomorrow.
+     8. Stay ahead of the latest employment law updates.
+     9. Templates, guides and tools, all ready when you are.
+     10. Every policy you get right makes your team stronger.
+     11. Take a moment to explore something new today.
+     12. HR made simpler, one resource at a time.
+     13. Your people are your business. We're here to help.
+     14. Clear policies, happy teams, fewer surprises.
+     15. Small improvements in HR add up to big results.
+     16. Have a question? The answer may be just a search away.
+     17. Thanks for building a better workplace.
+     18. Smart HR starts with the right knowledge.
+     19. Let's make today a productive one.
+     20. Good to see you again. Let's get started.
 
 ## Ideas, not decided
 
