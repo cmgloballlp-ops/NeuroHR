@@ -1,8 +1,14 @@
-# NeuroHR Members — v0.4.4
+# NeuroHR Members — v0.4.5
 
 Replaces MemberPress on neurohr.com.my. It manages levels, personal plans, company accounts with seats, plan end dates and reminders, the login / registration / account pages (as shortcodes on your own pages), and members-only pages.
 It also tells the Knowledge Hub (0.8.1) and Simple Payroll (0.5.0) which level each person has, gives logged-in people one member-area layout on every page, and hides WordPress's own login screens.
 Members pay their invoice online (Stripe: card, FPX, GrabPay), by bank transfer or by DuitNow QR (with a slip you approve). The plan starts when the invoice is paid. Card auto-renew (personal plans) and refunds are in since 0.4.3.
+
+## New in 0.4.5
+
+- My account → Personal Billing Details: **Bill To** Individual / Company. Individual: *NRIC / Passport No.*, no company name; Company: *Company Name on Invoice*, *Attention To (Contact Person)*, *Registration No. (SSM)*. The PDF prints *NRIC / Passport No.* for individuals (new invoices).
+- Title Case for titles, labels, tabs, table headings and buttons (member pages and admin).
+- Admin list screens (Members, Invoices, Companies, Payments, Dashboard) use the full screen width.
 
 ## New in 0.4.4
 

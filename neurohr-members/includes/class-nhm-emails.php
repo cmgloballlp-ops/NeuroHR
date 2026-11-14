@@ -67,7 +67,7 @@ class NHM_Emails {
 			),
 			'application'       => array(
 				'group' => 'member',
-				'title' => __( 'Plan Application (invoice attached)', 'neurohr-members' ),
+				'title' => __( 'Plan Application (Invoice Attached)', 'neurohr-members' ),
 				'info'  => __( 'Someone signs up for or asks for a paid plan. The invoice PDF is attached.', 'neurohr-members' ),
 				'subj'  => 'Your {level} plan: invoice {invoice_number}',
 				'body'  => "Hi {name},\n\nThank you for choosing the {level} plan. Your invoice {invoice_number} for {invoice_total} is attached (due {invoice_due}).\n\nYou can pay online by card, FPX, GrabPay, bank transfer or DuitNow QR here:\n{pay_url}\n\n{payment_details}\n\nYour {level} plan starts as soon as we receive the payment. You can also download the invoice from your account: {account_url}\n\nRegards,\n{site}",
@@ -95,7 +95,7 @@ class NHM_Emails {
 			),
 			'invoice_expired'   => array(
 				'group' => 'member',
-				'title' => __( 'Invoice Cancelled (not paid)', 'neurohr-members' ),
+				'title' => __( 'Invoice Cancelled (Not Paid)', 'neurohr-members' ),
 				'info'  => __( 'The day after a sign-up or upgrade invoice was due and not paid. A new account that never paid is removed, so the person can sign up again.', 'neurohr-members' ),
 				'subj'  => 'Your {level} plan request has been cancelled',
 				'body'  => "Hi {name},\n\nWe did not receive the payment for invoice {invoice_number} ({invoice_total}), so we have cancelled this {level} plan request.\n\nWhenever you are ready, you are very welcome to choose a plan again here:\n{renew_url}\n\nIf you think this is a mistake, just reply to this email and we will help.\n\nRegards,\n{site}",
@@ -271,14 +271,14 @@ class NHM_Emails {
 			),
 			'admin_reminder'    => array(
 				'group' => 'admin',
-				'title' => __( 'Plan Ending Soon (copy)', 'neurohr-members' ),
+				'title' => __( 'Plan Ending Soon (Copy)', 'neurohr-members' ),
 				'info'  => __( 'A copy for you whenever a "Plan Ending Soon" email goes out, to follow up renewals.', 'neurohr-members' ),
 				'subj'  => '[{site}] {level} of {name} ends {expiry}',
 				'body'  => "The {level} plan of {name}{for_company} ({email}) ends on {expiry} ({days} days).\n\n{renewal_text}\n\n{admin_url}",
 			),
 			'admin_expired'     => array(
 				'group' => 'admin',
-				'title' => __( 'Plan Ended (copy)', 'neurohr-members' ),
+				'title' => __( 'Plan Ended (Copy)', 'neurohr-members' ),
 				'info'  => __( 'A copy for you when a plan ends.', 'neurohr-members' ),
 				'subj'  => '[{site}] {level} of {name} has ended',
 				'body'  => "The {level} plan of {name}{for_company} ({email}) ended on {expiry}.\n\n{admin_url}",

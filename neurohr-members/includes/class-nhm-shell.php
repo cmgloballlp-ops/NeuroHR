@@ -293,16 +293,16 @@ class NHM_Shell {
 			. '<span class="nhs-user__text"><span class="nhs-user__name">' . esc_html( $user->display_name ) . '</span><span class="nhs-user__plan">' . esc_html( self::plan_line( $user->ID ) ) . '</span></span>'
 			. self::icon( 'chevron' ) . '</summary><div class="nhs-user__menu">';
 		if ( $account ) {
-			$h .= '<a href="' . esc_url( $account ) . '">' . self::icon( 'user' ) . esc_html__( 'My account', 'neurohr-members' ) . '</a>';
+			$h .= '<a href="' . esc_url( $account ) . '">' . self::icon( 'user' ) . esc_html__( 'My Account', 'neurohr-members' ) . '</a>';
 			if ( 'owner' === $m['role'] ) {
-				$h .= '<a href="' . esc_url( add_query_arg( 'tab', 'company', $account ) ) . '">' . self::icon( 'briefcase' ) . esc_html__( 'My company', 'neurohr-members' ) . '</a>';
+				$h .= '<a href="' . esc_url( add_query_arg( 'tab', 'company', $account ) ) . '">' . self::icon( 'briefcase' ) . esc_html__( 'My Company', 'neurohr-members' ) . '</a>';
 			}
-			$h .= '<a href="' . esc_url( add_query_arg( 'tab', 'billing', $account ) ) . '">' . self::icon( 'receipt' ) . esc_html__( 'Plan & billing', 'neurohr-members' ) . '</a>';
+			$h .= '<a href="' . esc_url( add_query_arg( 'tab', 'billing', $account ) ) . '">' . self::icon( 'receipt' ) . esc_html__( 'Plan & Billing', 'neurohr-members' ) . '</a>';
 		}
 		if ( current_user_can( 'edit_posts' ) ) {
-			$h .= '<a href="' . esc_url( admin_url() ) . '">' . self::icon( 'settings' ) . esc_html__( 'Site admin', 'neurohr-members' ) . '</a>';
+			$h .= '<a href="' . esc_url( admin_url() ) . '">' . self::icon( 'settings' ) . esc_html__( 'Site Admin', 'neurohr-members' ) . '</a>';
 		}
-		$h .= '<a href="' . esc_url( wp_logout_url() ) . '">' . self::icon( 'logout' ) . esc_html__( 'Log out', 'neurohr-members' ) . '</a>';
+		$h .= '<a href="' . esc_url( wp_logout_url() ) . '">' . self::icon( 'logout' ) . esc_html__( 'Log Out', 'neurohr-members' ) . '</a>';
 		return $h . '</div></details>';
 	}
 
@@ -367,9 +367,9 @@ class NHM_Shell {
 		}
 		$account = array();
 		if ( nhm_account_url() ) {
-			$account[] = array( __( 'My account', 'neurohr-members' ), nhm_account_url(), 'user' );
+			$account[] = array( __( 'My Account', 'neurohr-members' ), nhm_account_url(), 'user' );
 		}
-		$account[] = array( __( 'Log out', 'neurohr-members' ), '#nhm-login', 'logout' );
+		$account[] = array( __( 'Log Out', 'neurohr-members' ), '#nhm-login', 'logout' );
 		return apply_filters( 'nhm_shell_suggested_links', array( 'nhm_sidebar' => $main, 'nhm_sidebar_account' => $account ) );
 	}
 
@@ -439,7 +439,7 @@ class NHM_Shell {
 			$h .= '<span class="nhs-promo__text">' . esc_html( $text ) . '</span>';
 		}
 		if ( $url ) {
-			$h .= '<a class="nhs-promo__go" href="' . esc_url( $url ) . '" aria-label="' . esc_attr( $title ? $title : __( 'Learn more', 'neurohr-members' ) ) . '">' . self::icon( 'arrow' ) . '</a>';
+			$h .= '<a class="nhs-promo__go" href="' . esc_url( $url ) . '" aria-label="' . esc_attr( $title ? $title : __( 'Learn More', 'neurohr-members' ) ) . '">' . self::icon( 'arrow' ) . '</a>';
 		}
 		return $h . '</div>';
 	}
@@ -465,14 +465,14 @@ class NHM_Shell {
 		$h  = '<a class="nhs-skip" href="#nhs-main">' . esc_html__( 'Skip to content', 'neurohr-members' ) . '</a>';
 		$h .= '<div class="nhs" data-nhs>';
 		$h .= '<header class="nhs-top">';
-		$h .= '<button type="button" class="nhs-burger" data-nhs-open aria-controls="nhs-side" aria-expanded="false" aria-label="' . esc_attr__( 'Open menu', 'neurohr-members' ) . '">' . self::icon( 'menu' ) . '</button>';
+		$h .= '<button type="button" class="nhs-burger" data-nhs-open aria-controls="nhs-side" aria-expanded="false" aria-label="' . esc_attr__( 'Open Menu', 'neurohr-members' ) . '">' . self::icon( 'menu' ) . '</button>';
 		$h .= self::logo();
 		$h .= self::search_form();
 		$h .= self::user_menu();
 		$h .= '</header>';
 		$h .= '<div class="nhs-body">';
 		$h .= '<aside class="nhs-side" id="nhs-side" aria-label="' . esc_attr__( 'Member menu', 'neurohr-members' ) . '">';
-		$h .= '<div class="nhs-side__head">' . self::logo() . '<button type="button" class="nhs-close" data-nhs-close aria-label="' . esc_attr__( 'Close menu', 'neurohr-members' ) . '">' . self::icon( 'close' ) . '</button></div>';
+		$h .= '<div class="nhs-side__head">' . self::logo() . '<button type="button" class="nhs-close" data-nhs-close aria-label="' . esc_attr__( 'Close Menu', 'neurohr-members' ) . '">' . self::icon( 'close' ) . '</button></div>';
 		$h .= self::search_form( 'nhs-search--side' );
 		$h .= self::nav( 'nhm_sidebar', __( 'Main menu', 'neurohr-members' ) );
 		$account = self::nav( 'nhm_sidebar_account', __( 'Account menu', 'neurohr-members' ) );

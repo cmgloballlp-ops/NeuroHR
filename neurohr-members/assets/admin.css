@@ -216,3 +216,5 @@
 .nhm-refund__approve p { margin: 8px 0; }
 .nhm-refund__mark label { margin-right: 10px; }
 .nhm-admin-subhead { margin: 26px 0 10px; font-size: 15px; }
+.nhm-admin.nhm-admin--full { max-width: none; }
+.nhm-admin--full .nhm-admin-card, .nhm-admin--full .nhm-table-card { max-width: none; }

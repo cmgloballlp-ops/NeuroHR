@@ -121,7 +121,7 @@ class NHM_Admin_Members {
 		$keep                   = array_filter( array( 'level' => $f['level'], 'company' => $f['company'], 's' => $f['s'] ) );
 		$export                 = wp_nonce_url( add_query_arg( array_merge( $keep, array( 'action' => 'nhm_export', 'view' => $f['view'] ) ), admin_url( 'admin-post.php' ) ), 'nhm_export' );
 
-		echo '<div class="wrap nhm-admin">';
+		echo '<div class="wrap nhm-admin nhm-admin--full">';
 		NHM_Admin::header(
 			__( 'Members', 'neurohr-members' ),
 			'<a class="button" href="' . esc_url( admin_url( 'user-new.php' ) ) . '">' . esc_html__( 'Add a person', 'neurohr-members' ) . '</a> <a class="button" href="' . esc_url( $export ) . '">' . esc_html__( 'Export CSV', 'neurohr-members' ) . '</a>'
@@ -129,8 +129,8 @@ class NHM_Admin_Members {
 
 		$tabs = array(
 			'all'      => array( __( 'All', 'neurohr-members' ), 'groups' ),
-			'paid'     => array( __( 'Paid plans', 'neurohr-members' ), 'awards' ),
-			'expiring' => array( __( 'Ending within 30 days', 'neurohr-members' ), 'clock' ),
+			'paid'     => array( __( 'Paid Plans', 'neurohr-members' ), 'awards' ),
+			'expiring' => array( __( 'Ending Within 30 Days', 'neurohr-members' ), 'clock' ),
 			'expired'  => array( __( 'Ended', 'neurohr-members' ), 'warning' ),
 			'free'     => array( __( 'Free', 'neurohr-members' ), 'admin-users' ),
 			'blocked'  => array( __( 'Blocked', 'neurohr-members' ), 'dismiss' ),
@@ -173,7 +173,7 @@ class NHM_Admin_Members {
 		echo '<span class="nhm-bulk__plan" hidden>' . NHM_Admin::level_select( 'bulk_level', 0, array( 'id' => 'nhm-bulk-level' ) ) . ' <label>' . esc_html__( 'last day', 'neurohr-members' ) . ' <input type="date" name="bulk_expiry"></label> <span class="description">' . esc_html__( 'empty = one term from today', 'neurohr-members' ) . '</span></span> '; // phpcs:ignore WordPress.Security.EscapeOutput
 		echo '<button type="submit" class="button" data-nhm-confirm="' . esc_attr__( 'Apply to the selected people?', 'neurohr-members' ) . '">' . esc_html__( 'Apply', 'neurohr-members' ) . '</button></div>';
 		echo '<div class="nhm-admin-card nhm-admin-card--flush"><table class="widefat striped nhm-members-table"><thead><tr>';
-		echo '<td class="check-column"><input type="checkbox" data-nhm-check-all></td><th>' . esc_html__( 'Name', 'neurohr-members' ) . '</th><th>' . esc_html__( 'Plan', 'neurohr-members' ) . '</th><th>' . esc_html__( 'Until', 'neurohr-members' ) . '</th><th>' . esc_html__( 'Company', 'neurohr-members' ) . '</th><th>' . esc_html__( 'Registered', 'neurohr-members' ) . '</th><th>' . esc_html__( 'Last login', 'neurohr-members' ) . '</th>';
+		echo '<td class="check-column"><input type="checkbox" data-nhm-check-all></td><th>' . esc_html__( 'Name', 'neurohr-members' ) . '</th><th>' . esc_html__( 'Plan', 'neurohr-members' ) . '</th><th>' . esc_html__( 'Until', 'neurohr-members' ) . '</th><th>' . esc_html__( 'Company', 'neurohr-members' ) . '</th><th>' . esc_html__( 'Registered', 'neurohr-members' ) . '</th><th>' . esc_html__( 'Last Login', 'neurohr-members' ) . '</th>';
 		echo '</tr></thead><tbody>';
 		if ( ! $rows ) {
 			echo '<tr><td colspan="7" class="nhm-empty">' . esc_html__( 'Nobody here.', 'neurohr-members' ) . '</td></tr>';
@@ -465,23 +465,23 @@ class NHM_Admin_Members {
 			</p>
 			<table class="form-table" role="presentation">
 				<tr>
-					<th><label for="nhm-level"><?php esc_html_e( 'Own plan', 'neurohr-members' ); ?></label></th>
+					<th><label for="nhm-level"><?php esc_html_e( 'Own Plan', 'neurohr-members' ); ?></label></th>
 					<td><?php echo NHM_Admin::level_select( 'nhm_level', $p['level'], array( 'id' => 'nhm-level' ) ); // phpcs:ignore WordPress.Security.EscapeOutput ?>
 					<p class="description"><?php esc_html_e( 'For a person who pays for themselves. Staff of a client company get their plan from the company instead (below).', 'neurohr-members' ); ?></p></td>
 				</tr>
 				<tr>
-					<th><label for="nhm-start"><?php esc_html_e( 'Start date', 'neurohr-members' ); ?></label></th>
+					<th><label for="nhm-start"><?php esc_html_e( 'Start Date', 'neurohr-members' ); ?></label></th>
 					<td><input type="date" id="nhm-start" name="nhm_start" value="<?php echo esc_attr( $p['start'] ); ?>"></td>
 				</tr>
 				<tr>
-					<th><label for="nhm-expiry"><?php esc_html_e( 'Last day', 'neurohr-members' ); ?></label></th>
+					<th><label for="nhm-expiry"><?php esc_html_e( 'Last Day', 'neurohr-members' ); ?></label></th>
 					<td><?php echo NHM_Admin::expiry_input( 'nhm_expiry', $p['expiry'], 'nhm-expiry', 'nhm-level' ); // phpcs:ignore WordPress.Security.EscapeOutput ?>
 					<p class="description"><?php esc_html_e( 'Access ends after this day; the person goes back to the free plan. Empty = no end date. "+1 term" adds the term of the plan picked above (e.g. 1 year).', 'neurohr-members' ); ?></p>
 					<p><a class="button" href="<?php echo esc_url( admin_url( 'admin.php?page=nhm-invoices&action=new&user=' . (int) $user->ID . '&level=' . (int) ( $p['level'] !== NHM_Levels::base_id() ? $p['level'] : 0 ) ) ); ?>"><?php esc_html_e( 'Create invoice / renewal', 'neurohr-members' ); ?></a>
 					<a class="button-link" style="margin-left:8px" href="<?php echo esc_url( admin_url( 'admin.php?page=nhm-invoices&user=' . (int) $user->ID ) ); ?>"><?php esc_html_e( 'Invoices of this person', 'neurohr-members' ); ?></a></p></td>
 				</tr>
 				<tr>
-					<th><label for="nhm-company"><?php esc_html_e( 'Company account', 'neurohr-members' ); ?></label></th>
+					<th><label for="nhm-company"><?php esc_html_e( 'Company Account', 'neurohr-members' ); ?></label></th>
 					<td>
 						<select id="nhm-company" name="nhm_company">
 							<option value="0"><?php esc_html_e( '— none —', 'neurohr-members' ); ?></option>
@@ -503,7 +503,7 @@ class NHM_Admin_Members {
 					<p class="description"><?php esc_html_e( 'Only admins see this.', 'neurohr-members' ); ?></p></td>
 				</tr>
 			</table>
-			<h3><?php esc_html_e( 'Registration answers', 'neurohr-members' ); ?></h3>
+			<h3><?php esc_html_e( 'Registration Answers', 'neurohr-members' ); ?></h3>
 			<div class="nhm-admin-fields nhm">
 				<?php
 				foreach ( NHM_Fields::all() as $f ) {
@@ -512,7 +512,7 @@ class NHM_Admin_Members {
 				}
 				?>
 			</div>
-			<h3><?php esc_html_e( 'Billing details (personal invoices)', 'neurohr-members' ); ?></h3>
+			<h3><?php esc_html_e( 'Billing Details (Personal Invoices)', 'neurohr-members' ); ?></h3>
 			<table class="form-table" role="presentation">
 				<?php foreach ( NHM_Account::billing_fields() as $key => $bf ) : ?>
 					<tr><th><label for="nhm-b-<?php echo esc_attr( $key ); ?>"><?php echo esc_html( $bf[0] ); ?></label></th>
@@ -530,7 +530,7 @@ class NHM_Admin_Members {
 	private static function renew_box( $user ) {
 		$a = NHM_Renew::get( $user->ID );
 		$p = NHM_Members::personal( $user->ID );
-		echo '<h3 id="nhm-renew">' . esc_html__( 'Card auto-renew', 'neurohr-members' ) . '</h3>';
+		echo '<h3 id="nhm-renew">' . esc_html__( 'Card Auto-Renew', 'neurohr-members' ) . '</h3>';
 		$consent = get_user_meta( $user->ID, 'nhm_consent', true );
 		echo '<table class="form-table" role="presentation">';
 		if ( empty( $a['on'] ) ) {
@@ -552,18 +552,18 @@ class NHM_Admin_Members {
 				echo '<br><span class="nhm-exp--ended">' . esc_html( sprintf( __( 'First try failed: %s. Access continues until the second try.', 'neurohr-members' ), $a['last_error'] ) ) . '</span>';
 			}
 			echo '</td></tr>';
-			echo '<tr><th><label for="nhm-ar-price">' . esc_html__( 'Locked price per term', 'neurohr-members' ) . '</label></th><td><input type="number" step="0.01" min="0" id="nhm-ar-price" name="nhm_ar_price" value="' . esc_attr( number_format( (float) $a['price'], 2, '.', '' ) ) . '" class="small-text" style="width:110px"> <span class="description">' . esc_html__( 'Before SST. If the plan price is lower, the lower price is charged. Saved with "Update User".', 'neurohr-members' ) . '</span></td></tr>';
-			echo '<tr><th></th><td><a class="button" href="' . esc_url( self::action_url( $user->ID, 'ar_charge' ) ) . '" data-nhm-confirm="' . esc_attr__( 'Charge the saved card now for the next term? The new term is added to the current last day.', 'neurohr-members' ) . '">' . esc_html( 'test' === NHM_Stripe::mode() ? __( 'Run renewal now (test mode)', 'neurohr-members' ) : __( 'Charge renewal now', 'neurohr-members' ) ) . '</a> ';
+			echo '<tr><th><label for="nhm-ar-price">' . esc_html__( 'Locked Price per Term', 'neurohr-members' ) . '</label></th><td><input type="number" step="0.01" min="0" id="nhm-ar-price" name="nhm_ar_price" value="' . esc_attr( number_format( (float) $a['price'], 2, '.', '' ) ) . '" class="small-text" style="width:110px"> <span class="description">' . esc_html__( 'Before SST. If the plan price is lower, the lower price is charged. Saved with "Update User".', 'neurohr-members' ) . '</span></td></tr>';
+			echo '<tr><th></th><td><a class="button" href="' . esc_url( self::action_url( $user->ID, 'ar_charge' ) ) . '" data-nhm-confirm="' . esc_attr__( 'Charge the saved card now for the next term? The new term is added to the current last day.', 'neurohr-members' ) . '">' . esc_html( 'test' === NHM_Stripe::mode() ? __( 'Run Renewal Now (Test Mode)', 'neurohr-members' ) : __( 'Charge Renewal Now', 'neurohr-members' ) ) . '</a> ';
 			echo '<a class="button-link nhm-link-danger" href="' . esc_url( self::action_url( $user->ID, 'ar_off' ) ) . '" data-nhm-confirm="' . esc_attr__( 'Turn off auto-renew for this person? Their locked price is cleared.', 'neurohr-members' ) . '">' . esc_html__( 'Turn off auto-renew', 'neurohr-members' ) . '</a></td></tr>';
 		}
 		if ( is_array( $consent ) && ! empty( $consent['date'] ) ) {
-			echo '<tr><th>' . esc_html__( 'Agreed to terms', 'neurohr-members' ) . '</th><td>' . esc_html( mysql2date( 'j M Y, H:i', $consent['date'] ) ) . ' <span class="description">' . esc_html__( 'Terms of Use and Privacy Policy, at registration', 'neurohr-members' ) . '</span></td></tr>';
+			echo '<tr><th>' . esc_html__( 'Agreed to Terms', 'neurohr-members' ) . '</th><td>' . esc_html( mysql2date( 'j M Y, H:i', $consent['date'] ) ) . ' <span class="description">' . esc_html__( 'Terms of Use and Privacy Policy, at registration', 'neurohr-members' ) . '</span></td></tr>';
 		}
 		echo '</table>';
 	}
 
 	private static function account_box( $user ) {
-		echo '<h3 id="nhm-account">' . esc_html__( 'Block or delete', 'neurohr-members' ) . '</h3>';
+		echo '<h3 id="nhm-account">' . esc_html__( 'Block or Delete', 'neurohr-members' ) . '</h3>';
 		if ( NHM_Block::protected_user( $user->ID ) ) {
 			echo '<p class="description">' . esc_html__( 'Staff accounts and your own account cannot be blocked or deleted here.', 'neurohr-members' ) . '</p>';
 			return;

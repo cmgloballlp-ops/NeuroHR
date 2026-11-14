@@ -123,7 +123,7 @@ class NHM_Shortcodes {
 			$h .= '</ul>';
 			$h .= '<p class="nhm-price-card__action">';
 			if ( $current ) {
-				$h .= '<span class="nhm-btn is-disabled">' . esc_html__( 'Your plan', 'neurohr-members' ) . '</span>';
+				$h .= '<span class="nhm-btn is-disabled">' . esc_html__( 'Your Plan', 'neurohr-members' ) . '</span>';
 			} elseif ( $m && $m['rank'] >= $level['rank'] ) {
 				$h .= '<span class="nhm-btn is-disabled">' . esc_html__( 'Included', 'neurohr-members' ) . '</span>';
 			} else {
@@ -235,7 +235,7 @@ class NHM_Shortcodes {
 	 * Visitors who are not logged in see nothing (or text="…" with a login link).
 	 */
 	public static function plan_card( $atts ) {
-		$atts = shortcode_atts( array( 'style' => 'dark', 'title' => __( 'Your plan', 'neurohr-members' ), 'text' => '' ), $atts, 'nhm_plan_card' );
+		$atts = shortcode_atts( array( 'style' => 'dark', 'title' => __( 'Your Plan', 'neurohr-members' ), 'text' => '' ), $atts, 'nhm_plan_card' );
 		if ( ! is_user_logged_in() ) {
 			return '' === $atts['text'] ? '' : NHM_Forms::wrap( '<p><a href="' . esc_url( nhm_login_url( NHM_Forms::current_url() ) ) . '">' . esc_html( $atts['text'] ) . '</a></p>', 'nhm-plan-card' );
 		}
@@ -252,7 +252,7 @@ class NHM_Shortcodes {
 
 	/** [nhm_logout text="Log out" redirect="/"] */
 	public static function logout( $atts ) {
-		$atts = shortcode_atts( array( 'text' => __( 'Log out', 'neurohr-members' ), 'redirect' => '', 'class' => 'nhm-logout-link' ), $atts, 'nhm_logout' );
+		$atts = shortcode_atts( array( 'text' => __( 'Log Out', 'neurohr-members' ), 'redirect' => '', 'class' => 'nhm-logout-link' ), $atts, 'nhm_logout' );
 		if ( ! is_user_logged_in() ) {
 			return '';
 		}

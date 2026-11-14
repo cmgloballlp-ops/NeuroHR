@@ -30,7 +30,7 @@ class NHM_Admin_Companies {
 	private static function list_page() {
 		$search    = isset( $_GET['s'] ) ? sanitize_text_field( wp_unslash( $_GET['s'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification
 		$companies = NHM_Companies::query( array( 'search' => $search ) );
-		echo '<div class="wrap nhm-admin">';
+		echo '<div class="wrap nhm-admin nhm-admin--full">';
 		NHM_Admin::header( __( 'Companies', 'neurohr-members' ), '<a class="button button-primary" href="' . esc_url( admin_url( 'admin.php?page=nhm-companies&action=new' ) ) . '">' . esc_html__( 'Add company', 'neurohr-members' ) . '</a>' );
 		echo '<p class="description">' . esc_html__( 'A company has one plan and a number of seats. Its owner invites and removes staff from My account; you can do the same here.', 'neurohr-members' ) . '</p>';
 		echo '<form class="nhm-filters" method="get"><input type="hidden" name="page" value="nhm-companies"><input type="search" name="s" value="' . esc_attr( $search ) . '" placeholder="' . esc_attr__( 'Name, client code, SSM no. or email', 'neurohr-members' ) . '">';
@@ -96,7 +96,7 @@ class NHM_Admin_Companies {
 			<input type="hidden" name="action" value="nhm_save_company">
 			<input type="hidden" name="id" value="<?php echo (int) $c['id']; ?>">
 			<?php wp_nonce_field( 'nhm_save_company' ); ?>
-			<h2><span class="dashicons dashicons-building"></span><?php esc_html_e( 'Company and plan', 'neurohr-members' ); ?></h2>
+			<h2><span class="dashicons dashicons-building"></span><?php esc_html_e( 'Company and Plan', 'neurohr-members' ); ?></h2>
 			<div class="nhm-fields">
 				<p class="nhm-field"><label for="nhm-c-name"><?php esc_html_e( 'Company name', 'neurohr-members' ); ?></label><input type="text" id="nhm-c-name" name="name" value="<?php echo esc_attr( $c['name'] ); ?>" required></p>
 				<p class="nhm-field"><label for="nhm-c-level"><?php esc_html_e( 'Plan', 'neurohr-members' ); ?></label><?php echo NHM_Admin::level_select( 'level_id', $c['level_id'], array( 'id' => 'nhm-c-level' ) ); // phpcs:ignore WordPress.Security.EscapeOutput ?></p>
@@ -115,7 +115,7 @@ class NHM_Admin_Companies {
 				<p class="nhm-field"><label for="nhm-c-owner"><?php esc_html_e( 'Owner email', 'neurohr-members' ); ?></label><input type="email" id="nhm-c-owner" name="owner_email" value="<?php echo esc_attr( $owner ? $owner->user_email : '' ); ?>" placeholder="hr@client.com.my">
 				<span class="description"><?php esc_html_e( 'The person at the client who manages staff accounts. If they have no account yet, they get an invitation email and become owner when they sign up.', 'neurohr-members' ); ?></span></p>
 			</div>
-			<h3 class="nhm-subhead"><?php esc_html_e( 'Billing details (shown on invoices)', 'neurohr-members' ); ?></h3>
+			<h3 class="nhm-subhead"><?php esc_html_e( 'Billing Details (Shown on Invoices)', 'neurohr-members' ); ?></h3>
 			<div class="nhm-fields">
 				<?php
 				$labels = array(

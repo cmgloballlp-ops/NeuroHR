@@ -54,9 +54,9 @@ if ( is_singular() ) :
 elseif ( is_404() ) :
 	?>
 	<div class="nhs-empty">
-		<h1 class="nhs-title"><?php esc_html_e( 'Page not found', 'neurohr-members' ); ?></h1>
+		<h1 class="nhs-title"><?php esc_html_e( 'Page Not Found', 'neurohr-members' ); ?></h1>
 		<p><?php esc_html_e( 'This page does not exist or was moved. Try the search above.', 'neurohr-members' ); ?></p>
-		<p><a class="nhm-btn nhm-btn--primary" href="<?php echo esc_url( NHM_Settings::url( 'home_redirect', home_url( '/' ) ) ); ?>"><?php esc_html_e( 'Back to the dashboard', 'neurohr-members' ); ?></a></p>
+		<p><a class="nhm-btn nhm-btn--primary" href="<?php echo esc_url( NHM_Settings::url( 'home_redirect', home_url( '/' ) ) ); ?>"><?php esc_html_e( 'Back to the Dashboard', 'neurohr-members' ); ?></a></p>
 	</div>
 	<?php
 

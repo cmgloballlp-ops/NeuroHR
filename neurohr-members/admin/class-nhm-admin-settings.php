@@ -23,13 +23,13 @@ class NHM_Admin_Settings {
 	public static function tabs() {
 		return array(
 			'setup'        => array( __( 'Setup', 'neurohr-members' ), 'yes-alt' ),
-			'pages'        => array( __( 'Pages & login', 'neurohr-members' ), 'admin-page' ),
+			'pages'        => array( __( 'Pages & Login', 'neurohr-members' ), 'admin-page' ),
 			'registration' => array( __( 'Registration', 'neurohr-members' ), 'id-alt' ),
 			'emails'       => array( __( 'Emails', 'neurohr-members' ), 'email-alt' ),
-			'business'     => array( __( 'Business info & invoices', 'neurohr-members' ), 'building' ),
+			'business'     => array( __( 'Business Info & Invoices', 'neurohr-members' ), 'building' ),
 			'payments'     => array( __( 'Payments', 'neurohr-members' ), 'money-alt' ),
-			'protection'   => array( __( 'Protection & look', 'neurohr-members' ), 'lock' ),
-			'area'         => array( __( 'Member area', 'neurohr-members' ), 'layout' ),
+			'protection'   => array( __( 'Protection & Look', 'neurohr-members' ), 'lock' ),
+			'area'         => array( __( 'Member Area', 'neurohr-members' ), 'layout' ),
 			'changelog'    => array( __( 'Changelog', 'neurohr-members' ), 'list-view' ),
 		);
 	}
@@ -348,17 +348,17 @@ class NHM_Admin_Settings {
 
 	private static function page_keys() {
 		return array(
-			'login'    => array( __( 'Login page', 'neurohr-members' ), '[nhm_login]', __( 'Log in', 'neurohr-members' ) ),
-			'register' => array( __( 'Registration page', 'neurohr-members' ), '[nhm_register]', __( 'Create your account', 'neurohr-members' ) ),
-			'lost'     => array( __( 'Lost password page (optional: the login page has a pop-up)', 'neurohr-members' ), '[nhm_lost_password]', __( 'Reset your password', 'neurohr-members' ) ),
-			'account'  => array( __( 'My account page', 'neurohr-members' ), '[nhm_account]', __( 'My account', 'neurohr-members' ) ),
-			'pricing'  => array( __( 'Pricing page', 'neurohr-members' ), '[nhm_pricing]', __( 'Plans and pricing', 'neurohr-members' ) ),
-			'invite'   => array( __( 'Invitation page (company staff; optional, else the registration page is used)', 'neurohr-members' ), '[nhm_invite]', __( 'Join your company on NeuroHR', 'neurohr-members' ) ),
+			'login'    => array( __( 'Login Page', 'neurohr-members' ), '[nhm_login]', __( 'Log In', 'neurohr-members' ) ),
+			'register' => array( __( 'Registration Page', 'neurohr-members' ), '[nhm_register]', __( 'Create Your Account', 'neurohr-members' ) ),
+			'lost'     => array( __( 'Lost password page (optional: the login page has a pop-up)', 'neurohr-members' ), '[nhm_lost_password]', __( 'Reset Your Password', 'neurohr-members' ) ),
+			'account'  => array( __( 'My Account Page', 'neurohr-members' ), '[nhm_account]', __( 'My Account', 'neurohr-members' ) ),
+			'pricing'  => array( __( 'Pricing Page', 'neurohr-members' ), '[nhm_pricing]', __( 'Plans and Pricing', 'neurohr-members' ) ),
+			'invite'   => array( __( 'Invitation page (company staff; optional, else the registration page is used)', 'neurohr-members' ), '[nhm_invite]', __( 'Join Your Company on NeuroHR', 'neurohr-members' ) ),
 		);
 	}
 
 	private static function tab_pages() {
-		echo '<section class="nhm-admin-card"><h2><span class="dashicons dashicons-admin-page"></span>' . esc_html__( 'Your pages', 'neurohr-members' ) . '</h2>';
+		echo '<section class="nhm-admin-card"><h2><span class="dashicons dashicons-admin-page"></span>' . esc_html__( 'Your Pages', 'neurohr-members' ) . '</h2>';
 		echo '<p class="nhm-admin-card__intro">' . esc_html__( 'Pick the page that holds each shortcode. Design the page itself in Elementor or Blocksy as you like. You can reuse the old MemberPress pages: replace their MemberPress shortcode with the one shown here.', 'neurohr-members' ) . '</p>';
 		echo '<table class="nhm-admin-table nhm-pages-table"><tbody>';
 		foreach ( self::page_keys() as $key => $info ) {
@@ -390,7 +390,7 @@ class NHM_Admin_Settings {
 		}
 		echo '</tbody></table></section>';
 
-		echo '<section class="nhm-admin-card"><h2><span class="dashicons dashicons-media-text"></span>' . esc_html__( 'Policy pages', 'neurohr-members' ) . '</h2>';
+		echo '<section class="nhm-admin-card"><h2><span class="dashicons dashicons-media-text"></span>' . esc_html__( 'Policy Pages', 'neurohr-members' ) . '</h2>';
 		echo '<p class="nhm-admin-card__intro">' . esc_html__( 'Your own pages. Terms of Use and Privacy Policy: a required tick box on the registration form. Refund Policy: a required tick box on the payment page.', 'neurohr-members' ) . '</p>';
 		echo '<table class="nhm-admin-table nhm-pages-table"><tbody>';
 		$legal = array(
@@ -416,15 +416,15 @@ class NHM_Admin_Settings {
 		}
 		echo '</tbody></table></section>';
 
-		echo '<section class="nhm-admin-card"><h2><span class="dashicons dashicons-randomize"></span>' . esc_html__( 'Where people go', 'neurohr-members' ) . '</h2><div class="nhm-fields">';
-		self::text( 'after_login', __( 'After login', 'neurohr-members' ), __( 'When the person did not come from a members-only page. e.g. /dashboard/', 'neurohr-members' ), 'text', '/dashboard/' );
-		self::text( 'after_register', __( 'After registration', 'neurohr-members' ), __( 'Empty = same as after login.', 'neurohr-members' ), 'text', '/dashboard/' );
-		self::text( 'after_logout', __( 'After logout', 'neurohr-members' ), '', 'text', '/' );
+		echo '<section class="nhm-admin-card"><h2><span class="dashicons dashicons-randomize"></span>' . esc_html__( 'Where People Go', 'neurohr-members' ) . '</h2><div class="nhm-fields">';
+		self::text( 'after_login', __( 'After Login', 'neurohr-members' ), __( 'When the person did not come from a members-only page. e.g. /dashboard/', 'neurohr-members' ), 'text', '/dashboard/' );
+		self::text( 'after_register', __( 'After Registration', 'neurohr-members' ), __( 'Empty = same as after login.', 'neurohr-members' ), 'text', '/dashboard/' );
+		self::text( 'after_logout', __( 'After Logout', 'neurohr-members' ), '', 'text', '/' );
 		self::text( 'home_redirect', __( 'Members who open the home page go to', 'neurohr-members' ), __( 'e.g. /dashboard/. Empty = they see the normal home page. Editors and admins always see the home page.', 'neurohr-members' ), 'text', '/dashboard/' );
-		self::text( 'renew_url', __( 'Renew link', 'neurohr-members' ), __( 'Used in reminder emails and the Renew button. e.g. /contact/, a WhatsApp link or mailto:. Empty = pricing page.', 'neurohr-members' ), 'text', 'https://wa.me/60…' );
+		self::text( 'renew_url', __( 'Renew Link', 'neurohr-members' ), __( 'Used in reminder emails and the Renew button. e.g. /contact/, a WhatsApp link or mailto:. Empty = pricing page.', 'neurohr-members' ), 'text', 'https://wa.me/60…' );
 		echo '</div></section>';
 
-		echo '<section class="nhm-admin-card"><h2><span class="dashicons dashicons-shield"></span>' . esc_html__( 'WordPress login screens', 'neurohr-members' ) . '</h2>';
+		echo '<section class="nhm-admin-card"><h2><span class="dashicons dashicons-shield"></span>' . esc_html__( 'WordPress Login Screens', 'neurohr-members' ) . '</h2>';
 		self::toggle( 'hide_wp_login', __( 'Hide WordPress: wp-login.php and /wp-admin give "page not found" to visitors', 'neurohr-members' ), __( 'Everyone (you too) logs in on your own login page; logout is at /logout/. Only works once the login page above is set. If the login page ever breaks: in cPanel → File Manager, rename the folder <code>wp-content/plugins/neurohr-members</code> (e.g. to neurohr-members-off). WordPress\'s normal login works again; log in, rename it back, fix the page.', 'neurohr-members' ) );
 		self::toggle( 'replace_wp_login', __( 'Links to wp-login.php open my pages', 'neurohr-members' ), __( 'Used when the option above is off.', 'neurohr-members' ) );
 		self::toggle( 'hide_admin_bar', __( 'Hide the black WordPress toolbar for members', 'neurohr-members' ), __( 'Editors and admins still see it.', 'neurohr-members' ) );
@@ -438,16 +438,16 @@ class NHM_Admin_Settings {
 		self::toggle( 'consent_on', __( 'People must agree to the Terms of Use and Privacy Policy', 'neurohr-members' ), __( 'A required tick box with links to the pages chosen in Pages & login → Policy pages. The date and time of agreeing is kept on the member\'s profile.', 'neurohr-members' ) );
 		self::toggle( 'verify_email', __( 'Confirm the email address before the account works', 'neurohr-members' ), __( 'New people get an email with a link; they can log in after clicking it. People who join through a company invitation, and accounts you add yourself, are confirmed already.', 'neurohr-members' ) );
 		echo '<div class="nhm-fields">';
-		self::text( 'min_password', __( 'Minimum password length', 'neurohr-members' ), '', 'number' );
+		self::text( 'min_password', __( 'Minimum Password Length', 'neurohr-members' ), '', 'number' );
 		echo '<p class="nhm-field"><label for="nhm-s-terms">' . esc_html__( 'Own text for the tick box (optional)', 'neurohr-members' ) . '</label><input type="text" id="nhm-s-terms" name="' . esc_attr( self::name( 'terms_text' ) ) . '" value="' . esc_attr( NHM_Settings::get( 'terms_text' ) ) . '" placeholder="' . esc_attr( 'I agree to the <a href="/terms/">Terms</a> and <a href="/privacy-policy/">Privacy Policy</a>' ) . '"><span class="description">' . esc_html__( 'Empty = "I have read and agree to the Terms of Use and Privacy Policy." with the links. When filled, this text is used instead (links allowed) and people must tick it.', 'neurohr-members' ) . '</span></p>';
 		echo '</div><p class="description">' . esc_html__( 'The email to you about new sign-ups is in the Emails tab (Admin notices → New Signup).', 'neurohr-members' ) . '</p></section>';
 
-		echo '<section class="nhm-admin-card"><h2><span class="dashicons dashicons-dismiss"></span>' . esc_html__( 'Blocked emails', 'neurohr-members' ) . '</h2>';
+		echo '<section class="nhm-admin-card"><h2><span class="dashicons dashicons-dismiss"></span>' . esc_html__( 'Blocked Emails', 'neurohr-members' ) . '</h2>';
 		echo '<p class="nhm-admin-card__intro">' . esc_html__( 'These cannot register or log in. One per line: a full email address, or a whole domain such as @spam-domain.com. People you block on the Members page are added here automatically; unblocking removes them.', 'neurohr-members' ) . '</p>';
 		echo '<p class="nhm-field"><label for="nhm-s-blocklist">' . esc_html__( 'Block list', 'neurohr-members' ) . '</label><textarea id="nhm-s-blocklist" rows="5" name="' . esc_attr( self::name( 'blocklist' ) ) . '" placeholder="spammer@example.com&#10;@spam-domain.com">' . esc_textarea( NHM_Settings::get( 'blocklist' ) ) . '</textarea></p>';
 		echo '<p class="description">' . esc_html( sprintf( /* translators: %s: message */ __( 'They see: "%s"', 'neurohr-members' ), NHM_Block::message() ) ) . '</p></section>';
 
-		echo '<section class="nhm-admin-card"><h2><span class="dashicons dashicons-forms"></span>' . esc_html__( 'Form fields', 'neurohr-members' ) . '</h2>';
+		echo '<section class="nhm-admin-card"><h2><span class="dashicons dashicons-forms"></span>' . esc_html__( 'Form Fields', 'neurohr-members' ) . '</h2>';
 		echo '<p class="nhm-admin-card__intro">' . esc_html__( 'Name, email and password are always asked. Add your own fields, drag to reorder, and choose where each one shows. Company, Phone and Job title can be hidden but not deleted. Answers appear on the member\'s profile, in the CSV export and in the new-signup email.', 'neurohr-members' ) . '</p>';
 		echo '<div class="nhm-fieldlist" data-nhm-fieldlist>';
 		$i = 0;
@@ -461,10 +461,10 @@ class NHM_Admin_Settings {
 		echo '<p><button type="button" class="button" data-nhm-add-field>+ ' . esc_html__( 'Add a field', 'neurohr-members' ) . '</button></p>';
 		echo '</section>';
 
-		echo '<section class="nhm-admin-card"><h2><span class="dashicons dashicons-shield-alt"></span>' . esc_html__( 'Spam protection', 'neurohr-members' ) . '</h2>';
+		echo '<section class="nhm-admin-card"><h2><span class="dashicons dashicons-shield-alt"></span>' . esc_html__( 'Spam Protection', 'neurohr-members' ) . '</h2>';
 		echo '<p class="nhm-admin-card__intro">' . esc_html__( 'Always on: a hidden trap field, a minimum time to fill the form, and at most 5 sign-ups per hour from one network. For more, add Cloudflare Turnstile (free, no puzzles for real people): dash.cloudflare.com → Turnstile → Add site.', 'neurohr-members' ) . '</p><div class="nhm-fields">';
-		self::text( 'turnstile_site', __( 'Turnstile site key', 'neurohr-members' ) );
-		self::text( 'turnstile_secret', __( 'Turnstile secret key', 'neurohr-members' ) );
+		self::text( 'turnstile_site', __( 'Turnstile Site Key', 'neurohr-members' ) );
+		self::text( 'turnstile_secret', __( 'Turnstile Secret Key', 'neurohr-members' ) );
 		echo '</div></section>';
 
 		$error = get_option( NHM_MailerLite::ERROR_OPTION );
@@ -479,9 +479,9 @@ class NHM_Admin_Settings {
 		}
 		echo '</p>';
 		self::text( 'ml_group', __( 'Group ID', 'neurohr-members' ), __( 'MailerLite → Subscribers → Groups → open the group: the number in the address.', 'neurohr-members' ) );
-		self::text( 'ml_group_content', __( 'Group ID: "New content" notifications', 'neurohr-members' ), __( 'Members switch this on in My account → Notifications. Empty = the switch is not shown.', 'neurohr-members' ) );
-		self::text( 'ml_group_events', __( 'Group ID: "Events & webinars" notifications', 'neurohr-members' ), __( 'Empty = the switch is not shown.', 'neurohr-members' ) );
-		self::text( 'ml_label', __( 'Tick box text', 'neurohr-members' ) );
+		self::text( 'ml_group_content', __( 'Group ID: "New Content" Notifications', 'neurohr-members' ), __( 'Members switch this on in My account → Notifications. Empty = the switch is not shown.', 'neurohr-members' ) );
+		self::text( 'ml_group_events', __( 'Group ID: "Events & Webinars" Notifications', 'neurohr-members' ), __( 'Empty = the switch is not shown.', 'neurohr-members' ) );
+		self::text( 'ml_label', __( 'Tick Box Text', 'neurohr-members' ) );
 		echo '</div>';
 		self::toggle( 'ml_checked', __( 'Ticked by default', 'neurohr-members' ), __( 'Under Malaysia\'s PDPA, consent is clearer when people tick it themselves. Recommended: off.', 'neurohr-members' ) );
 		if ( is_array( $error ) ) {
@@ -545,17 +545,17 @@ class NHM_Admin_Settings {
 
 	private static function tab_emails() {
 		echo '<section class="nhm-admin-card"><h2><span class="dashicons dashicons-admin-settings"></span>' . esc_html__( 'Sending', 'neurohr-members' ) . '</h2><div class="nhm-fields">';
-		self::text( 'mail_from_name', __( 'From name', 'neurohr-members' ), __( 'Used for every email of the website. Empty = the site title (Settings → General).', 'neurohr-members' ), 'text', 'NeuroHR' );
-		self::text( 'mail_from_email', __( 'From email', 'neurohr-members' ), __( 'Use an address on your own domain (e.g. admin@neurohr.com.my), so emails are not marked as spam.', 'neurohr-members' ), 'email', 'admin@neurohr.com.my' );
-		self::text( 'admin_emails', __( 'Admin email addresses', 'neurohr-members' ), __( 'Admin notices go here. Several: separate with commas. Empty = the site admin email.', 'neurohr-members' ), 'text', get_option( 'admin_email' ) );
-		self::text( 'reminder_days', __( 'Reminder days before the last day', 'neurohr-members' ), __( 'Comma separated, e.g. 30, 7', 'neurohr-members' ) );
+		self::text( 'mail_from_name', __( 'From Name', 'neurohr-members' ), __( 'Used for every email of the website. Empty = the site title (Settings → General).', 'neurohr-members' ), 'text', 'NeuroHR' );
+		self::text( 'mail_from_email', __( 'From Email', 'neurohr-members' ), __( 'Use an address on your own domain (e.g. admin@neurohr.com.my), so emails are not marked as spam.', 'neurohr-members' ), 'email', 'admin@neurohr.com.my' );
+		self::text( 'admin_emails', __( 'Admin Email Addresses', 'neurohr-members' ), __( 'Admin notices go here. Several: separate with commas. Empty = the site admin email.', 'neurohr-members' ), 'text', get_option( 'admin_email' ) );
+		self::text( 'reminder_days', __( 'Reminder Days Before the Last Day', 'neurohr-members' ), __( 'Comma Separated, e.g. 30, 7', 'neurohr-members' ) );
 		echo '</div></section>';
 
-		echo '<section class="nhm-admin-card"><h2><span class="dashicons dashicons-email"></span>' . esc_html__( 'Send through your mailbox (SMTP)', 'neurohr-members' ) . '</h2>';
+		echo '<section class="nhm-admin-card"><h2><span class="dashicons dashicons-email"></span>' . esc_html__( 'Send Through Your Mailbox (SMTP)', 'neurohr-members' ) . '</h2>';
 		echo '<p class="nhm-admin-card__intro">' . esc_html__( 'All emails of the website (this plugin, WordPress, other plugins) are sent through this mailbox, so they arrive from your address and are less likely to land in spam. cPanel: Email Accounts → your mailbox → Connect Devices shows the server and port. Also turn on SPF and DKIM in cPanel → Email Deliverability.', 'neurohr-members' ) . '</p>';
 		self::toggle( 'smtp_on', __( 'Send emails through SMTP', 'neurohr-members' ) );
 		echo '<div class="nhm-fields">';
-		self::text( 'smtp_host', __( 'SMTP server', 'neurohr-members' ), '', 'text', 'mail.neurohr.com.my' );
+		self::text( 'smtp_host', __( 'SMTP Server', 'neurohr-members' ), '', 'text', 'mail.neurohr.com.my' );
 		self::text( 'smtp_port', __( 'Port', 'neurohr-members' ), __( '465 with SSL (usual for cPanel), or 587 with TLS.', 'neurohr-members' ), 'number', '465' );
 		$sec = (string) NHM_Settings::get( 'smtp_secure' );
 		echo '<p class="nhm-field"><label for="nhm-s-smtp_secure">' . esc_html__( 'Encryption', 'neurohr-members' ) . '</label><select id="nhm-s-smtp_secure" name="' . esc_attr( self::name( 'smtp_secure' ) ) . '">';
@@ -563,7 +563,7 @@ class NHM_Admin_Settings {
 			echo '<option value="' . esc_attr( $k ) . '"' . selected( $sec, $k, false ) . '>' . esc_html( $l ) . '</option>';
 		}
 		echo '</select></p>';
-		self::text( 'smtp_user', __( 'Username (the full email address)', 'neurohr-members' ), '', 'text', 'admin@neurohr.com.my' );
+		self::text( 'smtp_user', __( 'Username (The Full Email Address)', 'neurohr-members' ), '', 'text', 'admin@neurohr.com.my' );
 		self::secret_field( 'smtp_pass', __( 'Password of that mailbox', 'neurohr-members' ), __( 'Type it here yourself; never send it to anyone.', 'neurohr-members' ) );
 		echo '</div>';
 		echo '<p><a class="button" href="' . esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=nhm_smtp_test' ), 'nhm_smtp_test' ) ) . '">' . esc_html__( 'Send a test email to me', 'neurohr-members' ) . '</a> <span class="description">' . esc_html__( 'Save first.', 'neurohr-members' ) . '</span></p>';
@@ -612,11 +612,11 @@ class NHM_Admin_Settings {
 	}
 
 	private static function tab_business() {
-		echo '<section class="nhm-admin-card"><h2><span class="dashicons dashicons-building"></span>' . esc_html__( 'Your company', 'neurohr-members' ) . '</h2>';
+		echo '<section class="nhm-admin-card"><h2><span class="dashicons dashicons-building"></span>' . esc_html__( 'Your Company', 'neurohr-members' ) . '</h2>';
 		echo '<p class="nhm-admin-card__intro">' . esc_html__( 'Printed at the top of every invoice.', 'neurohr-members' ) . '</p><div class="nhm-fields">';
-		self::text( 'biz_name', __( 'Company name', 'neurohr-members' ), '', 'text', 'NeuroHR Sdn. Bhd.' );
-		self::text( 'biz_product', __( 'Product name on invoices', 'neurohr-members' ), __( 'Invoice lines read "NeuroHR - Pro Membership (1 year)". Leave empty to use the site name.', 'neurohr-members' ), 'text', 'NeuroHR' );
-		self::text( 'biz_reg', __( 'Registration no. (SSM)', 'neurohr-members' ), '', 'text', '202401012345 (1234567-X)' );
+		self::text( 'biz_name', __( 'Company Name', 'neurohr-members' ), '', 'text', 'NeuroHR Sdn. Bhd.' );
+		self::text( 'biz_product', __( 'Product Name on Invoices', 'neurohr-members' ), __( 'Invoice lines read "NeuroHR - Pro Membership (1 year)". Leave empty to use the site name.', 'neurohr-members' ), 'text', 'NeuroHR' );
+		self::text( 'biz_reg', __( 'Registration No. (SSM)', 'neurohr-members' ), '', 'text', '202401012345 (1234567-X)' );
 		self::text( 'biz_tin', __( 'TIN', 'neurohr-members' ), '', 'text', 'C1234567890' );
 		self::text( 'biz_sst_no', __( 'SST registration no.', 'neurohr-members' ), __( 'Shown only on invoices with SST.', 'neurohr-members' ) );
 		self::text( 'biz_phone', __( 'Phone', 'neurohr-members' ) );
@@ -636,18 +636,18 @@ class NHM_Admin_Settings {
 		}
 		echo '</p></section>';
 
-		echo '<section class="nhm-admin-card"><h2><span class="dashicons dashicons-bank"></span>' . esc_html__( 'Payment details', 'neurohr-members' ) . '</h2>';
+		echo '<section class="nhm-admin-card"><h2><span class="dashicons dashicons-bank"></span>' . esc_html__( 'Payment Details', 'neurohr-members' ) . '</h2>';
 		echo '<p class="nhm-admin-card__intro">' . esc_html__( 'Printed on unpaid invoices and in the invoice emails.', 'neurohr-members' ) . '</p><div class="nhm-fields">';
 		self::text( 'bank_name', __( 'Bank', 'neurohr-members' ), '', 'text', 'Maybank' );
-		self::text( 'bank_account_name', __( 'Account name', 'neurohr-members' ) );
+		self::text( 'bank_account_name', __( 'Account Name', 'neurohr-members' ) );
 		self::text( 'bank_account_no', __( 'Account no.', 'neurohr-members' ) );
 		echo '</div><p class="nhm-field"><label for="nhm-s-invoice_terms">' . esc_html__( 'Payment terms', 'neurohr-members' ) . '</label><textarea id="nhm-s-invoice_terms" rows="2" name="' . esc_attr( self::name( 'invoice_terms' ) ) . '">' . esc_textarea( NHM_Settings::get( 'invoice_terms' ) ) . '</textarea></p></section>';
 
 		echo '<section class="nhm-admin-card"><h2><span class="dashicons dashicons-media-spreadsheet"></span>' . esc_html__( 'Invoices', 'neurohr-members' ) . '</h2><div class="nhm-fields">';
-		self::text( 'invoice_format', __( 'Invoice number format', 'neurohr-members' ), __( '{YYYY} year, {YY} short year, {MM} month, {####} running number (restarts every year when the year is in the format).', 'neurohr-members' ) );
-		self::text( 'invoice_due_days', __( 'Payment due after (days)', 'neurohr-members' ), '', 'number' );
+		self::text( 'invoice_format', __( 'Invoice Number Format', 'neurohr-members' ), __( '{YYYY} year, {YY} short year, {MM} month, {####} running number (restarts every year when the year is in the format).', 'neurohr-members' ) );
+		self::text( 'invoice_due_days', __( 'Payment Due After (Days)', 'neurohr-members' ), '', 'number' );
 		self::text( 'currency', __( 'Currency', 'neurohr-members' ) );
-		self::text( 'invoice_footer', __( 'Footer line', 'neurohr-members' ) );
+		self::text( 'invoice_footer', __( 'Footer Line', 'neurohr-members' ) );
 		echo '</div>';
 		self::next_field( 'invoice', 'invoice_format', 'nhm_invoice_seq' );
 		self::toggle( 'renewal_invoice', __( 'Recurring plans: make a renewal invoice automatically', 'neurohr-members' ), __( 'With the first "Plan Ending Soon" email, an unpaid invoice for the next term is created and attached. Marking it paid extends the plan.', 'neurohr-members' ) );
@@ -655,9 +655,9 @@ class NHM_Admin_Settings {
 
 		echo '<section class="nhm-admin-card"><h2><span class="dashicons dashicons-undo"></span>' . esc_html__( 'Refunds', 'neurohr-members' ) . '</h2>';
 		echo '<p class="nhm-admin-card__intro">' . esc_html__( 'Every refund gets a Refund Note (PDF) with its own running number. The Refund Policy page is chosen in Pages & login.', 'neurohr-members' ) . '</p><div class="nhm-fields">';
-		self::text( 'refund_format', __( 'Refund Note number format', 'neurohr-members' ), __( 'Same codes as invoices, e.g. RN-{YYYY}-{####} or CN-{YY}{MM}-{###}. With the year in it, the number restarts every year.', 'neurohr-members' ) );
+		self::text( 'refund_format', __( 'Refund Note Number Format', 'neurohr-members' ), __( 'Same codes as invoices, e.g. RN-{YYYY}-{####} or CN-{YY}{MM}-{###}. With the year in it, the number restarts every year.', 'neurohr-members' ) );
 		self::text( 'refund_hours', __( 'Members can ask for a refund within (hours after paying)', 'neurohr-members' ), __( '0 = no refund button; members contact you.', 'neurohr-members' ), 'number' );
-		self::text( 'refund_days', __( 'Complete approved refunds within (working days)', 'neurohr-members' ), '', 'number' );
+		self::text( 'refund_days', __( 'Complete Approved Refunds Within (Working Days)', 'neurohr-members' ), '', 'number' );
 		echo '</div>';
 		self::next_field( 'refund', 'refund_format', 'nhm_refund_seq' );
 		echo '</section>';
@@ -665,7 +665,7 @@ class NHM_Admin_Settings {
 		echo '<section class="nhm-admin-card"><h2><span class="dashicons dashicons-calculator"></span>SST</h2>';
 		self::toggle( 'sst_enabled', __( 'Charge SST on new invoices', 'neurohr-members' ), __( 'Only if your company is registered for SST. The invoice is then titled "Tax Invoice" and shows your SST no. Invoices already made keep their own rate.', 'neurohr-members' ) );
 		echo '<div class="nhm-fields">';
-		self::text( 'sst_rate', __( 'SST rate (%)', 'neurohr-members' ), '', 'number' );
+		self::text( 'sst_rate', __( 'SST Rate (%)', 'neurohr-members' ), '', 'number' );
 		echo '</div>';
 		self::toggle( 'sst_inclusive', __( 'Level prices already include SST', 'neurohr-members' ), __( 'On: a RM 299 plan costs RM 299 and the invoice shows the SST part inside it. Off: SST is added on top (RM 299 + 8%).', 'neurohr-members' ) );
 		$prev = wp_nonce_url( admin_url( 'admin-post.php?action=nhm_invoice_preview' ), 'nhm_invoice_preview' );
@@ -674,7 +674,7 @@ class NHM_Admin_Settings {
 	}
 
 	private static function tab_protection() {
-		echo '<section class="nhm-admin-card"><h2><span class="dashicons dashicons-lock"></span>' . esc_html__( 'Members-only pages', 'neurohr-members' ) . '</h2>';
+		echo '<section class="nhm-admin-card"><h2><span class="dashicons dashicons-lock"></span>' . esc_html__( 'Members-Only Pages', 'neurohr-members' ) . '</h2>';
 		echo '<p class="nhm-admin-card__intro">' . esc_html__( 'These types get a "Who can see this page" box in the editor (e.g. set /dashboard/ to logged-in members). Knowledge Hub resources have their own levels and are not listed here.', 'neurohr-members' ) . '</p>';
 		$chosen = (array) NHM_Settings::get( 'protect_types' );
 		foreach ( get_post_types( array( 'public' => true ), 'objects' ) as $type ) {
@@ -683,7 +683,7 @@ class NHM_Admin_Settings {
 			}
 			echo '<label class="nhm-toggle"><input type="checkbox" name="' . esc_attr( self::name( 'protect_types' ) ) . '[]" value="' . esc_attr( $type->name ) . '" ' . checked( in_array( $type->name, $chosen, true ), true, false ) . '> <span>' . esc_html( $type->labels->name ) . '</span></label>';
 		}
-		echo '<h3>' . esc_html__( 'Members below the level', 'neurohr-members' ) . '</h3>';
+		echo '<h3>' . esc_html__( 'Members Below the Level', 'neurohr-members' ) . '</h3>';
 		$mode = NHM_Settings::get( 'protect_mode' );
 		echo '<label class="nhm-toggle"><input type="radio" name="' . esc_attr( self::name( 'protect_mode' ) ) . '" value="message" ' . checked( $mode, 'message', false ) . '> <span><strong>' . esc_html__( 'Show an upgrade box instead of the content', 'neurohr-members' ) . '</strong></span></label>';
 		echo '<label class="nhm-toggle"><input type="radio" name="' . esc_attr( self::name( 'protect_mode' ) ) . '" value="redirect" ' . checked( $mode, 'redirect', false ) . '> <span><strong>' . esc_html__( 'Send them to the level\'s upgrade link / pricing page', 'neurohr-members' ) . '</strong></span></label>';
@@ -694,20 +694,20 @@ class NHM_Admin_Settings {
 		self::toggle( 'hide_authors', __( 'Hide author pages', 'neurohr-members' ), __( '/author/… and ?author=1 give "page not found", and the user list in the REST API is closed to visitors. Stops people finding login names.', 'neurohr-members' ) );
 		self::toggle( 'disable_xmlrpc', __( 'Turn off XML-RPC', 'neurohr-members' ), __( 'An old remote-publishing door that bots use to guess passwords. Only needed for the old WordPress mobile app or Jetpack.', 'neurohr-members' ) );
 		self::toggle( 'replace_core_mail', __( 'Send WordPress\'s own account emails with my templates', 'neurohr-members' ), __( 'Password reset, password changed, email changed and new account (Users → Add New) use the texts in the Emails tab and your From address.', 'neurohr-members' ) );
-		self::toggle( 'load_css', __( 'Use the built-in form style', 'neurohr-members' ), __( 'Turn off to style everything yourself. Every part has its own class (.nhm, .nhm-form, .nhm-field, .nhm-btn, .nhm-card, .nhm-price-card …).', 'neurohr-members' ) );
+		self::toggle( 'load_css', __( 'Use the Built-in Form Style', 'neurohr-members' ), __( 'Turn off to style everything yourself. Every part has its own class (.nhm, .nhm-form, .nhm-field, .nhm-btn, .nhm-card, .nhm-price-card …).', 'neurohr-members' ) );
 		echo '<div class="nhm-fields">';
-		self::text( 'invite_days', __( 'Invitation links are valid for (days)', 'neurohr-members' ), '', 'number' );
+		self::text( 'invite_days', __( 'Invitation Links Are Valid for (Days)', 'neurohr-members' ), '', 'number' );
 		echo '</div></section>';
 	}
 
 	private static function tab_area() {
-		echo '<section class="nhm-admin-card"><h2><span class="dashicons dashicons-layout"></span>' . esc_html__( 'Member area layout', 'neurohr-members' ) . '</h2>';
+		echo '<section class="nhm-admin-card"><h2><span class="dashicons dashicons-layout"></span>' . esc_html__( 'Member Area Layout', 'neurohr-members' ) . '</h2>';
 		echo '<p class="nhm-admin-card__intro">' . esc_html__( 'Logged-in people see every page inside the member layout: a sidebar on the left, a top bar with search and their name, your page in the middle. Visitors who are not logged in keep seeing your Blocksy site. Pages built with "Elementor Canvas", and pages where you tick "Don\'t use the member layout" in the editor, keep their own look.', 'neurohr-members' ) . '</p>';
 		self::toggle( 'shell_enabled', __( 'Use the member layout for logged-in people', 'neurohr-members' ) );
 		self::toggle( 'shell_theme_css', __( 'Keep the Blocksy styles inside the member layout', 'neurohr-members' ), __( 'Off (recommended): only the member-area style and Elementor\'s own styles load, so Blocksy\'s header and colours don\'t mix in. Turn on if text on normal pages looks too plain.', 'neurohr-members' ) );
 		$locs = get_theme_mod( 'nav_menu_locations' );
 		$set  = is_array( $locs ) && ( ! empty( $locs['nhm_sidebar'] ) || ! empty( $locs['nhm_sidebar_account'] ) );
-		echo '<h3>' . esc_html__( 'Sidebar menu', 'neurohr-members' ) . '</h3>';
+		echo '<h3>' . esc_html__( 'Sidebar Menu', 'neurohr-members' ) . '</h3>';
 		if ( ! $set ) {
 			$names = array();
 			foreach ( NHM_Shell::suggested_links()['nhm_sidebar'] as $l ) {
@@ -720,11 +720,11 @@ class NHM_Admin_Settings {
 		echo '<p class="description">' . wp_kses_post( sprintf( /* translators: %s: link */ __( 'Menus: <a href="%s">Appearance → Menus</a>, locations "Member area: main menu", "Member area: account menu" and "Member area: footer links". Each menu item has an icon and a "Who sees this" setting.', 'neurohr-members' ), esc_url( admin_url( 'nav-menus.php' ) ) ) ) . '</p>';
 		echo '</section>';
 
-		echo '<section class="nhm-admin-card"><h2><span class="dashicons dashicons-format-image"></span>' . esc_html__( 'Logo and search', 'neurohr-members' ) . '</h2><div class="nhm-fields">';
+		echo '<section class="nhm-admin-card"><h2><span class="dashicons dashicons-format-image"></span>' . esc_html__( 'Logo and Search', 'neurohr-members' ) . '</h2><div class="nhm-fields">';
 		echo '<p class="nhm-field"><label for="nhm-s-shell_logo">' . esc_html__( 'Logo image (optional)', 'neurohr-members' ) . '</label><span class="nhm-color-row"><input type="text" id="nhm-s-shell_logo" name="' . esc_attr( self::name( 'shell_logo' ) ) . '" value="' . esc_attr( NHM_Settings::get( 'shell_logo' ) ) . '" placeholder="https://…/logo.svg"> <button type="button" class="button" data-nhm-media="nhm-s-shell_logo">' . esc_html__( 'Choose', 'neurohr-members' ) . '</button></span><span class="description">' . esc_html__( 'Empty = the text logo below. About 160 × 40 px.', 'neurohr-members' ) . '</span></p>';
-		self::text( 'shell_logo_text', __( 'Text logo', 'neurohr-members' ), '', 'text', 'NeuroHR' );
+		self::text( 'shell_logo_text', __( 'Text Logo', 'neurohr-members' ), '', 'text', 'NeuroHR' );
 		self::text( 'shell_logo_accent', __( 'Part of the text logo in orange', 'neurohr-members' ), __( 'e.g. HR (must be the end of the text logo).', 'neurohr-members' ), 'text', 'HR' );
-		self::text( 'shell_search', __( 'Search box text', 'neurohr-members' ), __( 'With the Knowledge Hub active, the box searches the hub; otherwise the whole site.', 'neurohr-members' ), 'text', __( 'Search knowledge, legal cases, templates…', 'neurohr-members' ) );
+		self::text( 'shell_search', __( 'Search Box Text', 'neurohr-members' ), __( 'With the Knowledge Hub active, the box searches the hub; otherwise the whole site.', 'neurohr-members' ), 'text', __( 'Search Knowledge, Legal Cases, Templates…', 'neurohr-members' ) );
 		echo '</div></section>';
 
 		echo '<section class="nhm-admin-card"><h2><span class="dashicons dashicons-megaphone"></span>' . esc_html__( 'Card at the bottom of the sidebar', 'neurohr-members' ) . '</h2>';
@@ -732,11 +732,11 @@ class NHM_Admin_Settings {
 		echo '<div class="nhm-fields">';
 		self::text( 'shell_promo_title', __( 'Title', 'neurohr-members' ) );
 		self::text( 'shell_promo_text', __( 'Text', 'neurohr-members' ) );
-		self::text( 'shell_promo_url', __( 'Arrow link', 'neurohr-members' ), __( 'e.g. /services/. Empty = no arrow.', 'neurohr-members' ) );
+		self::text( 'shell_promo_url', __( 'Arrow Link', 'neurohr-members' ), __( 'e.g. /services/. Empty = no arrow.', 'neurohr-members' ) );
 		echo '</div></section>';
 
 		echo '<section class="nhm-admin-card"><h2><span class="dashicons dashicons-editor-insertmore"></span>' . esc_html__( 'Footer', 'neurohr-members' ) . '</h2><div class="nhm-fields">';
-		self::text( 'shell_footer_text', __( 'Footer text', 'neurohr-members' ), __( '{year} and {site} are filled in.', 'neurohr-members' ) );
+		self::text( 'shell_footer_text', __( 'Footer Text', 'neurohr-members' ), __( '{year} and {site} are filled in.', 'neurohr-members' ) );
 		echo '</div></section>';
 	}
 
@@ -841,14 +841,14 @@ class NHM_Admin_Settings {
 
 	private static function tab_payments() {
 		$bank_ok = '' !== trim( (string) NHM_Settings::get( 'bank_account_no' ) );
-		echo '<section class="nhm-admin-card"><h2><span class="dashicons dashicons-money-alt"></span>' . esc_html__( 'Ways to pay', 'neurohr-members' ) . '</h2>';
+		echo '<section class="nhm-admin-card"><h2><span class="dashicons dashicons-money-alt"></span>' . esc_html__( 'Ways to Pay', 'neurohr-members' ) . '</h2>';
 		echo '<p class="nhm-admin-card__intro">' . esc_html__( 'Members see these on the payment page of an invoice (link in every invoice email, "Pay now" in My account, and right after choosing a paid plan). Bank transfer and DuitNow QR: the member sends the slip, you approve it under Members → Payments, then the plan starts.', 'neurohr-members' ) . '</p>';
 		self::toggle( 'pay_stripe', __( 'Pay online with Stripe (card, FPX, GrabPay)', 'neurohr-members' ), __( 'Needs the Stripe keys below. Which methods show is set in your Stripe Dashboard → Settings → Payment methods.', 'neurohr-members' ) );
 		self::toggle( 'pay_bank', __( 'Bank transfer', 'neurohr-members' ), $bank_ok ? __( 'Uses the bank details in Business info & invoices.', 'neurohr-members' ) : '<span class="nhm-exp--soon">' . __( 'Add your bank details in Business info & invoices first.', 'neurohr-members' ) . '</span>' );
 		self::toggle( 'pay_qr', __( 'DuitNow QR', 'neurohr-members' ), __( 'Upload your DuitNow QR picture below. Members type the amount themselves.', 'neurohr-members' ) );
 		echo '<div class="nhm-fields">';
 		echo '<p class="nhm-field"><label for="nhm-s-qr_image">' . esc_html__( 'DuitNow QR picture', 'neurohr-members' ) . '</label><span class="nhm-color-row"><input type="text" id="nhm-s-qr_image" name="' . esc_attr( self::name( 'qr_image' ) ) . '" value="' . esc_attr( NHM_Settings::get( 'qr_image' ) ) . '" placeholder="https://…/duitnow-qr.png"> <button type="button" class="button" data-nhm-media="nhm-s-qr_image">' . esc_html__( 'Choose', 'neurohr-members' ) . '</button></span><span class="description">' . esc_html__( 'The QR from your bank (PNG or JPG, square).', 'neurohr-members' ) . '</span></p>';
-		self::text( 'qr_name', __( 'Name under the QR', 'neurohr-members' ), __( 'e.g. your company name, so members know they scanned the right code.', 'neurohr-members' ), 'text', 'NeuroHR Sdn. Bhd.' );
+		self::text( 'qr_name', __( 'Name Under the QR', 'neurohr-members' ), __( 'e.g. your company name, so members know they scanned the right code.', 'neurohr-members' ), 'text', 'NeuroHR Sdn. Bhd.' );
 		echo '</div>';
 		echo '<p class="nhm-field"><label for="nhm-s-page_pay">' . esc_html__( 'Payment page (optional)', 'neurohr-members' ) . '</label>';
 		wp_dropdown_pages(
@@ -871,10 +871,10 @@ class NHM_Admin_Settings {
 			echo '<label class="nhm-inline-check" style="margin-right:16px"><input type="radio" name="' . esc_attr( self::name( 'stripe_mode' ) ) . '" value="' . esc_attr( $k ) . '"' . checked( $mode, $k, false ) . '> ' . esc_html( $l ) . '</label>';
 		}
 		echo '</p><div class="nhm-fields">';
-		self::text( 'stripe_test_pk', __( 'Test publishable key', 'neurohr-members' ), '', 'text', 'pk_test_…' );
+		self::text( 'stripe_test_pk', __( 'Test Publishable Key', 'neurohr-members' ), '', 'text', 'pk_test_…' );
 		self::secret_field( 'stripe_test_sk', __( 'Test secret key', 'neurohr-members' ), 'sk_test_…' );
 		self::secret_field( 'stripe_test_whsec', __( 'Test webhook signing secret', 'neurohr-members' ), 'whsec_…' );
-		self::text( 'stripe_live_pk', __( 'Live publishable key', 'neurohr-members' ), '', 'text', 'pk_live_…' );
+		self::text( 'stripe_live_pk', __( 'Live Publishable Key', 'neurohr-members' ), '', 'text', 'pk_live_…' );
 		self::secret_field( 'stripe_live_sk', __( 'Live secret key', 'neurohr-members' ), 'sk_live_…' );
 		self::secret_field( 'stripe_live_whsec', __( 'Live webhook signing secret', 'neurohr-members' ), 'whsec_…' );
 		echo '</div>';

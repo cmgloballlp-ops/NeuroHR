@@ -149,7 +149,7 @@ class NHM_Forms {
 			$messages = self::messages();
 			$text     = self::$notice ? self::$notice : ( isset( $messages[ $code ] ) ? $messages[ $code ] : '' );
 			if ( $text && 'logout_confirm' === $code ) {
-				$html  .= '<div class="nhm-alert nhm-alert--warning" role="status"><p>' . esc_html( $text ) . ' <a class="nhm-btn nhm-btn--small nhm-btn--primary" href="' . esc_url( wp_logout_url() ) . '">' . esc_html__( 'Log out', 'neurohr-members' ) . '</a></p></div>';
+				$html  .= '<div class="nhm-alert nhm-alert--warning" role="status"><p>' . esc_html( $text ) . ' <a class="nhm-btn nhm-btn--small nhm-btn--primary" href="' . esc_url( wp_logout_url() ) . '">' . esc_html__( 'Log Out', 'neurohr-members' ) . '</a></p></div>';
 				$shown  = true;
 			} elseif ( $text && in_array( $code, array( 'pay_cancelled', 'pay_processing' ), true ) ) {
 				$html  .= '<div class="nhm-alert nhm-alert--warning" role="status"><p>' . esc_html( $text ) . '</p></div>';

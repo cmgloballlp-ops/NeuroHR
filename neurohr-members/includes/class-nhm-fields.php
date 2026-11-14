@@ -37,7 +37,7 @@ class NHM_Fields {
 		return array(
 			'company' => array( 'label' => __( 'Company', 'neurohr-members' ), 'type' => 'text', 'meta' => 'nhm_company_name', 'autocomplete' => 'organization' ),
 			'phone'   => array( 'label' => __( 'Phone', 'neurohr-members' ), 'type' => 'tel', 'meta' => 'nhm_phone', 'autocomplete' => 'tel' ),
-			'job'      => array( 'label' => __( 'Job title', 'neurohr-members' ), 'type' => 'text', 'meta' => 'nhm_job_title', 'autocomplete' => 'organization-title' ),
+			'job'      => array( 'label' => __( 'Job Title', 'neurohr-members' ), 'type' => 'text', 'meta' => 'nhm_job_title', 'autocomplete' => 'organization-title' ),
 			'location' => array( 'label' => __( 'Location', 'neurohr-members' ), 'type' => 'select', 'meta' => 'nhm_location', 'autocomplete' => 'address-level1' ),
 		);
 	}

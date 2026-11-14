@@ -448,3 +448,7 @@
 .nhm-invite-page input[readonly] { background: var(--nhm-soft); color: var(--nhm-muted); }
 .nhm label, .nhm .nhm-field > label, .nhm .nhm-check { text-align: left; }
 .nhm .nhm-invite-form { align-items: flex-end; }
+
+/* Billing: Individual / Company */
+.nhm-billing-form .nhm-field--nhm_bill_type { max-width: 320px; }
+.nhm-billing-form.is-individual .nhm-field--nhm_bill_company { display: none; }

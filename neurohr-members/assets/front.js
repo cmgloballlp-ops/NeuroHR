@@ -58,6 +58,18 @@
 		}
 	} );
 
+	/* My account → billing: Individual / Company. */
+	document.addEventListener( 'change', function ( e ) {
+		if ( ! e.target.matches || ! e.target.matches( '[data-nhm-billtype]' ) ) { return; }
+		var form = e.target.form, type = e.target.value;
+		form.classList.toggle( 'is-company', 'company' === type );
+		form.classList.toggle( 'is-individual', 'company' !== type );
+		form.querySelectorAll( '[data-label-company]' ).forEach( function ( input ) {
+			var label = form.querySelector( 'label[for="' + input.id + '"]' );
+			if ( label && label.firstChild ) { label.firstChild.nodeValue = input.getAttribute( 'data-label-' + type ) + ' '; }
+		} );
+	} );
+
 	/* Our own "Are you sure?" window instead of the browser's grey box. */
 	function askConfirm( el ) {
 		var dlg = document.getElementById( 'nhm-confirm' );

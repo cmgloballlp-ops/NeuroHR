@@ -8,6 +8,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 return array(
+	'0.4.5' => array(
+		'date'  => '14 Nov 2026',
+		'items' => array(
+			'My account → Personal Billing Details: new "Bill To" choice, Individual or Company. Individual: the registration box becomes "NRIC / Passport No." and the company name is not used. Company: Company Name on Invoice, Attention To (Contact Person) and Registration No. (SSM). The invoice PDF prints "NRIC / Passport No." for individuals. Applies to new invoices.',
+			'Titles, field labels, tabs, table headings and buttons now use Title Case everywhere (member pages and admin), e.g. "Personal Billing Details", "Full Name", "Plan & Billing". Sentences and help texts stay as they are.',
+			'Admin: the Members, Invoices, Companies, Payments and Dashboard screens now use the full width of the screen.',
+		),
+	),
 	'0.4.4' => array(
 		'date'  => '31 Oct 2026',
 		'items' => array(

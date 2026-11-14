@@ -145,7 +145,7 @@ $r = post( 'password', array( 'nhm_current' => 'secret123', 'nhm_new' => 'abc' )
 ok( null === $r, 'short new password' );
 // pricing + shortcodes logged in
 $p = NHM_Shortcodes::pricing( array( 'levels' => 'lite,pro,corporate' ) );
-ok( false !== strpos( $p, 'Your plan' ) && false !== strpos( $p, 'Included' ), 'pricing marks current/included' );
+ok( false !== strpos( $p, 'Your Plan' ) && false !== strpos( $p, 'Included' ), 'pricing marks current/included' );
 ok( 'Aisha' === NHM_Shortcodes::user( array( 'field' => 'first_name' ) ) && 'Corporate' === NHM_Shortcodes::user( array( 'field' => 'level' ) ), '[nhm_user]' );
 ok( false !== strpos( NHM_Shortcodes::logout( array() ), 'logout' ), '[nhm_logout]' );
 ok( false !== strpos( NHM_Auth::render_login( array() ), 'logged in as' ), 'login form when logged in' );

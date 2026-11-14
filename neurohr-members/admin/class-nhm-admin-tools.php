@@ -38,7 +38,7 @@ class NHM_Admin_Tools {
 		NHM_Admin::header( __( 'Import', 'neurohr-members' ) );
 		if ( is_array( $report ) ) {
 			delete_transient( self::REPORT . get_current_user_id() );
-			echo '<section class="nhm-admin-card"><h2>' . esc_html( $report['dry'] ? __( 'Check result (nothing was changed)', 'neurohr-members' ) : __( 'Import result', 'neurohr-members' ) ) . '</h2>';
+			echo '<section class="nhm-admin-card"><h2>' . esc_html( $report['dry'] ? __( 'Check Result (Nothing Was Changed)', 'neurohr-members' ) : __( 'Import Result', 'neurohr-members' ) ) . '</h2>';
 			echo '<p><strong>' . esc_html( $report['summary'] ) . '</strong></p><table class="widefat striped"><tbody>';
 			foreach ( array_slice( $report['lines'], 0, 500 ) as $line ) {
 				echo '<tr class="' . esc_attr( 'error' === $line[0] ? 'nhm-row-error' : '' ) . '"><td style="width:70px">' . esc_html( $line[1] ) . '</td><td>' . esc_html( $line[2] ) . '</td></tr>';
@@ -53,7 +53,7 @@ class NHM_Admin_Tools {
 			echo '<form class="nhm-admin-card" method="post" enctype="multipart/form-data" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '">';
 			echo '<input type="hidden" name="action" value="nhm_import"><input type="hidden" name="type" value="' . esc_attr( $type ) . '">';
 			wp_nonce_field( 'nhm_import' );
-			echo '<h2><span class="dashicons dashicons-' . ( 'companies' === $type ? 'building' : 'groups' ) . '"></span>' . esc_html( $title ) . ' <a class="button button-small nhm-right" href="' . esc_url( $tpl( $type ) ) . '">' . esc_html__( 'Download template', 'neurohr-members' ) . '</a></h2>';
+			echo '<h2><span class="dashicons dashicons-' . ( 'companies' === $type ? 'building' : 'groups' ) . '"></span>' . esc_html( $title ) . ' <a class="button button-small nhm-right" href="' . esc_url( $tpl( $type ) ) . '">' . esc_html__( 'Download Template', 'neurohr-members' ) . '</a></h2>';
 			echo '<p class="nhm-admin-card__intro">' . esc_html__( 'Columns (first row = these names, any order, missing columns are left alone):', 'neurohr-members' ) . ' <code>' . esc_html( implode( ', ', $cols ) ) . '</code></p>';
 			if ( 'companies' === $type ) {
 				echo '<p class="description">' . esc_html__( 'A row with an existing client_code updates that company; otherwise a new company is created. plan = level name or short name (e.g. corporate). last_day empty + plan = one term from start. owner_email: an existing account becomes owner; otherwise an invitation is sent (only when "Send emails" is ticked).', 'neurohr-members' ) . '</p>';

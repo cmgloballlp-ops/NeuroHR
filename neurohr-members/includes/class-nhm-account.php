@@ -129,8 +129,8 @@ class NHM_Account {
 	public static function notification_types() {
 		$types = array(
 			'newsletter' => array( __( 'Newsletter', 'neurohr-members' ), __( 'HR news, law updates and tips, about twice a month.', 'neurohr-members' ), 'ml_group' ),
-			'content'    => array( __( 'New content', 'neurohr-members' ), __( 'When new guides, templates and legal case insights are published.', 'neurohr-members' ), 'ml_group_content' ),
-			'events'     => array( __( 'Events & webinars', 'neurohr-members' ), __( 'Invitations to our talks, trainings and webinars.', 'neurohr-members' ), 'ml_group_events' ),
+			'content'    => array( __( 'New Content', 'neurohr-members' ), __( 'When new guides, templates and legal case insights are published.', 'neurohr-members' ), 'ml_group_content' ),
+			'events'     => array( __( 'Events & Webinars', 'neurohr-members' ), __( 'Invitations to our talks, trainings and webinars.', 'neurohr-members' ), 'ml_group_events' ),
 		);
 		foreach ( $types as $key => $t ) {
 			if ( 'newsletter' !== $key && '' === trim( (string) NHM_Settings::get( $t[2] ) ) ) {
@@ -184,12 +184,12 @@ class NHM_Account {
 	/** Billing fields a company owner may change: key => [ label, type ]. */
 	public static function company_billing_fields() {
 		return array(
-			'name'           => array( __( 'Company name', 'neurohr-members' ), 'text' ),
-			'reg_no'         => array( __( 'Registration no. (SSM)', 'neurohr-members' ), 'text' ),
+			'name'           => array( __( 'Company Name', 'neurohr-members' ), 'text' ),
+			'reg_no'         => array( __( 'Registration No. (SSM)', 'neurohr-members' ), 'text' ),
 			'tin'            => array( __( 'TIN', 'neurohr-members' ), 'text' ),
 			'sst_no'         => array( __( 'SST no.', 'neurohr-members' ), 'text' ),
-			'contact_person' => array( __( 'Contact person', 'neurohr-members' ), 'text' ),
-			'billing_email'  => array( __( 'Send invoices to', 'neurohr-members' ), 'email' ),
+			'contact_person' => array( __( 'Contact Person', 'neurohr-members' ), 'text' ),
+			'billing_email'  => array( __( 'Send Invoices To', 'neurohr-members' ), 'email' ),
 			'phone'          => array( __( 'Phone', 'neurohr-members' ), 'text' ),
 			'address'        => array( __( 'Address', 'neurohr-members' ), 'textarea' ),
 			'postcode'       => array( __( 'Postcode', 'neurohr-members' ), 'text' ),
@@ -331,14 +331,23 @@ class NHM_Account {
 	}
 
 	/** Billing details for invoices (optional for people; companies use the company record). */
+	/** company | individual (people who never chose: company when a company name is saved). */
+	public static function bill_type( $user_id ) {
+		$t = (string) get_user_meta( $user_id, 'nhm_bill_type', true );
+		if ( 'company' === $t || 'individual' === $t ) {
+			return $t;
+		}
+		return '' !== trim( (string) get_user_meta( $user_id, 'nhm_bill_company', true ) ) ? 'company' : 'individual';
+	}
+
 	public static function billing_fields() {
 		return array(
-			'nhm_bill_name'    => array( __( 'Name on invoice', 'neurohr-members' ), 'text', 'name' ),
-			'nhm_bill_company' => array( __( 'Company name on invoice', 'neurohr-members' ), 'text', 'organization' ),
-			'nhm_bill_reg'     => array( __( 'Registration no. (SSM)', 'neurohr-members' ), 'text', '' ),
-			'nhm_bill_tin'     => array( __( 'TIN (tax no.)', 'neurohr-members' ), 'text', '' ),
-			'nhm_bill_email'   => array( __( 'Send invoices to', 'neurohr-members' ), 'email', 'email' ),
-			'nhm_bill_address' => array( __( 'Billing address', 'neurohr-members' ), 'textarea', 'street-address' ),
+			'nhm_bill_company' => array( __( 'Company Name on Invoice', 'neurohr-members' ), 'text', 'organization' ),
+			'nhm_bill_name'    => array( __( 'Name on Invoice', 'neurohr-members' ), 'text', 'name' ),
+			'nhm_bill_reg'     => array( __( 'Registration No. (SSM)', 'neurohr-members' ), 'text', '' ),
+			'nhm_bill_tin'     => array( __( 'TIN (Tax No.)', 'neurohr-members' ), 'text', '' ),
+			'nhm_bill_email'   => array( __( 'Send Invoices To', 'neurohr-members' ), 'email', 'email' ),
+			'nhm_bill_address' => array( __( 'Billing Address', 'neurohr-members' ), 'textarea', 'street-address' ),
 		);
 	}
 
@@ -348,6 +357,11 @@ class NHM_Account {
 		}
 		$posted = NHM_Forms::posted();
 		$uid    = get_current_user_id();
+		$type   = isset( $posted['nhm_bill_type'] ) && 'company' === $posted['nhm_bill_type'] ? 'company' : 'individual';
+		update_user_meta( $uid, 'nhm_bill_type', $type );
+		if ( 'individual' === $type ) {
+			unset( $posted['nhm_bill_company'] ); // Not used for individuals.
+		}
 		foreach ( self::billing_fields() as $key => $f ) {
 			$raw   = isset( $posted[ $key ] ) ? (string) $posted[ $key ] : '';
 			$value = 'textarea' === $f[1] ? sanitize_textarea_field( $raw ) : ( 'email' === $f[1] ? sanitize_email( $raw ) : sanitize_text_field( $raw ) );
@@ -491,11 +505,11 @@ class NHM_Account {
 		if ( strtolower( $user->user_email ) !== strtolower( $invite['email'] ) ) {
 			/* translators: 1: invited email, 2: current email */
 			$html .= '<p class="nhm-muted">' . esc_html( sprintf( __( 'The invitation was sent to %1$s, but you are logged in as %2$s. Log out and log in with the invited address, or ask for an invitation to your own address.', 'neurohr-members' ), $invite['email'], $user->user_email ) ) . '</p>';
-			$html .= '<p class="nhm-actions"><a class="nhm-btn" href="' . esc_url( wp_logout_url( NHM_Auth::login_url( NHM_Companies::invite_url( $token ) ) ) ) . '">' . esc_html__( 'Log out', 'neurohr-members' ) . '</a></p>';
+			$html .= '<p class="nhm-actions"><a class="nhm-btn" href="' . esc_url( wp_logout_url( NHM_Auth::login_url( NHM_Companies::invite_url( $token ) ) ) ) . '">' . esc_html__( 'Log Out', 'neurohr-members' ) . '</a></p>';
 		} else {
 			$html .= NHM_Forms::open( 'accept_invite' );
 			$html .= '<input type="hidden" name="nhm_invite" value="' . esc_attr( $token ) . '">';
-			$html .= NHM_Forms::button( __( 'Accept and join', 'neurohr-members' ) );
+			$html .= NHM_Forms::button( __( 'Accept and Join', 'neurohr-members' ) );
 			$html .= '</form>';
 		}
 		return $html . '</div>';
@@ -507,7 +521,7 @@ class NHM_Account {
 			'security'      => __( 'Security', 'neurohr-members' ),
 			'notifications' => __( 'Notifications', 'neurohr-members' ),
 			'company'       => __( 'Company', 'neurohr-members' ),
-			'billing'       => __( 'Plan & billing', 'neurohr-members' ),
+			'billing'       => __( 'Plan & Billing', 'neurohr-members' ),
 		);
 	}
 
@@ -567,7 +581,7 @@ class NHM_Account {
 		$html .= NHM_Forms::render_messages( 'account' );
 
 		if ( count( $tabs ) > 1 ) {
-			$html .= '<nav class="nhm-tabs" aria-label="' . esc_attr__( 'Account sections', 'neurohr-members' ) . '">';
+			$html .= '<nav class="nhm-tabs" aria-label="' . esc_attr__( 'Account Sections', 'neurohr-members' ) . '">';
 			$base  = remove_query_arg( array( 'nhm_msg', 'nhm_invite', 'tab' ), NHM_Forms::current_url() );
 			foreach ( $tabs as $key => $label ) {
 				$html .= '<a class="nhm-tab' . ( $key === $tab ? ' is-on' : '' ) . '" href="' . esc_url( add_query_arg( 'tab', $key, $base ) ) . '"' . ( $key === $tab ? ' aria-current="page"' : '' ) . '>' . esc_html( $label ) . '</a>';
@@ -594,7 +608,7 @@ class NHM_Account {
 		}
 		$html .= '</div>';
 		if ( 'yes' === $atts['logout'] ) {
-			$html .= '<p class="nhm-logout"><a href="' . esc_url( wp_logout_url() ) . '">' . esc_html__( 'Log out', 'neurohr-members' ) . '</a></p>';
+			$html .= '<p class="nhm-logout"><a href="' . esc_url( wp_logout_url() ) . '">' . esc_html__( 'Log Out', 'neurohr-members' ) . '</a></p>';
 		}
 		return NHM_Forms::wrap( $html, 'nhm-account' );
 	}
@@ -622,7 +636,7 @@ class NHM_Account {
 	 * @param array $args style: dark | light; title.
 	 */
 	public static function plan_card( $args = array() ) {
-		$args    = array_merge( array( 'style' => 'dark', 'title' => __( 'Your plan', 'neurohr-members' ) ), (array) $args );
+		$args    = array_merge( array( 'style' => 'dark', 'title' => __( 'Your Plan', 'neurohr-members' ) ), (array) $args );
 		$m       = NHM_Members::membership();
 		$company = $m['company_id'] ? NHM_Companies::get( $m['company_id'] ) : null;
 		$renew   = NHM_Settings::url( 'renew_url', NHM_Levels::upgrade_url() );
@@ -646,7 +660,7 @@ class NHM_Account {
 			$h .= '<p class="nhm-plan__status">' . esc_html( sprintf( __( 'Complete your %1$s payment to start your %2$s plan.', 'neurohr-members' ), NHM_Settings::money( $inv['total'] ), NHM_Levels::name( $inv['level_id'] ) ) ) . '</p>';
 			$h .= '<p class="nhm-actions">';
 			if ( NHM_Payments::payable( $inv ) ) {
-				$h .= '<a class="nhm-btn nhm-btn--primary" href="' . esc_url( NHM_Payments::pay_url( $inv ) ) . '">' . esc_html__( 'Complete payment', 'neurohr-members' ) . '</a> ';
+				$h .= '<a class="nhm-btn nhm-btn--primary" href="' . esc_url( NHM_Payments::pay_url( $inv ) ) . '">' . esc_html__( 'Complete Payment', 'neurohr-members' ) . '</a> ';
 			}
 			$h .= '<a class="nhm-plan__link" href="' . esc_url( NHM_Invoices::download_url( $inv ) ) . '" target="_blank" rel="noopener">' . esc_html__( 'Download invoice', 'neurohr-members' ) . '</a></p>';
 			return $h . '</section>';
@@ -712,7 +726,7 @@ class NHM_Account {
 				$h .= '<p>' . esc_html( sprintf( __( 'Your company account is managed by %1$s (%2$s).', 'neurohr-members' ), $owner->display_name, $owner->user_email ) ) . '</p>';
 			}
 			$h .= NHM_Forms::open( 'leave', 'nhm-inline' );
-			$h .= '<button type="submit" class="nhm-btn nhm-btn--small" data-nhm-confirm="' . esc_attr__( 'Leave the company? You will lose the company plan.', 'neurohr-members' ) . '">' . esc_html__( 'Leave company', 'neurohr-members' ) . '</button></form>';
+			$h .= '<button type="submit" class="nhm-btn nhm-btn--small" data-nhm-confirm="' . esc_attr__( 'Leave the company? You will lose the company plan.', 'neurohr-members' ) . '">' . esc_html__( 'Leave Company', 'neurohr-members' ) . '</button></form>';
 			return $h . '</section>';
 		}
 
@@ -738,16 +752,16 @@ class NHM_Account {
 		}
 		foreach ( NHM_Companies::invites( $company['id'] ) as $invite ) {
 			$h .= '<tr class="nhm-table__pending"><td><span class="nhm-pill nhm-pill--muted">' . esc_html__( 'Invited', 'neurohr-members' ) . '</span></td><td>' . esc_html( $invite['email'] ) . '</td><td class="nhm-table__actions"><div class="nhm-row-actions">';
-			$h .= NHM_Forms::open( 'resend', 'nhm-inline' ) . '<input type="hidden" name="nhm_invite_id" value="' . (int) $invite['id'] . '"><button type="submit" class="nhm-btn nhm-btn--small">' . esc_html__( 'Send again', 'neurohr-members' ) . '</button></form> ';
-			$h .= NHM_Forms::open( 'cancel_invite', 'nhm-inline' ) . '<input type="hidden" name="nhm_invite_id" value="' . (int) $invite['id'] . '"><button type="submit" class="nhm-btn nhm-btn--small" data-nhm-confirm="' . esc_attr( sprintf( /* translators: %s: email */ __( 'Cancel the invitation to %s? The link stops working.', 'neurohr-members' ), $invite['email'] ) ) . '" data-nhm-confirm-ok="' . esc_attr__( 'Cancel invitation', 'neurohr-members' ) . '">' . esc_html__( 'Cancel', 'neurohr-members' ) . '</button></form>';
+			$h .= NHM_Forms::open( 'resend', 'nhm-inline' ) . '<input type="hidden" name="nhm_invite_id" value="' . (int) $invite['id'] . '"><button type="submit" class="nhm-btn nhm-btn--small">' . esc_html__( 'Send Again', 'neurohr-members' ) . '</button></form> ';
+			$h .= NHM_Forms::open( 'cancel_invite', 'nhm-inline' ) . '<input type="hidden" name="nhm_invite_id" value="' . (int) $invite['id'] . '"><button type="submit" class="nhm-btn nhm-btn--small" data-nhm-confirm="' . esc_attr( sprintf( /* translators: %s: email */ __( 'Cancel the invitation to %s? The link stops working.', 'neurohr-members' ), $invite['email'] ) ) . '" data-nhm-confirm-ok="' . esc_attr__( 'Cancel Invitation', 'neurohr-members' ) . '">' . esc_html__( 'Cancel', 'neurohr-members' ) . '</button></form>';
 			$h .= '</div></td></tr>';
 		}
 		$h .= '</tbody></table></div>';
 
 		if ( $used < $company['seats'] ) {
 			$h .= NHM_Forms::open( 'invite', 'nhm-invite-form' );
-			$h .= NHM_Forms::field( array( 'name' => 'nhm_invite_email', 'label' => __( 'Invite a colleague by email', 'neurohr-members' ), 'type' => 'email', 'required' => true, 'autocomplete' => 'off', 'value' => NHM_Forms::has_errors( 'company' ) ? NHM_Forms::value( 'invite', 'nhm_invite_email' ) : '' ) );
-			$h .= NHM_Forms::button( __( 'Send invitation', 'neurohr-members' ) );
+			$h .= NHM_Forms::field( array( 'name' => 'nhm_invite_email', 'label' => __( 'Invite a Colleague by Email', 'neurohr-members' ), 'type' => 'email', 'required' => true, 'autocomplete' => 'off', 'value' => NHM_Forms::has_errors( 'company' ) ? NHM_Forms::value( 'invite', 'nhm_invite_email' ) : '' ) );
+			$h .= NHM_Forms::button( __( 'Send Invitation', 'neurohr-members' ) );
 			$h .= '</form>';
 		} else {
 			$h .= '<p class="nhm-muted">' . esc_html__( 'All seats are in use. Remove someone to invite another person, or contact us for more seats.', 'neurohr-members' ) . '</p>';
@@ -758,27 +772,27 @@ class NHM_Account {
 	private static function profile_card() {
 		$user = wp_get_current_user();
 		$h    = '<section class="nhm-card nhm-profile" id="nhm-profile"><div class="nhm-profile__grid"><div class="nhm-profile__main">';
-		$h   .= '<h3 class="nhm-card__title">' . esc_html__( 'Profile information', 'neurohr-members' ) . '</h3>';
+		$h   .= '<h3 class="nhm-card__title">' . esc_html__( 'Profile Information', 'neurohr-members' ) . '</h3>';
 		$h   .= '<p class="nhm-card__intro">' . esc_html__( 'Keep your personal information up to date.', 'neurohr-members' ) . '</p>';
 		$h   .= NHM_Forms::render_messages( 'profile' );
 		$err  = NHM_Forms::has_errors( 'profile' );
 		$h   .= NHM_Forms::open( 'profile' );
 		$h   .= '<div class="nhm-grid">';
-		$h   .= NHM_Forms::field( array( 'name' => 'nhm_name', 'label' => __( 'Full name', 'neurohr-members' ), 'value' => $err ? NHM_Forms::value( 'profile', 'nhm_name' ) : $user->display_name, 'required' => true, 'autocomplete' => 'name' ) );
+		$h   .= NHM_Forms::field( array( 'name' => 'nhm_name', 'label' => __( 'Full Name', 'neurohr-members' ), 'value' => $err ? NHM_Forms::value( 'profile', 'nhm_name' ) : $user->display_name, 'required' => true, 'autocomplete' => 'name' ) );
 		$fields = NHM_Fields::for_account();
 		if ( isset( $fields['job'] ) ) {
 			$h .= self::account_field( $fields['job'], $err, $user->ID );
 			unset( $fields['job'] );
 		}
-		$h .= NHM_Forms::field( array( 'name' => 'nhm_email', 'label' => __( 'Email address (login)', 'neurohr-members' ), 'type' => 'email', 'value' => $err ? NHM_Forms::value( 'profile', 'nhm_email' ) : $user->user_email, 'required' => true, 'autocomplete' => 'email' ) );
+		$h .= NHM_Forms::field( array( 'name' => 'nhm_email', 'label' => __( 'Email Address (Login)', 'neurohr-members' ), 'type' => 'email', 'value' => $err ? NHM_Forms::value( 'profile', 'nhm_email' ) : $user->user_email, 'required' => true, 'autocomplete' => 'email' ) );
 		foreach ( $fields as $f ) {
 			$h .= self::account_field( $f, $err, $user->ID );
 		}
 		$h .= '</div>';
 		$h .= '<details class="nhm-more"' . ( $err && NHM_Forms::value( 'profile', 'nhm_current' ) ? ' open' : '' ) . '><summary>' . esc_html__( 'Changing your login email? Confirm with your password', 'neurohr-members' ) . '</summary>';
-		$h .= NHM_Forms::field( array( 'name' => 'nhm_current', 'label' => __( 'Current password', 'neurohr-members' ), 'type' => 'password', 'autocomplete' => 'current-password' ) );
+		$h .= NHM_Forms::field( array( 'name' => 'nhm_current', 'label' => __( 'Current Password', 'neurohr-members' ), 'type' => 'password', 'autocomplete' => 'current-password' ) );
 		$h .= '</details>';
-		$h .= NHM_Forms::button( __( 'Save changes', 'neurohr-members' ) );
+		$h .= NHM_Forms::button( __( 'Save Changes', 'neurohr-members' ) );
 		$h .= '</form></div>';
 		$h .= self::photo_panel( $user );
 		return $h . '</div></section>';
@@ -796,13 +810,13 @@ class NHM_Account {
 		$has = '' !== NHM_Avatar::url( $user->ID );
 		$h   = '<div class="nhm-photo">';
 		$h  .= '<div class="nhm-photo__img">' . NHM_Avatar::img( $user->ID, 132, 'nhm-photo__pic' ) . '</div>';
-		$h  .= '<strong class="nhm-photo__title">' . esc_html__( 'Profile photo', 'neurohr-members' ) . '</strong>';
+		$h  .= '<strong class="nhm-photo__title">' . esc_html__( 'Profile Photo', 'neurohr-members' ) . '</strong>';
 		$h  .= '<span class="nhm-muted">' . esc_html__( 'JPG or PNG, up to 2 MB. Square photos look best.', 'neurohr-members' ) . '</span>';
 		$h  .= NHM_Forms::render_messages( 'avatar' );
 		$h  .= NHM_Forms::open( 'avatar', 'nhm-photo__form', true );
 		$h  .= '<input type="hidden" name="MAX_FILE_SIZE" value="' . (int) NHM_Avatar::MAX_BYTES . '">';
-		$h  .= '<label class="nhm-btn nhm-btn--small nhm-photo__pick">' . esc_html( $has ? __( 'Change photo', 'neurohr-members' ) : __( 'Upload photo', 'neurohr-members' ) ) . '<input type="file" name="nhm_photo" accept="image/jpeg,image/png" data-nhm-photo-input=".nhm-photo__pic" onchange="this.form.querySelector(\'.nhm-photo__save\').hidden=false"></label>';
-		$h  .= '<button type="submit" class="nhm-btn nhm-btn--small nhm-btn--primary nhm-photo__save" hidden>' . esc_html__( 'Save photo', 'neurohr-members' ) . '</button>';
+		$h  .= '<label class="nhm-btn nhm-btn--small nhm-photo__pick">' . esc_html( $has ? __( 'Change Photo', 'neurohr-members' ) : __( 'Upload Photo', 'neurohr-members' ) ) . '<input type="file" name="nhm_photo" accept="image/jpeg,image/png" data-nhm-photo-input=".nhm-photo__pic" onchange="this.form.querySelector(\'.nhm-photo__save\').hidden=false"></label>';
+		$h  .= '<button type="submit" class="nhm-btn nhm-btn--small nhm-btn--primary nhm-photo__save" hidden>' . esc_html__( 'Save Photo', 'neurohr-members' ) . '</button>';
 		$h  .= '</form>';
 		if ( $has ) {
 			$h .= NHM_Forms::open( 'avatar_remove', 'nhm-inline' ) . '<button type="submit" class="nhm-link nhm-link--muted">' . esc_html__( 'Remove photo', 'neurohr-members' ) . '</button></form>';
@@ -816,17 +830,17 @@ class NHM_Account {
 		$pending = (string) get_user_meta( $user->ID, 'nhm_email2_pending', true );
 		$pref    = 'second' === get_user_meta( $user->ID, 'nhm_email_pref', true ) && $email2 ? 'second' : 'main';
 		$h       = '<section class="nhm-card nhm-contact" id="nhm-contact">';
-		$h      .= '<h3 class="nhm-card__title">' . esc_html__( 'Contact details', 'neurohr-members' ) . '</h3>';
+		$h      .= '<h3 class="nhm-card__title">' . esc_html__( 'Contact Details', 'neurohr-members' ) . '</h3>';
 		$h      .= '<p class="nhm-card__intro">' . esc_html__( 'Add a second email address, for example a personal one, and choose where account emails go. You always log in with your login email.', 'neurohr-members' ) . '</p>';
 		$h      .= NHM_Forms::render_messages( 'contact' );
 		$h      .= NHM_Forms::open( 'contact' ) . '<div class="nhm-grid">';
-		$h      .= NHM_Forms::field( array( 'name' => 'nhm_email2', 'label' => __( 'Second email address', 'neurohr-members' ), 'type' => 'email', 'value' => NHM_Forms::has_errors( 'contact' ) ? NHM_Forms::value( 'contact', 'nhm_email2' ) : ( $pending ? $pending : $email2 ), 'autocomplete' => 'email', 'help' => $pending ? __( 'Waiting for confirmation: open the link we sent to this address.', 'neurohr-members' ) : ( $email2 ? __( 'Confirmed.', 'neurohr-members' ) : '' ) ) );
+		$h      .= NHM_Forms::field( array( 'name' => 'nhm_email2', 'label' => __( 'Second Email Address', 'neurohr-members' ), 'type' => 'email', 'value' => NHM_Forms::has_errors( 'contact' ) ? NHM_Forms::value( 'contact', 'nhm_email2' ) : ( $pending ? $pending : $email2 ), 'autocomplete' => 'email', 'help' => $pending ? __( 'Waiting for confirmation: open the link we sent to this address.', 'neurohr-members' ) : ( $email2 ? __( 'Confirmed.', 'neurohr-members' ) : '' ) ) );
 		$h      .= '</div>';
-		$h      .= '<fieldset class="nhm-radios"><legend>' . esc_html__( 'Send account emails to', 'neurohr-members' ) . '</legend>';
+		$h      .= '<fieldset class="nhm-radios"><legend>' . esc_html__( 'Send Account Emails To', 'neurohr-members' ) . '</legend>';
 		$h      .= '<label class="nhm-check"><input type="radio" name="nhm_email_pref" value="main"' . checked( $pref, 'main', false ) . '> <span>' . esc_html( $user->user_email ) . ' <span class="nhm-muted">(' . esc_html__( 'login email', 'neurohr-members' ) . ')</span></span></label>';
 		$h      .= '<label class="nhm-check"><input type="radio" name="nhm_email_pref" value="second"' . checked( $pref, 'second', false ) . disabled( '' === $email2, true, false ) . '> <span>' . ( $email2 ? esc_html( $email2 ) : esc_html__( 'Second email (after it is confirmed)', 'neurohr-members' ) ) . '</span></label>';
 		$h      .= '</fieldset>';
-		$h      .= NHM_Forms::button( __( 'Save contact details', 'neurohr-members' ), 'nhm-btn' ) . '</form>';
+		$h      .= NHM_Forms::button( __( 'Save Contact Details', 'neurohr-members' ), 'nhm-btn' ) . '</form>';
 		return $h . '</section>';
 	}
 
@@ -840,8 +854,8 @@ class NHM_Account {
 		$h   .= NHM_Forms::render_messages( 'prefs' );
 		$h   .= NHM_Forms::open( 'prefs' ) . '<div class="nhm-grid">';
 		$h   .= NHM_Forms::field( array( 'name' => 'nhm_lang', 'label' => __( 'Language', 'neurohr-members' ), 'type' => 'select', 'options' => array_values( self::languages() ), 'value' => isset( self::languages()[ $lang ] ) ? self::languages()[ $lang ] : 'English', 'required' => true ) );
-		$h   .= NHM_Forms::field( array( 'name' => 'nhm_tz', 'label' => __( 'Time zone', 'neurohr-members' ), 'type' => 'select', 'options' => self::timezones(), 'value' => $tz ? $tz : 'Asia/Kuala_Lumpur', 'required' => true ) );
-		$h   .= '</div>' . NHM_Forms::button( __( 'Save preferences', 'neurohr-members' ), 'nhm-btn' ) . '</form>';
+		$h   .= NHM_Forms::field( array( 'name' => 'nhm_tz', 'label' => __( 'Time Zone', 'neurohr-members' ), 'type' => 'select', 'options' => self::timezones(), 'value' => $tz ? $tz : 'Asia/Kuala_Lumpur', 'required' => true ) );
+		$h   .= '</div>' . NHM_Forms::button( __( 'Save Preferences', 'neurohr-members' ), 'nhm-btn' ) . '</form>';
 		return $h . '</section>';
 	}
 
@@ -850,7 +864,7 @@ class NHM_Account {
 		$sessions = WP_Session_Tokens::get_instance( $uid )->get_all();
 		$prev     = (string) get_user_meta( $uid, 'nhm_prev_login', true );
 		$h        = '<section class="nhm-card nhm-sessions" id="nhm-sessions">';
-		$h       .= '<h3 class="nhm-card__title">' . esc_html__( 'Where you are logged in', 'neurohr-members' ) . '</h3>';
+		$h       .= '<h3 class="nhm-card__title">' . esc_html__( 'Where You Are Logged In', 'neurohr-members' ) . '</h3>';
 		if ( $prev ) {
 			/* translators: %s: date and time */
 			$h .= '<p class="nhm-card__intro">' . esc_html( sprintf( __( 'Your previous login: %s', 'neurohr-members' ), mysql2date( 'j M Y, g:i a', $prev ) ) ) . '</p>';
@@ -874,7 +888,7 @@ class NHM_Account {
 		}
 		$h .= '</ul>';
 		if ( count( $sessions ) > 1 ) {
-			$h .= NHM_Forms::open( 'sessions' ) . NHM_Forms::button( __( 'Log out on all other devices', 'neurohr-members' ), 'nhm-btn' ) . '</form>';
+			$h .= NHM_Forms::open( 'sessions' ) . NHM_Forms::button( __( 'Log Out on All Other Devices', 'neurohr-members' ), 'nhm-btn' ) . '</form>';
 		}
 		return $h . '</section>';
 	}
@@ -903,7 +917,7 @@ class NHM_Account {
 	private static function notifications_card() {
 		$uid = get_current_user_id();
 		$h   = '<section class="nhm-card nhm-notify" id="nhm-notifications">';
-		$h  .= '<h3 class="nhm-card__title">' . esc_html__( 'Email notifications', 'neurohr-members' ) . '</h3>';
+		$h  .= '<h3 class="nhm-card__title">' . esc_html__( 'Email Notifications', 'neurohr-members' ) . '</h3>';
 		$h  .= '<p class="nhm-card__intro">' . esc_html__( 'Choose what we may email you. You can change this any time.', 'neurohr-members' ) . '</p>';
 		$h  .= NHM_Forms::render_messages( 'notifications' );
 		$h  .= NHM_Forms::open( 'notifications' ) . '<ul class="nhm-switches">';
@@ -912,9 +926,9 @@ class NHM_Account {
 			$h .= '<li><span class="nhm-toggle-text"><strong>' . esc_html( $t[0] ) . '</strong><span class="nhm-muted">' . esc_html( $t[1] ) . '</span></span>';
 			$h .= '<label class="nhm-toggle-switch"><input type="checkbox" role="switch" name="nhm_n_' . esc_attr( $key ) . '" value="1"' . checked( $on, true, false ) . '><span aria-hidden="true"></span><span class="screen-reader-text">' . esc_html( $t[0] ) . '</span></label></li>';
 		}
-		$h .= '<li class="is-locked"><span class="nhm-toggle-text"><strong>' . esc_html__( 'Plan and invoice emails', 'neurohr-members' ) . '</strong><span class="nhm-muted">' . esc_html__( 'Renewal reminders, invoices and receipts. Always on, so your plan does not end by surprise.', 'neurohr-members' ) . '</span></span>';
+		$h .= '<li class="is-locked"><span class="nhm-toggle-text"><strong>' . esc_html__( 'Plan and Invoice Emails', 'neurohr-members' ) . '</strong><span class="nhm-muted">' . esc_html__( 'Renewal reminders, invoices and receipts. Always on, so your plan does not end by surprise.', 'neurohr-members' ) . '</span></span>';
 		$h .= '<label class="nhm-toggle-switch"><input type="checkbox" checked disabled><span aria-hidden="true"></span></label></li>';
-		$h .= '</ul>' . NHM_Forms::button( __( 'Save notifications', 'neurohr-members' ) ) . '</form>';
+		$h .= '</ul>' . NHM_Forms::button( __( 'Save Notifications', 'neurohr-members' ) ) . '</form>';
 		return $h . '</section>';
 	}
 
@@ -925,7 +939,7 @@ class NHM_Account {
 		}
 		$err = NHM_Forms::has_errors( 'company_billing' );
 		$h   = '<section class="nhm-card nhm-company-billing" id="nhm-company-billing">';
-		$h  .= '<h3 class="nhm-card__title">' . esc_html__( 'Company billing details', 'neurohr-members' ) . '</h3>';
+		$h  .= '<h3 class="nhm-card__title">' . esc_html__( 'Company Billing Details', 'neurohr-members' ) . '</h3>';
 		$h  .= '<p class="nhm-card__intro">' . esc_html__( 'Shown on your company\'s invoices. Changes apply to new invoices; invoices already issued stay as they are.', 'neurohr-members' ) . '</p>';
 		$h  .= NHM_Forms::render_messages( 'company_billing' );
 		$h  .= NHM_Forms::open( 'company_billing' ) . '<div class="nhm-grid">';
@@ -944,7 +958,7 @@ class NHM_Account {
 			/* translators: %s: client code */
 			$h .= '<p class="nhm-muted">' . esc_html( sprintf( __( 'Client code: %s', 'neurohr-members' ), $company['client_code'] ) ) . '</p>';
 		}
-		$h .= NHM_Forms::button( __( 'Save company details', 'neurohr-members' ) ) . '</form>';
+		$h .= NHM_Forms::button( __( 'Save Company Details', 'neurohr-members' ) ) . '</form>';
 		return $h . '</section>';
 	}
 
@@ -973,10 +987,10 @@ class NHM_Account {
 			$h     .= '<td>' . esc_html( NHM_Emails::format_date( $inv['issue_date'] ) ) . '</td>';
 			$h     .= '<td class="nhm-table__num">' . esc_html( NHM_Settings::money( $inv['total'] ) ) . '</td>';
 			$h     .= '<td><span class="nhm-status nhm-status--' . esc_attr( $inv['status'] ) . '">' . esc_html( $status ) . '</span></td>';
-			$pay    = NHM_Payments::payable( $inv ) && ! NHM_Payments::waiting_for( $inv['id'] ) ? '<a class="nhm-btn nhm-btn--small nhm-btn--primary" href="' . esc_url( NHM_Payments::pay_url( $inv ) ) . '">' . esc_html__( 'Pay now', 'neurohr-members' ) . '</a> ' : '';
+			$pay    = NHM_Payments::payable( $inv ) && ! NHM_Payments::waiting_for( $inv['id'] ) ? '<a class="nhm-btn nhm-btn--small nhm-btn--primary" href="' . esc_url( NHM_Payments::pay_url( $inv ) ) . '">' . esc_html__( 'Pay Now', 'neurohr-members' ) . '</a> ' : '';
 			list( $extra, $dialog ) = NHM_Refunds::invoice_actions( $inv, get_current_user_id() );
 			$dialogs .= $dialog;
-			$h       .= '<td class="nhm-table__actions"><div class="nhm-row-actions">' . $pay . '<a class="nhm-btn nhm-btn--small" href="' . esc_url( NHM_Invoices::download_url( $inv ) ) . '" target="_blank" rel="noopener">' . esc_html__( 'View invoice', 'neurohr-members' ) . '</a>' . $extra . '</div></td></tr>';
+			$h       .= '<td class="nhm-table__actions"><div class="nhm-row-actions">' . $pay . '<a class="nhm-btn nhm-btn--small" href="' . esc_url( NHM_Invoices::download_url( $inv ) ) . '" target="_blank" rel="noopener">' . esc_html__( 'View Invoice', 'neurohr-members' ) . '</a>' . $extra . '</div></td></tr>';
 		}
 		return $h . '</tbody></table></div>' . $dialogs . '</section>';
 	}
@@ -985,39 +999,57 @@ class NHM_Account {
 		$uid = get_current_user_id();
 		$m   = NHM_Members::membership();
 		$h   = '<section class="nhm-card nhm-billing" id="nhm-billing">';
-		$h  .= '<h3 class="nhm-card__title">' . esc_html__( 'Personal billing details', 'neurohr-members' ) . '</h3>';
+		$h  .= '<h3 class="nhm-card__title">' . esc_html__( 'Personal Billing Details', 'neurohr-members' ) . '</h3>';
 		$h  .= NHM_Forms::render_messages( 'billing' );
 		if ( 'owner' === $m['role'] ) {
 			$h .= '<p class="nhm-muted">' . esc_html__( 'Invoices for your company account use the company details (Company tab). The details below are for invoices to you personally.', 'neurohr-members' ) . '</p>';
 		} else {
 			$h .= '<p class="nhm-muted">' . esc_html__( 'Optional. Shown on your invoices.', 'neurohr-members' ) . '</p>';
 		}
-		$err = NHM_Forms::has_errors( 'billing' );
-		$h  .= NHM_Forms::open( 'billing' ) . '<div class="nhm-grid">';
+		$err  = NHM_Forms::has_errors( 'billing' );
+		$type = $err ? ( 'company' === NHM_Forms::value( 'billing', 'nhm_bill_type' ) ? 'company' : 'individual' ) : self::bill_type( $uid );
+		$h   .= NHM_Forms::open( 'billing', 'nhm-billing-form is-' . $type );
+		$h   .= '<p class="nhm-field nhm-field--nhm_bill_type"><label for="nhm-bill-type">' . esc_html__( 'Bill To', 'neurohr-members' ) . '</label><select class="nhm-input nhm-select" id="nhm-bill-type" name="nhm_bill_type" data-nhm-billtype>';
+		$h   .= '<option value="individual"' . selected( 'individual', $type, false ) . '>' . esc_html__( 'Individual (myself)', 'neurohr-members' ) . '</option>';
+		$h   .= '<option value="company"' . selected( 'company', $type, false ) . '>' . esc_html__( 'Company', 'neurohr-members' ) . '</option></select></p>';
+		$h   .= '<div class="nhm-grid">';
 		foreach ( self::billing_fields() as $key => $f ) {
 			if ( 'textarea' === $f[1] ) {
 				continue;
 			}
-			$h .= NHM_Forms::field( array( 'name' => $key, 'label' => $f[0], 'type' => $f[1], 'autocomplete' => $f[2], 'value' => $err ? NHM_Forms::value( 'billing', $key ) : (string) get_user_meta( $uid, $key, true ) ) );
+			$args = array( 'name' => $key, 'label' => $f[0], 'type' => $f[1], 'autocomplete' => $f[2], 'value' => $err ? NHM_Forms::value( 'billing', $key ) : (string) get_user_meta( $uid, $key, true ) );
+			if ( 'nhm_bill_reg' === $key ) {
+				$company       = __( 'Registration No. (SSM)', 'neurohr-members' );
+				$person        = __( 'NRIC / Passport No.', 'neurohr-members' );
+				$args['label'] = 'company' === $type ? $company : $person;
+				$args['attrs'] = 'data-label-company="' . esc_attr( $company ) . '" data-label-individual="' . esc_attr( $person ) . '"';
+			}
+			if ( 'nhm_bill_name' === $key ) {
+				$company       = __( 'Attention To (Contact Person)', 'neurohr-members' );
+				$person        = __( 'Name on Invoice', 'neurohr-members' );
+				$args['label'] = 'company' === $type ? $company : $person;
+				$args['attrs'] = 'data-label-company="' . esc_attr( $company ) . '" data-label-individual="' . esc_attr( $person ) . '"';
+			}
+			$h .= NHM_Forms::field( $args );
 		}
 		$h .= '</div>';
-		$h .= NHM_Forms::field( array( 'name' => 'nhm_bill_address', 'label' => __( 'Billing address', 'neurohr-members' ), 'type' => 'textarea', 'autocomplete' => 'street-address', 'value' => $err ? NHM_Forms::value( 'billing', 'nhm_bill_address' ) : (string) get_user_meta( $uid, 'nhm_bill_address', true ) ) );
-		$h .= NHM_Forms::button( __( 'Save billing details', 'neurohr-members' ) ) . '</form></section>';
+		$h .= NHM_Forms::field( array( 'name' => 'nhm_bill_address', 'label' => __( 'Billing Address', 'neurohr-members' ), 'type' => 'textarea', 'autocomplete' => 'street-address', 'value' => $err ? NHM_Forms::value( 'billing', 'nhm_bill_address' ) : (string) get_user_meta( $uid, 'nhm_bill_address', true ) ) );
+		$h .= NHM_Forms::button( __( 'Save Billing Details', 'neurohr-members' ) ) . '</form></section>';
 		return $h;
 	}
 
 	private static function password_card() {
 		$min = max( 6, (int) NHM_Settings::get( 'min_password' ) );
 		$h   = '<section class="nhm-card nhm-password-card" id="nhm-password">';
-		$h  .= '<h3 class="nhm-card__title">' . esc_html__( 'Change password', 'neurohr-members' ) . '</h3>';
+		$h  .= '<h3 class="nhm-card__title">' . esc_html__( 'Change Password', 'neurohr-members' ) . '</h3>';
 		$h  .= NHM_Forms::render_messages( 'password' );
 		$h  .= NHM_Forms::open( 'password' );
 		$h  .= '<div class="nhm-grid">';
-		$h  .= NHM_Forms::field( array( 'name' => 'nhm_current', 'label' => __( 'Current password', 'neurohr-members' ), 'type' => 'password', 'required' => true, 'autocomplete' => 'current-password' ) );
+		$h  .= NHM_Forms::field( array( 'name' => 'nhm_current', 'label' => __( 'Current Password', 'neurohr-members' ), 'type' => 'password', 'required' => true, 'autocomplete' => 'current-password' ) );
 		/* translators: %d: number of characters */
-		$h .= NHM_Forms::field( array( 'name' => 'nhm_new', 'label' => __( 'New password', 'neurohr-members' ), 'type' => 'password', 'required' => true, 'autocomplete' => 'new-password', 'help' => sprintf( __( 'At least %d characters.', 'neurohr-members' ), $min ), 'attrs' => 'minlength="' . (int) $min . '"' ) );
+		$h .= NHM_Forms::field( array( 'name' => 'nhm_new', 'label' => __( 'New Password', 'neurohr-members' ), 'type' => 'password', 'required' => true, 'autocomplete' => 'new-password', 'help' => sprintf( __( 'At least %d characters.', 'neurohr-members' ), $min ), 'attrs' => 'minlength="' . (int) $min . '"' ) );
 		$h .= '</div>';
-		$h .= NHM_Forms::button( __( 'Change password', 'neurohr-members' ) );
+		$h .= NHM_Forms::button( __( 'Change Password', 'neurohr-members' ) );
 		$h .= '</form></section>';
 		return $h;
 	}

@@ -77,7 +77,7 @@ class NHM_Visibility {
 	public static function specials() {
 		return array(
 			'#nhm-login'    => __( 'Log in / Log out', 'neurohr-members' ),
-			'#nhm-account'  => __( 'My account', 'neurohr-members' ),
+			'#nhm-account'  => __( 'My Account', 'neurohr-members' ),
 			'#nhm-register' => __( 'Register', 'neurohr-members' ),
 			'#nhm-upgrade'  => __( 'Upgrade', 'neurohr-members' ),
 			'#nhm-user'     => __( 'Member name + photo', 'neurohr-members' ),
@@ -108,7 +108,7 @@ class NHM_Visibility {
 			'chat'      => __( 'Chat / Support', 'neurohr-members' ),
 			'help'      => __( 'Help', 'neurohr-members' ),
 			'settings'  => __( 'Settings', 'neurohr-members' ),
-			'logout'    => __( 'Log out', 'neurohr-members' ),
+			'logout'    => __( 'Log Out', 'neurohr-members' ),
 		);
 	}
 
@@ -232,10 +232,10 @@ class NHM_Visibility {
 			switch ( $item->url ) {
 				case '#nhm-login':
 					if ( $logged ) {
-						$item->title = __( 'Log out', 'neurohr-members' );
+						$item->title = __( 'Log Out', 'neurohr-members' );
 						$item->url   = wp_logout_url();
 					} else {
-						$item->title = __( 'Log in', 'neurohr-members' );
+						$item->title = __( 'Log In', 'neurohr-members' );
 						$item->url   = nhm_login_url();
 					}
 					break;
@@ -355,14 +355,14 @@ class NHM_Visibility {
 		$element->start_controls_section(
 			'nhm_visibility',
 			array(
-				'label' => __( 'NeuroHR: who sees this', 'neurohr-members' ),
+				'label' => __( 'NeuroHR: Who Sees This', 'neurohr-members' ),
 				'tab'   => \Elementor\Controls_Manager::TAB_ADVANCED,
 			)
 		);
 		$element->add_control(
 			'nhm_vis',
 			array(
-				'label'   => __( 'Show to', 'neurohr-members' ),
+				'label'   => __( 'Show To', 'neurohr-members' ),
 				'type'    => \Elementor\Controls_Manager::SELECT,
 				'default' => 'all',
 				'options' => self::modes(),
@@ -371,7 +371,7 @@ class NHM_Visibility {
 		$element->add_control(
 			'nhm_vis_level',
 			array(
-				'label'     => __( 'Plan (or higher)', 'neurohr-members' ),
+				'label'     => __( 'Plan (Or Higher)', 'neurohr-members' ),
 				'type'      => \Elementor\Controls_Manager::SELECT,
 				'options'   => $levels,
 				'default'   => (string) NHM_Levels::base_id(),

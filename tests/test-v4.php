@@ -44,7 +44,7 @@ file_put_contents( $png, base64_decode( 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAA
 $txt = sys_get_temp_dir() . '/slip.txt';
 file_put_contents( $txt, 'not an image' );
 
-// ---------- Ways to pay ----------
+// ---------- Ways to Pay ----------
 ok( array( 'bank' ) === array_keys( NHM_Payments::available() ), 'bank on by default (bank details set), Stripe and QR off' );
 NHM_Settings::update( array( 'pay_qr' => 1, 'qr_image' => 'https://example.test/qr.png', 'qr_name' => 'NeuroHR Sdn Bhd' ) );
 ok( array( 'bank', 'qr' ) === array_keys( NHM_Payments::available() ), 'QR on with a picture' );
@@ -68,8 +68,8 @@ ok( NHM_Invoices::by_token( $inv['token'] )['id'] === $inv['id'] && null === NHM
 wp_set_current_user( 0 ); // Accounts team without login.
 $_GET = array( 'nhm_pay' => $inv['token'] );
 $html = NHM_Account::render( array() );
-ok( false !== strpos( $html, 'RM 600.00' ) && false !== strpos( $html, 'Pay online' ) && false !== strpos( $html, 'Bank transfer' ) && false !== strpos( $html, 'DuitNow QR' ), 'pay page for a visitor with the link' );
-ok( false !== strpos( $html, 'Pay RM 600.00 now' ) && false !== strpos( $html, 'TEST MODE' ), 'Stripe panel first' );
+ok( false !== strpos( $html, 'RM 600.00' ) && false !== strpos( $html, 'Pay Online' ) && false !== strpos( $html, 'Bank Transfer' ) && false !== strpos( $html, 'DuitNow QR' ), 'pay page for a visitor with the link' );
+ok( false !== strpos( $html, 'Pay RM 600.00 Now' ) && false !== strpos( $html, 'TEST MODE' ), 'Stripe panel first' );
 $_GET = array( 'nhm_pay' => $inv['token'], 'method' => 'bank' );
 $html = NHM_Payments::shortcode();
 ok( false !== strpos( $html, '5140 1234 5678' ) && false !== strpos( $html, 'data-nhm-copy="' . $inv['number'] . '"' ) && false !== strpos( $html, 'name="nhm_slip"' ) && false !== strpos( $html, 'enctype="multipart/form-data"' ), 'bank panel: details, reference, proof form' );
@@ -198,7 +198,7 @@ wp_set_current_user( 53 );
 $_GET = array( 'tab' => 'billing' );
 $acc = NHM_Account::render( array() );
 $_GET = array();
-ok( false !== strpos( $acc, 'Pay now' ) && false !== strpos( $acc, 'nhm_pay=' . $inv4['token'] ), 'My account: Pay now' );
+ok( false !== strpos( $acc, 'Pay Now' ) && false !== strpos( $acc, 'nhm_pay=' . $inv4['token'] ), 'My account: Pay now' );
 
 
 // ---------- 0.4.1: paid sign-up goes straight to payment ----------
@@ -258,7 +258,7 @@ add_user( 60, 'card@x.my', 'Card' );
 $cinv = NHM_Invoices::get( NHM_Invoices::for_plan( 60, 3, 'upgrade' ) );
 wp_set_current_user( 60 );
 $card = NHM_Account::plan_card( array( 'style' => 'light' ) );
-ok( false !== strpos( $card, 'Payment pending' ) && false !== strpos( $card, 'Complete payment' ) && false === strpos( $card, '>Upgrade<' ) && false === strpos( $card, 'nhm-alert' ), 'plan card becomes the payment card' );
+ok( false !== strpos( $card, 'Payment pending' ) && false !== strpos( $card, 'Complete Payment' ) && false === strpos( $card, '>Upgrade<' ) && false === strpos( $card, 'nhm-alert' ), 'plan card becomes the payment card' );
 // Download with the key works without login
 wp_set_current_user( 0 );
 $_GET = array( 'nhm_invoice' => $cinv['id'], 'key' => 'wrong' );

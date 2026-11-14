@@ -366,7 +366,7 @@ class NHM_Renew {
 			return '';
 		}
 		$h  = '<section class="nhm-card nhm-renew" id="nhm-autorenew">';
-		$h .= '<div class="nhm-renew__head"><h3 class="nhm-card__title">' . esc_html__( 'Auto-renew', 'neurohr-members' ) . '</h3>';
+		$h .= '<div class="nhm-renew__head"><h3 class="nhm-card__title">' . esc_html__( 'Auto-Renew', 'neurohr-members' ) . '</h3>';
 		$h .= ! empty( $a['on'] ) ? '<span class="nhm-pill nhm-pill--ok">' . esc_html__( 'On', 'neurohr-members' ) . '</span>' : '<span class="nhm-pill">' . esc_html__( 'Off', 'neurohr-members' ) . '</span>';
 		$h .= '</div>' . NHM_Forms::render_messages( 'autorenew' );
 		if ( ! empty( $a['on'] ) ) {
@@ -380,7 +380,7 @@ class NHM_Renew {
 			$h .= '</dl>';
 			/* translators: 1: price, 2: "every year" */
 			$h .= '<p class="nhm-muted nhm-renew__lock">' . esc_html( sprintf( __( 'Your price of %1$s %2$s stays the same as long as auto-renew is on.', 'neurohr-members' ), NHM_Settings::money( self::price( $user_id ) ), self::every( $a['level'] ) ) ) . '</p>';
-			$h .= '<div class="nhm-actions">' . NHM_Forms::open( 'card_update', 'nhm-inline' ) . NHM_Forms::button( __( 'Update card', 'neurohr-members' ), 'nhm-btn' ) . '</form>';
+			$h .= '<div class="nhm-actions">' . NHM_Forms::open( 'card_update', 'nhm-inline' ) . NHM_Forms::button( __( 'Update Card', 'neurohr-members' ), 'nhm-btn' ) . '</form>';
 			$h .= '<a href="#nhm-renew-off" class="nhm-link-muted" data-nhm-dialog="nhm-renew-off">' . esc_html__( 'Turn off auto-renew', 'neurohr-members' ) . '</a></div>';
 			$h .= self::off_dialog( $p );
 		} else {
@@ -389,7 +389,7 @@ class NHM_Renew {
 			$amount = (float) NHM_Levels::get( $p['level'] )['amount'];
 			/* translators: 1: price, 2: "every year" */
 			$h .= '<p class="nhm-muted">' . esc_html( sprintf( __( '%1$s %2$s. Cancel any time.', 'neurohr-members' ), NHM_Settings::money( $amount ), self::every( $p['level'] ) ) ) . '</p>';
-			$label = self::has_card( $user_id ) ? sprintf( /* translators: %s: card */ __( 'Turn on with %s', 'neurohr-members' ), self::card_label( $a ) ) : __( 'Add a card and turn on auto-renew', 'neurohr-members' );
+			$label = self::has_card( $user_id ) ? sprintf( /* translators: %s: card */ __( 'Turn On with %s', 'neurohr-members' ), self::card_label( $a ) ) : __( 'Add a Card and Turn On Auto-Renew', 'neurohr-members' );
 			$h    .= NHM_Forms::open( 'autorenew_on' ) . NHM_Forms::button( $label, 'nhm-btn nhm-btn--primary' ) . '</form>';
 		}
 		return $h . '</section>';
@@ -411,12 +411,12 @@ class NHM_Renew {
 		/* translators: %s: date */
 		$h .= '<p class="nhm-lead">' . esc_html( sprintf( __( 'Your plan stays active until %s. After that you can renew yourself, at the price of that time.', 'neurohr-members' ), NHM_Emails::format_date( $p['expiry'] ) ) ) . '</p>';
 		$h .= NHM_Forms::open( 'autorenew_off' );
-		$h .= '<p class="nhm-field"><label for="nhm-reason">' . esc_html__( 'May we ask why?', 'neurohr-members' ) . ' <span class="nhm-optional">' . esc_html__( '(optional)', 'neurohr-members' ) . '</span></label><select id="nhm-reason" name="nhm_reason" class="nhm-input"><option value="">' . esc_html__( 'Choose a reason', 'neurohr-members' ) . '</option>';
+		$h .= '<p class="nhm-field"><label for="nhm-reason">' . esc_html__( 'May we ask why?', 'neurohr-members' ) . ' <span class="nhm-optional">' . esc_html__( '(optional)', 'neurohr-members' ) . '</span></label><select id="nhm-reason" name="nhm_reason" class="nhm-input"><option value="">' . esc_html__( 'Choose a Reason', 'neurohr-members' ) . '</option>';
 		foreach ( self::off_reasons() as $k => $label ) {
 			$h .= '<option value="' . esc_attr( $k ) . '">' . esc_html( $label ) . '</option>';
 		}
 		$h .= '</select></p><p class="nhm-field"><textarea name="nhm_reason_more" class="nhm-input" rows="2" placeholder="' . esc_attr__( 'Anything else you would like to tell us', 'neurohr-members' ) . '"></textarea></p>';
-		$h .= NHM_Forms::button( __( 'Turn off auto-renew', 'neurohr-members' ), 'nhm-btn nhm-btn--block' ) . '</form></div></dialog>';
+		$h .= NHM_Forms::button( __( 'Turn Off Auto-Renew', 'neurohr-members' ), 'nhm-btn nhm-btn--block' ) . '</form></div></dialog>';
 		return $h;
 	}
 

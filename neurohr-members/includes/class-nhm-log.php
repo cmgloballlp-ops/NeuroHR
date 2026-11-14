@@ -97,7 +97,7 @@ class NHM_Log {
 		echo '<table class="widefat striped nhm-log"><thead><tr>';
 		echo '<th>' . esc_html__( 'Date', 'neurohr-members' ) . '</th>';
 		if ( $show_who ) {
-			echo '<th>' . esc_html__( 'Member / company', 'neurohr-members' ) . '</th>';
+			echo '<th>' . esc_html__( 'Member / Company', 'neurohr-members' ) . '</th>';
 		}
 		echo '<th>' . esc_html__( 'What', 'neurohr-members' ) . '</th><th>' . esc_html__( 'Plan', 'neurohr-members' ) . '</th><th>' . esc_html__( 'Until', 'neurohr-members' ) . '</th><th>' . esc_html__( 'By', 'neurohr-members' ) . '</th></tr></thead><tbody>';
 		foreach ( $rows as $row ) {
