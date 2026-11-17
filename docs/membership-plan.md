@@ -169,3 +169,4 @@ Refunds (phase 2, to build):
 ## Ideas, not decided
 
 - Payment gateways: possibly Billplz for FPX, Curlec for auto-renew, Stripe for the rest. Needs a gateway layer first. Owner's own comparison of fees comes first.
+- Mobile app feel + PWA (asked 17 Nov 2026, discussing): installable "NeuroHR" app (manifest, icons, service worker at site root, offline page, "Install the app" prompt / iOS Add to Home Screen steps), mobile-first member area (bottom tab bar, bigger touch targets). Members-only pages are never cached by the service worker. Push notifications possible later. Waiting for owner's answers (name, icon, start page, offline reading, push).
