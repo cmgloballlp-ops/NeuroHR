@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       NeuroHR Knowledge Hub
  * Description:       Lightweight knowledge hub for NeuroHR: Knowledge Hub, Legal Case Insights, FAQ, Templates (protected downloads) and Videos, with level-based access from NeuroHR Members (or MemberPress).
- * Version:           0.8.2
+ * Version:           0.9.0
  * Author:            NeuroHR
  * Requires at least: 6.0
  * Requires PHP:      7.4
@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'NH_HUB_VERSION', '0.8.2' );
+define( 'NH_HUB_VERSION', '0.9.0' );
 define( 'NH_HUB_FILE', __FILE__ );
 define( 'NH_HUB_DIR', plugin_dir_path( __FILE__ ) );
 define( 'NH_HUB_URL', plugin_dir_url( __FILE__ ) );
@@ -36,6 +36,7 @@ require_once NH_HUB_DIR . 'includes/class-nh-media.php';
 require_once NH_HUB_DIR . 'includes/class-nh-review.php';
 require_once NH_HUB_DIR . 'includes/class-nh-print.php';
 require_once NH_HUB_DIR . 'includes/class-nh-usage.php';
+require_once NH_HUB_DIR . 'includes/class-nh-app.php';
 
 NH_Post_Types::init();
 NH_Rewrite::init();
@@ -51,6 +52,7 @@ NH_Media::init();
 NH_Review::init();
 NH_Print::init();
 NH_Usage::init();
+NH_App::init();
 
 if ( is_admin() ) {
 	require_once NH_HUB_DIR . 'includes/class-nh-admin.php';

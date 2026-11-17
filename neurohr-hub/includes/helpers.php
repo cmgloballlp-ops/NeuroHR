@@ -152,12 +152,22 @@ function nh_hub_render_row( $post, $show_meta = false ) {
 		$meta  = ( $terms && ! is_wp_error( $terms ) ) ? $terms[0]->name : $data['label'];
 	}
 	$locked = is_user_logged_in() && ! NH_Access::can_view( $post );
+	$type   = nh_hub_get_type( $post );
+	$ext    = '';
+	if ( $type && 'download' === $type->slug ) {
+		$file = get_post_meta( $post->ID, NH_Media::FILE_META, true );
+		$ext  = is_array( $file ) && ! empty( $file['name'] ) ? strtoupper( pathinfo( $file['name'], PATHINFO_EXTENSION ) ) : 'FILE';
+		$ext  = in_array( $ext, array( 'DOCX', 'DOC' ), true ) ? 'DOC' : ( in_array( $ext, array( 'XLSX', 'XLS', 'CSV' ), true ) ? 'XLS' : ( in_array( $ext, array( 'PPTX', 'PPT' ), true ) ? 'PPT' : substr( $ext, 0, 4 ) ) );
+	}
 	?>
-	<a class="nh-row" href="<?php echo esc_url( get_permalink( $post ) ); ?>">
+	<a class="nh-row<?php echo $type ? ' nh-row--' . esc_attr( $type->slug ) : ''; ?><?php echo $locked ? ' is-locked' : ''; ?>" href="<?php echo esc_url( get_permalink( $post ) ); ?>">
+		<?php if ( $ext ) : ?><span class="nh-row__ext nh-row__ext--<?php echo esc_attr( strtolower( $ext ) ); ?>" aria-hidden="true"><?php echo esc_html( $ext ); ?></span><?php endif; ?>
 		<span class="nh-row__main">
 			<span class="nh-row__title"><?php echo esc_html( get_the_title( $post ) ); ?> <?php echo NH_Review::badge( $post ); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped in method. ?></span>
 			<span class="nh-row__excerpt"><?php echo esc_html( nh_hub_excerpt( $post, 26 ) ); ?></span>
+			<span class="nh-row__sub"><?php echo esc_html( $meta ? $meta : ( $type ? $type->name : '' ) ); ?></span>
 		</span>
+		<span class="nh-row__date"><?php echo esc_html( get_the_date( 'j M', $post ) ); ?></span>
 		<span class="nh-row__side">
 			<?php if ( $meta ) : ?>
 				<span class="nh-row__meta"><?php echo esc_html( $meta ); ?></span>

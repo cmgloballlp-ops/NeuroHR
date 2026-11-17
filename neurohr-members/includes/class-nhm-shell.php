@@ -216,6 +216,9 @@ class NHM_Shell {
 			'close'     => '<path d="M6 6l12 12M18 6L6 18"/>',
 			'chevron'   => '<path d="M6 9l6 6 6-6"/>',
 			'arrow'     => '<path d="M5 12h14"/><path d="M13 6l6 6-6 6"/>',
+			'bookmark'  => '<path d="M6 3h12v18l-6-4-6 4z"/>',
+			'more'      => '<circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/>',
+			'bell'      => '<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>',
 			'dot'       => '<circle cx="12" cy="12" r="2.5"/>',
 		);
 		$inner = isset( $p[ $name ] ) ? $p[ $name ] : $p['dot'];

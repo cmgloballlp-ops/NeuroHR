@@ -9,6 +9,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 return array(
+	'0.9.0' => array(
+		'date'    => '2026-11-17',
+		'changes' => array(
+			'Saved: a bookmark button on every guide, case, FAQ, template and video. Saved items are listed at /knowledge/saved/ (newest first, up to 300 per member).',
+			'Share button: opens the phone\'s share sheet, or copies the link on a computer.',
+			'Phones: lists show as a timeline with dates; templates show as cards with a file badge (DOC, XLS, PDF…) and a download or lock icon; articles get Save and Share at the top and a sticky "Ready-to-use template" bar when the guide links to a template.',
+			'Gives NeuroHR Members 0.5 the newest items for "Latest for You" and the links for the phone bottom bar and More sheet.',
+		),
+	),
 	'0.8.2' => array(
 		'date'    => '2026-10-30',
 		'changes' => array(

@@ -23,7 +23,7 @@ class NH_Rewrite {
 	const OPTION_LEGACY = 'nh_hub_legacy_topics';
 
 	/** Words a resource slug may never use, because the address would clash with a hub page. */
-	const RESERVED = array( 'tag', 'page', 'feed', 'type', 'topic', 'embed', 'search' );
+	const RESERVED = array( 'tag', 'page', 'feed', 'type', 'topic', 'embed', 'search', 'saved' );
 
 	public static function init() {
 		add_filter( 'query_vars', array( __CLASS__, 'query_vars' ) );

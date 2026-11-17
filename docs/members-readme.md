@@ -1,8 +1,19 @@
-# NeuroHR Members — v0.4.5
+# NeuroHR Members — v0.5.0
 
 Replaces MemberPress on neurohr.com.my. It manages levels, personal plans, company accounts with seats, plan end dates and reminders, the login / registration / account pages (as shortcodes on your own pages), and members-only pages.
 It also tells the Knowledge Hub (0.8.1) and Simple Payroll (0.5.0) which level each person has, gives logged-in people one member-area layout on every page, and hides WordPress's own login screens.
 Members pay their invoice online (Stripe: card, FPX, GrabPay), by bank transfer or by DuitNow QR (with a slip you approve). The plan starts when the invoice is paid. Card auto-renew (personal plans) and refunds are in since 0.4.3.
+
+## New in 0.5.0
+
+- **Greeting**: `[nhm_greeting]` → "Good morning, Marcus!" by the member's time zone (else Malaysia): morning 5:00–11:59, afternoon 12:00–17:59, evening 18:00–20:59, "Working late, Marcus?" 21:00–4:59. No first name → "Good morning!". `[nhm_greeting part="line"]` → one of 20 lines, never the same twice in a row. Edit in Settings → Member Area → *Greeting*.
+- **Phone app layout** (≤768px; computers unchanged): bottom bar Home · Hub · (Search) · Templates · More; full-screen search (live results, recent searches); More sheet (profile, shortcuts, My Account, Plan & Billing, My Company, Notifications, Install, Log Out). Shortcuts = menu location *Phone: More shortcuts* (default: HR News, Case Insights, Videos, Saved, FAQ, Payroll).
+- **App home** on the Dashboard page (the page in *Logged-in members who open the home page go to*): greeting, swipeable plan card with days-left ring, today's line, Renew / Upgrade card, *Latest for You* (Knowledge Hub 0.9). The Elementor content still shows on computers.
+- **My Account on phones** opens as a grouped list; sections have a back link.
+- **PWA**: `/nhm-manifest.webmanifest`, `/nhm-sw.js`, `/nhm-offline/`. Needs an App Icon or a Site Icon (512×512). Pages are never cached (network only, offline page when there is no internet); only CSS/JS/fonts/images are kept. Settings → Member Area → *Install as an App*.
+- Search box: no square theme focus box while typing.
+
+**After updating:** Update Knowledge Hub to 0.9.0. Set a Site Icon (or Settings → Member Area → App Icon). Optional: add `[nhm_greeting]` to your Dashboard page; make a menu for *Phone: More shortcuts*. If you use a caching plugin, exclude `/nhm-sw.js` and `/nhm-manifest.webmanifest`.
 
 ## New in 0.4.5
 

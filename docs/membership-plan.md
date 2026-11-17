@@ -137,8 +137,11 @@ Refunds (phase 2, to build):
 
 - 0.4.4 (PR #1): invoices table, refund pop-up, invitation page `[nhm_invite]`, seats table with Remove / Send again / Cancel, change-password alignment, code on GitHub (cmgloballlp-ops/NeuroHR).
 - 0.4.5 (PR #2): Bill To Individual / Company (NRIC / Passport No.), Title Case everywhere, full-width admin lists.
+- 0.5.0 + Hub 0.9.0 (PR #3): search box focus fix, `[nhm_greeting]` (spec below), phone app layout (bottom bar, search screen, More sheet with menu location "Phone: More shortcuts", app home on the Dashboard, My Account list), PWA (manifest, service worker, offline page, install prompt), Hub Saved + Share + phone list/template/article styles.
 
 ## Backlog — to build together later
+
+(Items 1 and 2 were built in 0.5.0; kept here as the spec.)
 
 1. **Top-bar search box**: when typing, a rectangular box shows inside the rounded search field (the theme's focus outline/border on the input). Remove it so only the rounded orange ring shows. Likely fix: `.nhs-search input:focus, .nhs-search input:focus-visible { outline: none !important; box-shadow: none !important; border: 0 !important; }`.
 
@@ -169,6 +172,6 @@ Refunds (phase 2, to build):
 ## Ideas, not decided
 
 - Payment gateways: possibly Billplz for FPX, Curlec for auto-renew, Stripe for the rest. Needs a gateway layer first. Owner's own comparison of fees comes first.
-- Mobile app feel + PWA (asked 17 Nov 2026, discussing): installable "NeuroHR" app (manifest, icons, service worker at site root, offline page, "Install the app" prompt / iOS Add to Home Screen steps), mobile-first member area (bottom tab bar, bigger touch targets). Members-only pages are never cached by the service worker. Push notifications possible later. Waiting for owner's answers (name, icon, start page, offline reading, push).
+- Mobile app feel + PWA (built in 0.5.0 / Hub 0.9.0; push notifications still later): installable "NeuroHR" app (manifest, icons, service worker at site root, offline page, "Install the app" prompt / iOS Add to Home Screen steps), mobile-first member area (bottom tab bar, bigger touch targets). Members-only pages are never cached by the service worker. Push notifications possible later. Defaults used: name NeuroHR, icon = Site Icon or App Icon setting, start page = Dashboard, no offline reading of members-only pages, push later.
   - Style reference from owner (17 Nov 2026): soft "app" look like a fitness/planner app: date + greeting header with avatar top right, big rounded colour hero card with a progress ring (swipeable), white bottom sheet with a timeline list (Today / Yesterday), rounded cards with soft shadows, bottom tab bar with a raised round centre button. NeuroHR version would use orange instead of teal. Mock-up to be shown before building.
   - 17 Nov 2026: owner approved the style and colours of the mock-ups (Dashboard, Hub list, Templates, Search, More, Article, My Account, Plan & Billing). Bottom bar: Home · Hub · (Search) · Templates · More. "Latest for You" shows the newest 5 + See all. The More shortcuts must be editable by the owner later (plan: a menu location in Appearance → Menus with icons).

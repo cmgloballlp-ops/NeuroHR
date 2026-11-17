@@ -1,4 +1,6 @@
-# NeuroHR Knowledge Hub — v0.8.2
+# NeuroHR Knowledge Hub — v0.9.0
+
+**New in 0.9.0:** *Saved* (bookmark on every resource; list at `/knowledge/saved/`), a *Share* button, and the phone look: timeline lists with dates, template cards with file badges and download/lock icons, Save + Share on articles, a sticky "Ready-to-use template" bar. Feeds "Latest for You" and the bottom-bar links of NeuroHR Members 0.5. After updating, visit Settings → Permalinks once if /knowledge/saved/ gives a 404 (normally automatic).
 
 **New in 0.8.2:** keeps a short record of what each member opened and downloaded (kept 90 days, staff not counted). NeuroHR Members 0.4.3 shows it next to refund requests.
 
