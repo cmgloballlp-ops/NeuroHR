@@ -1,6 +1,6 @@
 /* NeuroHR Knowledge Hub — admin screens (settings, dashboard, resource list). */
 
-.nh-admin { --nh-a: #f47b20; --nh-a-soft: #fff3ea; --nh-line: #e4e6eb; --nh-muted: #646970; max-width: 1280px; }
+.nh-admin { --nh-a: #f47b20; --nh-a-soft: #fff3ea; --nh-line: #e4e6eb; --nh-muted: #646970; max-width: none; }
 
 /* Tabs (settings and resource list) */
 .nh-admin-tabs { display: flex; flex-wrap: wrap; gap: 4px; margin: 16px 0 8px; border-bottom: 1px solid var(--nh-line, #e4e6eb); }
@@ -53,7 +53,7 @@
 .nh-dash__actions { display: flex; gap: 8px; }
 .nh-dash .button-primary { background: #f47b20; border-color: #f47b20; }
 .nh-dash .button-primary:hover, .nh-dash .button-primary:focus { background: #d9661a; border-color: #d9661a; }
-.nh-dash__tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+.nh-dash__tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
 .nh-dash__tile { display: flex; flex-direction: column; gap: 2px; padding: 16px 18px; background: #fff; border: 1px solid #e4e6eb; border-radius: 10px; color: #1d2327; text-decoration: none; transition: border-color .15s, box-shadow .15s; }
 a.nh-dash__tile:hover { border-color: #f47b20; color: #1d2327; box-shadow: 0 4px 14px rgba(244, 123, 32, .12); }
 .nh-dash__tile .dashicons { color: #f47b20; font-size: 22px; width: 22px; height: 22px; margin-bottom: 6px; }

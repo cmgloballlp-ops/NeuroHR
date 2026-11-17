@@ -144,15 +144,19 @@ class NH_Admin_List {
 			return $columns;
 		}
 		$section = NH_Sections::get( $key );
-		unset( $columns[ 'taxonomy-' . NH_Post_Types::TAX_TYPE ] );
-		if ( NH_Post_Types::TAX_CASE_TOPIC !== $section['taxonomy'] ) {
-			unset( $columns[ 'taxonomy-' . NH_Post_Types::TAX_CASE_TOPIC ] );
+		if ( count( $section['type_ids'] ) < 2 ) {
+			unset( $columns[ 'taxonomy-' . NH_Post_Types::TAX_TYPE ] );
 		}
-		if ( NH_Post_Types::TAX_TOPIC !== $section['taxonomy'] ) {
-			unset( $columns[ 'taxonomy-' . NH_Post_Types::TAX_TOPIC ] );
+		foreach ( array_keys( NH_Sections::topic_taxonomies() ) as $taxonomy ) {
+			if ( $taxonomy !== $section['taxonomy'] ) {
+				unset( $columns[ 'taxonomy-' . $taxonomy ] );
+			}
 		}
-		if ( 'templates' !== $key ) {
+		if ( ! NH_Sections::has_kind( $key, 'download' ) ) {
 			unset( $columns['nh_downloads'] );
+		}
+		if ( ! NH_Sections::is_faq( $key ) ) {
+			unset( $columns[ 'taxonomy-' . NH_Post_Types::TAX_FAQ_GROUP ] );
 		}
 		return $columns;
 	}

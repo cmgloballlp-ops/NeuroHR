@@ -21,6 +21,7 @@ class NH_Post_Types {
 	const TAX_TOPIC      = 'nh_topic';
 	const TAX_CASE_TOPIC = 'nh_case_topic';
 	const TAX_TAG        = 'nh_tag';
+	const TAX_FAQ_GROUP  = 'nh_faq_group'; // Groups of FAQ items, for [nh_faq group="…"]. No pages of its own.
 	const BASE           = 'knowledge';
 
 	public static function init() {
@@ -30,13 +31,35 @@ class NH_Post_Types {
 
 	/** Taxonomies whose terms belong to hub resources. */
 	public static function taxonomies() {
-		return array( self::TAX_TYPE, self::TAX_TOPIC, self::TAX_CASE_TOPIC, self::TAX_TAG );
+		return array_merge( array( self::TAX_TYPE, self::TAX_TOPIC, self::TAX_CASE_TOPIC, self::TAX_TAG, self::TAX_FAQ_GROUP ), array_keys( NH_Sections::topic_groups() ) );
 	}
 
 	public static function register() {
 		// Taxonomies are registered BEFORE the post type on purpose: the tag rewrite rules
 		// (knowledge/tag/x) must come before the post type's attachment rules
 		// (knowledge/{post}/{attachment}), otherwise /knowledge/tag/payroll/ would 404.
+		NH_Sections::register_topic_groups(); // Own topic groups made in Settings → Sections.
+		register_taxonomy(
+			self::TAX_FAQ_GROUP,
+			self::CPT,
+			array(
+				'labels'            => array(
+					'name'          => __( 'FAQ Groups', 'neurohr-hub' ),
+					'singular_name' => __( 'FAQ Group', 'neurohr-hub' ),
+					'add_new_item'  => __( 'Add New FAQ Group', 'neurohr-hub' ),
+					'menu_name'     => __( 'FAQ Groups', 'neurohr-hub' ),
+				),
+				'description'       => __( 'Only for FAQ items. Show a group anywhere with [nh_faq group="slug"].', 'neurohr-hub' ),
+				'hierarchical'      => true,
+				'public'            => false,
+				'show_ui'           => true,
+				'show_admin_column' => true,
+				'show_in_rest'      => true,
+				'query_var'         => false,
+				'rewrite'           => false,
+			)
+		);
+
 		register_taxonomy(
 			self::TAX_TYPE,
 			self::CPT,
@@ -140,8 +163,8 @@ class NH_Post_Types {
 	}
 
 	/**
-	 * Default resource types. Slugs are used in code: rename the display name
-	 * in wp-admin if you like, never the slug.
+	 * The resource types a new site starts with. Since 0.12 they can be renamed (name and
+	 * slug); the hub knows them by ID and by their behaviour (NH_Types).
 	 * (News and regulations are ordinary WordPress posts, not hub resources.)
 	 */
 	public static function default_types() {
@@ -164,11 +187,10 @@ class NH_Post_Types {
 		flush_rewrite_rules();
 	}
 
+	/** One type of every behaviour must exist; a renamed type counts (no empty copies). */
 	public static function ensure_types() {
-		foreach ( self::default_types() as $slug => $name ) {
-			if ( ! term_exists( $slug, self::TAX_TYPE ) ) {
-				wp_insert_term( $name, self::TAX_TYPE, array( 'slug' => $slug ) );
-			}
+		foreach ( array_keys( NH_Types::kinds() ) as $kind ) {
+			NH_Types::find_or_create( $kind );
 		}
 	}
 

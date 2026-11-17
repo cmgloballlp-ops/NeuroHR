@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       NeuroHR Knowledge Hub
  * Description:       Lightweight knowledge hub for NeuroHR: Knowledge Hub, Legal Case Insights, FAQ, Templates (protected downloads) and Videos, with level-based access from NeuroHR Members (or MemberPress).
- * Version:           0.9.0
+ * Version:           0.12.1
  * Author:            NeuroHR
  * Requires at least: 6.0
  * Requires PHP:      7.4
@@ -13,12 +13,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'NH_HUB_VERSION', '0.9.0' );
+define( 'NH_HUB_VERSION', '0.12.1' );
 define( 'NH_HUB_FILE', __FILE__ );
 define( 'NH_HUB_DIR', plugin_dir_path( __FILE__ ) );
 define( 'NH_HUB_URL', plugin_dir_url( __FILE__ ) );
 
 require_once NH_HUB_DIR . 'includes/class-nh-post-types.php';
+require_once NH_HUB_DIR . 'includes/class-nh-types.php';
 require_once NH_HUB_DIR . 'includes/class-nh-sections.php';
 require_once NH_HUB_DIR . 'includes/class-nh-upgrade.php';
 require_once NH_HUB_DIR . 'includes/class-nh-rewrite.php';
@@ -26,6 +27,9 @@ require_once NH_HUB_DIR . 'includes/class-nh-access.php';
 require_once NH_HUB_DIR . 'includes/helpers.php';
 require_once NH_HUB_DIR . 'includes/class-nh-frontend.php';
 require_once NH_HUB_DIR . 'includes/class-nh-related.php';
+require_once NH_HUB_DIR . 'includes/class-nh-faq.php';
+require_once NH_HUB_DIR . 'includes/class-nh-lang.php';
+require_once NH_HUB_DIR . 'includes/class-nh-attachments.php';
 require_once NH_HUB_DIR . 'includes/class-nh-stats.php';
 require_once NH_HUB_DIR . 'includes/class-nh-toc.php';
 require_once NH_HUB_DIR . 'includes/class-nh-display.php';
@@ -36,13 +40,15 @@ require_once NH_HUB_DIR . 'includes/class-nh-media.php';
 require_once NH_HUB_DIR . 'includes/class-nh-review.php';
 require_once NH_HUB_DIR . 'includes/class-nh-print.php';
 require_once NH_HUB_DIR . 'includes/class-nh-usage.php';
-require_once NH_HUB_DIR . 'includes/class-nh-app.php';
 
 NH_Post_Types::init();
 NH_Rewrite::init();
 NH_Access::init();
 NH_Frontend::init();
 NH_Related::init();
+NH_Faq::init();
+NH_Lang::init();
+NH_Attachments::init();
 NH_Stats::init();
 NH_Display::init();
 NH_Login::init();
@@ -52,7 +58,6 @@ NH_Media::init();
 NH_Review::init();
 NH_Print::init();
 NH_Usage::init();
-NH_App::init();
 
 if ( is_admin() ) {
 	require_once NH_HUB_DIR . 'includes/class-nh-admin.php';
@@ -60,11 +65,14 @@ if ( is_admin() ) {
 	require_once NH_HUB_DIR . 'includes/class-nh-import-betterdocs.php';
 	require_once NH_HUB_DIR . 'includes/class-nh-topic-meta.php';
 	require_once NH_HUB_DIR . 'includes/class-nh-admin-list.php';
+	require_once NH_HUB_DIR . 'includes/class-nh-admin-sections.php';
+	require_once NH_HUB_DIR . 'includes/class-nh-shortcode-docs.php';
 	NH_Admin::init();
 	NH_Dashboard::init();
 	NH_Import_BetterDocs::init();
 	NH_Topic_Meta::init();
 	NH_Admin_List::init();
+	NH_Admin_Sections::init();
 }
 
 register_activation_hook( __FILE__, array( 'NH_Post_Types', 'activate' ) );

@@ -64,14 +64,15 @@ nh_hub_header();
 
 		<div class="nh-list-search">
 			<?php echo NH_Display::search_box( $nh_section, $nh_topic, $nh_keyword ); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped in method. ?>
+			<?php echo NH_Lang::switcher( $nh_section ? $nh_section : 'all' ); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped in method. ?>
 		</div>
 
 		<?php if ( have_posts() ) : ?>
-			<div class="nh-panel <?php echo 'faq' === $nh_section ? 'nh-faq-list' : 'nh-rows'; ?>">
+			<div class="nh-panel <?php echo NH_Sections::is_faq( $nh_section ) ? 'nh-faq-list' : 'nh-rows'; ?>">
 				<?php
 				while ( have_posts() ) :
 					the_post();
-					if ( 'faq' === $nh_section && ! $nh_tag ) {
+					if ( NH_Sections::is_faq( $nh_section ) && ! $nh_tag ) {
 						nh_hub_render_faq( get_post() );
 					} else {
 						nh_hub_render_row( get_post(), '' !== $nh_keyword || $nh_tag );
