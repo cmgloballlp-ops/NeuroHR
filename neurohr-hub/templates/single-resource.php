@@ -73,6 +73,7 @@ while ( have_posts() ) :
 								<?php echo NH_Review::badge( $nh_post ); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped in method. ?>
 								<span class="nh-article__updated"><?php echo esc_html( NH_Review::label( $nh_post ) ); ?></span>
 								<?php echo $nh_print ? NH_Print::button() : ''; // phpcs:ignore WordPress.Security.EscapeOutput -- escaped in method. ?>
+								<?php echo NH_App::actions( $nh_post ); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped in method. ?>
 							</div>
 							<?php echo NH_Lang::versions_bar( $nh_post ); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped in method. ?>
 						</header>
@@ -143,6 +144,7 @@ while ( have_posts() ) :
 		</div>
 	</main>
 	<?php
+	echo NH_App::template_bar( $nh_post->ID ); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped in method.
 	if ( $nh_toc_html && $nh_can ) {
 		NH_Toc::print_script();
 	}

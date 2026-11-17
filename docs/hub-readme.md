@@ -1,8 +1,14 @@
-# NeuroHR Knowledge Hub — v0.9.0
+# NeuroHR Knowledge Hub — v0.13.0
 
-**New in 0.9.0:** *Saved* (bookmark on every resource; list at `/knowledge/saved/`), a *Share* button, and the phone look: timeline lists with dates, template cards with file badges and download/lock icons, Save + Share on articles, a sticky "Ready-to-use template" bar. Feeds "Latest for You" and the bottom-bar links of NeuroHR Members 0.5. After updating, visit Settings → Permalinks once if /knowledge/saved/ gives a 404 (normally automatic).
+**New in 0.13:** *Saved* (bookmark on every resource; list at `/{HR Insights address}/saved/`, e.g. `/hr-insights/saved/`), a *Share* button, and the phone look: timeline lists with dates, template cards with file badges and download/lock icons, Save + Share on resources, a sticky "Ready-to-use template" bar (from the resource's Templates to Download). Feeds "Latest for You" (in the reader's language) and the bottom-bar / More links of NeuroHR Members 0.5; hidden sections get no link. If the Saved page gives a 404 after updating, Settings → Permalinks → Save once.
 
-**New in 0.8.2:** keeps a short record of what each member opened and downloaded (kept 90 days, staff not counted). NeuroHR Members 0.4.3 shows it next to refund requests.
+**New in 0.12:** sections and Resource Types are managed in Settings (names, addresses, types, topic groups, new sections); types can be renamed freely.
+
+**New in 0.11:** content languages (中文 / English, Malay reserved), Attachments box with protected files, PDF and pictures open in a new tab, `[nh_hub_latest]` with several sections and topics, Settings → Shortcodes.
+
+**New in 0.10:** free samples without login, editable addresses, grouped references with "Referenced in" and inline cards, and FAQ anywhere (see the sections below).
+
+**New in 0.9:** paid videos can be a video file kept on your own hosting, protected like Templates (see Videos).
 
 **New in 0.8:** with NeuroHR Members 0.3, logged-in people see all hub pages (and HR News & Update) inside the member-area layout — sidebar, top bar with search and their name. Visitors see the normal site as before. The member top bar searches the whole hub, with results while typing (0.8.1).
 
@@ -12,27 +18,32 @@ and the same design for news posts. Colours follow your brand orange, also under
 
 ## Sections
 
-Each section has its own address, home page, topics and search.
+Each section has its own address, home page, topics and search. Managed in **Settings → Sections**.
 
-| Section | Address | Contains | Topics |
+| Section | Address | Resource Type (behaviour) | Topics |
 |---|---|---|---|
-| Knowledge Hub | `/knowledge/` | Articles | HR Topics (15) |
-| Legal Case Insights | `/legal-case-insights/` | Case studies | Case Topics (7 legal categories) |
-| FAQ | `/faq/` | FAQs | none — one list of questions |
-| Templates | `/templates/` | Downloads (protected files) | HR Topics |
-| Videos | `/videos/` | YouTube / Vimeo videos | HR Topics |
+| HR Insights | `/hr-insights/` | HR Insights (Article) | HR Topics (15) |
+| Legal Case Studies | `/legal-case-studies/` | Legal Case Studies (Legal case) | Case Topics (7 legal categories) |
+| HR FAQs | `/hr-faqs/` | HR FAQs (FAQ) | none — one list of questions |
+| HR Templates | `/hr-templates/` | HR Templates (Template download) | HR Topics |
+| Video Learning | `/video-learning/` | Video Learning (Video) | HR Topics |
+
+Before 0.12 the addresses were `/knowledge/`, `/legal-case-insights/`, `/faq/`, `/templates/`, `/videos/`: they all redirect (301) to the new ones, also topic pages, resources and search.
 
 Inside a section:
 - `/{section}/` — home: title, live search, topic cards (FAQ: the questions)
-- `/{section}/{topic}/` — e.g. `/legal-case-insights/dismissal-cases/`
+- `/{section}/{topic}/` — e.g. `/legal-case-studies/dismissal-cases/`
 - `/{section}/?q=…` — search results
 - `/{section}/{resource}/` — the resource itself; the section follows its Resource Type
 - `/knowledge/tag/{tag}/` — a tag, across sections
+- Search across all sections: `/hr-insights/search/?q=…` (the HR Insights address + `/search/`)
 
-**No normal WordPress page may use `knowledge`, `legal-case-insights`, `faq`, `templates` or `videos` as its address**, or the section takes over that address.
-Search across all sections: `/knowledge/search/?q=…` .
+**Settings → Sections**, per section: name (breadcrumb, labels), address, the Resource Types in it (a type belongs to one section; ticking a type that is elsewhere moves it), topic group, heading texts and image, order, shown / hidden (hidden = its pages are gone for members; its resources still open). Also: **Add a section** (then tick its types and topics) and **Topic groups** (HR Topics, Case Topics, or a new group of its own, e.g. Guide Topics; its topics appear in the Knowledge Hub menu). Built-in sections can be renamed but not deleted; your own sections can be deleted once they have no types.
+Changing an address: the old one keeps redirecting. An address used by a page, another section or WordPress itself is refused with a message.
 
-Old addresses redirect (301): old article and case links, BetterDocs category pages, and v0.3 addresses.
+**Resource Types** (Knowledge Hub → Resource Types) can be renamed freely, also the slug. **Settings → Resource types**: what each type behaves as — Article (reading), Legal case, FAQ, Video (video box and player), Template download (protected file) — its section and its default level. A new type: create it, choose its behaviour there, then tick it in a section. Types in no section are flagged on every hub screen.
+
+The feed for MailerLite stays at `/knowledge/feed/`.
 
 ## Login required
 
@@ -54,6 +65,38 @@ Higher levels read everything below them. Editors and admins see everything. Res
 Without NeuroHR Members the hub reads MemberPress as before (memberships 6366 Free, 6373 Lite, 6376 Pro, 6379 + 6382 Corporate).
 Defaults per type (Settings → Type defaults): Article, Case Study, FAQ → Lite; Video, Download → Pro. Pick a level on a resource to override it (e.g. an article opened to Free). The imported platform FAQs are Free.
 
+## Free samples (no login)
+
+Pick **Everyone (no login)** in a resource's Access box (one resource at a time; a whole type cannot be opened while the hub needs a login). Then:
+- visitors can read it, and play its video or download its template, without logging in; under it they see **"This is a free sample… Create a free account"**;
+- it is the only kind of hub page Google may list (in the sitemap, no noindex). Section pages, topic pages and every other resource still send visitors to login;
+- links from it to other resources show a lock for visitors.
+Show your samples on a public page with `[nh_hub_latest section="all" access="public" count="6"]` (or `section="knowledge,videos"`, `topic="termination-dismissal"`). Every shortcode with its options: **Settings → Shortcodes**.
+
+## Changing a resource's address
+
+Editor → right sidebar → **Link** (or Summary → URL): change the slug and update. The old address redirects (301) to the new one, so links in emails and on social media keep working. Visitors are only sent straight to the new address when the resource is a free sample; otherwise they log in first.
+
+## Languages (中文 / English)
+
+The hub interface stays English; content can be 中文 or English. Bahasa Melayu is reserved: switch it on in **Settings → General → Languages** when you start Malay content. There you also choose what readers see first (default 中文) and the language of new resources (default 中文). All content from before 0.11 is English.
+
+- Editor → **Language & translations** (right side): the language of the resource. To add a translation: **+ Create 中文 version** makes a linked draft copy (same type, topics, tags, level, picture, FAQ and references) to translate; or link an existing resource with *This is a translation of*. A video or template file, and attachments, are not copied: the translation gets its own.
+- Readers see each content **once**, in their language: the **Language** switch on section pages (remembered), else the language in their NeuroHR Members → My account, else the default. Content without a translation in their language shows in the language it has, with a small label (e.g. `EN`); content with two versions shows `中文 · EN`.
+- **Search** looks in every version (an English word finds the Chinese version too) and shows each content once.
+- A translated resource shows **Also available in 中文 | English** under its title.
+- All Resources has a Language column (↔ links to the other version) and a language filter.
+- LiteSpeed Cache keeps one copy per language (the plugin sends the `X-LiteSpeed-Vary` header).
+
+## Attachments
+
+Editor → **Attachments**: *Upload or choose files…* (PDF, Word, Excel, PowerPoint, CSV, TXT, ZIP, pictures) or *Add a link*. Rename (the name members see), reorder with ↑ ↓, remove.
+- Uploaded files move into `wp-content/uploads/nh-protected/attachments/` and leave the media library. Only readers of the resource can open them (visitors too on a free sample). Removing an attachment deletes its file.
+- Members below the level see the names with a lock and "Available to … members".
+- **PDF and pictures open in a new tab**; other files download. The same now applies to Templates.
+- Old BetterDocs attachments (files still in the public media library) show **Move to protected folder** in the box; or do all at once: Knowledge Hub → Import BetterDocs → **Protect all attachment files**. They stay attachments of their resource.
+- Attachment downloads are not counted on the Dashboard.
+
 ## Templates (protected downloads)
 
 1. Add Resource → Resource Type **Download**, pick an HR Topic, write an excerpt.
@@ -68,9 +111,18 @@ Members download through a checked link: guests go to login, members below the l
 
 ## Videos
 
-Resource Type **Video** → paste a YouTube or Vimeo link in the **Video** box (optional length), set a featured image.
-Members who may watch see the player; others see the featured image with "Available to Pro members" — the video address is never in their page.
-For paid videos use **Vimeo with "embed only on specific domains"** (your site). An unlisted YouTube link works for anyone who has it.
+Resource Type **Video**, set a featured image (cover of the player; locked members see it instead). Two ways:
+
+**A. Video file on your own hosting — for paid videos (recommended while there are few)**
+- Video box → **Choose or upload video…** (MP4). On save it moves into `wp-content/uploads/nh-protected/videos/` and leaves the public media library.
+- Too big for the upload limit (shown in the box)? Upload it with cPanel File Manager or FTP into `wp-content/uploads/nh-protected/incoming/`, then pick it in the Video box and save.
+- Members play it through `?nh_video={id}`. Every request checks login and level: a copied address plays for nobody else, opening it in a browser tab sends you to the resource page, and other sites cannot play it. No YouTube/Vimeo title, logo or link on the player; no download button.
+- Served in 2 MB pieces, so seeking works, iPhone works and shared hosting stays responsive.
+- **Prepare the file** with the free HandBrake: preset *Fast 720p30*, Format *MP4*, tick *Web Optimized*. About 10 MB per minute; 50 videos of 5 minutes ≈ 2.5 GB. With 200 GB monthly bandwidth that is roughly 4,000 full plays a month.
+- Cannot be stopped: screen recording, and a member with the right level who knows the developer tools can still save it. The protection is against passing the link to people without access.
+- **Check once on your server:** play a video as a member, then open `https://www.neurohr.com.my/wp-content/uploads/nh-protected/videos/` in a private window — you must get 403 Forbidden.
+
+**B. YouTube or Vimeo link** (used when there is no video file). Members who may watch see the player; others see the cover with "Available to Pro members" — the video address is never in their page. An unlisted YouTube link can be watched by anyone who has it, and YouTube always shows its title and logo. Vimeo can hide title and buttons and restrict playback to your domain, on a paid plan.
 
 ## Links for your own member dashboard
 
@@ -78,21 +130,21 @@ The plugin no longer has a member dashboard; keep your own Elementor design and 
 
 | Button | Link |
 |---|---|
-| Knowledge Hub | `/knowledge/` |
-| Legal Case Insights | `/legal-case-insights/` |
-| FAQ | `/faq/` |
-| Templates | `/templates/` |
-| Videos | `/videos/` |
+| HR Insights | `/hr-insights/` |
+| Legal Case Studies | `/legal-case-studies/` |
+| HR FAQs | `/hr-faqs/` |
+| HR Templates | `/hr-templates/` |
+| Video Learning | `/video-learning/` |
 | HR News & Update | your Posts page (Settings → Reading) |
-| Search everything | `/knowledge/search/?q=` — or put `[nh_hub_search section="all"]` on the page |
+| Search everything | `/hr-insights/search/?q=` — or put `[nh_hub_search section="all"]` on the page |
 
-A topic: `/knowledge/{topic}/`, e.g. `/legal-case-insights/dismissal-cases/`.
+A topic: `/{section}/{topic}/`, e.g. `/legal-case-studies/dismissal-cases/`.
 
 ## Admin screens
 
 - **All Resources**: tabs per section (All, Knowledge Hub, Legal Case Insights, FAQ, Templates, Videos, plus "No type" when something has no type). Inside a tab: a topic filter, only that section's columns, and **Add to {section}** which starts a new resource with the right type ticked.
 - **Dashboard**: a tile per section, most viewed and most downloaded, *Needs attention* (click a line to see the items), searches with no results, content by level.
-- **Settings** tabs: General (login, addresses, pricing page, MailerLite feed) · Sections (hero texts) · Membership levels · Type defaults · Look (brand colour, news posts) · Changelog. Each tab saves only its own fields.
+- **Settings** tabs: General (login, languages, content review, addresses, pricing page, MailerLite feed) · **Sections** (sections, addresses, types, topic groups, heading texts) · Membership levels · **Resource types** (behaviour, default level) · Look (brand colour, news posts, print notice) · **Shortcodes** (every shortcode, options, examples to copy) · Changelog. Each tab saves only its own fields.
 
 ## Content review ("Last reviewed")
 
@@ -125,9 +177,24 @@ Topic cards only show topics that have content. Each topic has an **Icon** and a
 
 Typing 2+ letters in any search box shows results right away, from that section only (on a topic page: that topic only). Arrow keys and Enter pick a result; Enter alone opens the full results page. Searches that find nothing are listed on the Dashboard.
 
-## Related resources
+## References (related resources)
 
-Shown under every resource. Pick them in the editor's "Related Resources" box (any section). If fewer than 4 are picked, the rest are suggested: same topic first, then shared tags, and one slot goes to the best match from another section (e.g. an article under a case).
+Editor → **References** box: search (filter by kind) and add as many resources as you like, from any section. Under the resource they are shown in groups: **Further Reading** (articles), **Related Legal Cases**, **Related Videos**, **Templates to Download**, **Related Questions**.
+- **Inline card:** "Copy card" gives `[nh_ref id="123"]` — paste it into the text (as a Shortcode block) and that resource appears there as a small card ("Download", "Watch", "Read the case"). Optional button text: `[nh_ref id="123" label="Download the letter"]`.
+- **Referenced in:** shown only to you in the References box (resources that picked this one); readers do not see it.
+- **You May Also Like:** 4 automatic suggestions (same topic first, then shared tags, one from another section). Tick *Do not show automatic suggestions* to switch them off for one resource.
+Items the reader cannot open show a lock; their content is never shown.
+
+## FAQ anywhere
+
+FAQ items are resources with Resource Type **FAQ**; each keeps its own level — **Everyone** = public answer, otherwise members of that level and up.
+1. Knowledge Hub → **FAQ Groups**: create groups (e.g. Membership & Payment, Payroll). Tick a group on each FAQ item.
+2. Show them:
+   - on any page or post (also Elementor's Shortcode widget): `[nh_faq group="membership-payment"]`, several groups `group="payroll,leave"`, chosen questions `[nh_faq ids="12,15"]`, optional `title="…"`;
+   - under a resource: editor → **FAQ under this resource** (a group and/or single questions);
+   - `/faq/` lists every question under its group's name ("Other questions" for those without a group).
+3. Locked answers show only the question with "Log in · Create a free account" (visitors) or "Upgrade" (members).
+Public answers are also given to Google as FAQ data (once per page).
 
 ## News posts (HR News & Update)
 
@@ -152,7 +219,7 @@ The built-in Knowledge Hub home is recommended. To design it yourself, build a p
 
 - `[nh_hub_search section="knowledge"]`
 - `[nh_hub_topics section="cases" items="5" columns="3"]`
-- `[nh_hub_latest section="cases" count="6"]`
+- `[nh_hub_latest section="cases" count="6"]` — several: `section="knowledge,videos"`, by topic: `topic="dismissal-cases"`
 - `[nh_hub_sections]` — links to every section with counts
 
 ## Writing content
@@ -164,7 +231,8 @@ The built-in Knowledge Hub home is recommended. To design it yourself, build a p
 
 ## Test checklist (before going live)
 
-- [ ] Guest: every `/knowledge/`, `/legal-case-insights/` and `/faq/` page goes to login and back
+- [ ] Guest: every `/hr-insights/`, `/legal-case-studies/` and `/hr-faqs/` page goes to login and back (free samples excepted)
+- [ ] Old addresses (`/knowledge/`, `/videos/`, `/legal-case-insights/dismissal-cases/`) redirect to the new ones
 - [ ] Free / Lite / Pro / Corporate see full content only at or below their level
 - [ ] Each section home shows only its own topics; search stays in its section
 - [ ] Old links (`/knowledge/{case}/`, `/knowledge/knowledge-hub/employment-law-compliance/`) redirect

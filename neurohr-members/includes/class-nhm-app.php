@@ -283,10 +283,10 @@ class NHM_App {
 		}
 		$defaults = array(
 			array( __( 'HR News', 'neurohr-members' ), isset( $l['news'] ) ? $l['news'] : '', 'news' ),
-			array( __( 'Case Insights', 'neurohr-members' ), isset( $l['cases'] ) ? $l['cases'] : '', 'scale' ),
-			array( __( 'Videos', 'neurohr-members' ), isset( $l['videos'] ) ? $l['videos'] : '', 'video' ),
+			array( ! empty( $l['cases_label'] ) ? $l['cases_label'] : __( 'Case Insights', 'neurohr-members' ), isset( $l['cases'] ) ? $l['cases'] : '', 'scale' ),
+			array( ! empty( $l['videos_label'] ) ? $l['videos_label'] : __( 'Videos', 'neurohr-members' ), isset( $l['videos'] ) ? $l['videos'] : '', 'video' ),
 			array( __( 'Saved', 'neurohr-members' ), isset( $l['saved'] ) ? $l['saved'] : '', 'bookmark' ),
-			array( __( 'FAQ', 'neurohr-members' ), isset( $l['faq'] ) ? $l['faq'] : '', 'help' ),
+			array( ! empty( $l['faq_label'] ) ? $l['faq_label'] : __( 'FAQ', 'neurohr-members' ), isset( $l['faq'] ) ? $l['faq'] : '', 'help' ),
 			array( __( 'Payroll', 'neurohr-members' ), isset( $l['payroll'] ) ? $l['payroll'] : '', 'calc' ),
 		);
 		foreach ( $defaults as $d ) {

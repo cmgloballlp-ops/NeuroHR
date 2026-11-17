@@ -162,19 +162,21 @@ ok( 'yes' === NHM_Shortcodes::if_level( array( 'levels' => 'pro,lite' ), 'yes' )
 // ---------- Knowledge Hub access with Members ----------
 class NH_Login { static function required() { return true; } static function login_url( $r ) { return nhm_login_url( $r ); } }
 class NH_Post_Types { const CPT = 'nh_resource'; const TAX_TYPE = 'nh_type'; }
+// Hub 0.12+: types are known by term ID and have a behaviour (kind).
+class NH_Types { static function terms() { $o = array(); foreach ( array( 'article' => 71, 'video' => 72 ) as $k => $id ) { $t = new stdClass(); $t->term_id = $id; $t->slug = $k; $o[] = $t; } return $o; } static function kind( $t ) { return is_object( $t ) ? $t->slug : 'article'; } }
 function get_post( $p = null ) { return is_object( $p ) ? $p : ( $GLOBALS['posts'][ $p ] ?? null ); }
 function get_the_terms( $p, $t ) { $p = get_post( $p ); return $p->terms ?? false; }
 function nh_hub_excerpt() { return ''; }
 require $W . '/neurohr-hub/includes/class-nh-access.php';
-function mkpost( $id, $type, $level = '' ) { $p = new stdClass(); $p->ID = $id; $p->post_type = 'nh_resource'; $t = new stdClass(); $t->slug = $type; $p->terms = array( $t ); $GLOBALS['posts'][ $id ] = $p; if ( '' !== $level ) { update_post_meta( $id, '_nh_min_level', $level ); } return $p; }
+function mkpost( $id, $type, $level = '' ) { $p = new stdClass(); $p->ID = $id; $p->post_type = 'nh_resource'; $t = new stdClass(); $t->slug = $type; $t->term_id = 'video' === $type ? 72 : 71; $p->terms = array( $t ); $GLOBALS['posts'][ $id ] = $p; if ( '' !== $level ) { update_post_meta( $id, '_nh_min_level', $level ); } return $p; }
 NH_Access::init();
 $a = mkpost( 201, 'article' );        // type default Lite (2)
 $v = mkpost( 202, 'video' );          // Pro (3)
-$f = mkpost( 203, 'article', '0' );   // Public → base
+$f = mkpost( 203, 'article', '0' );   // Everyone (free sample, hub 0.10+)
 $x = mkpost( 204, 'article', '99' );  // unknown → top
 ok( NH_Access::members_active(), 'hub sees Members' );
 ok( NH_Access::get_post_level( $a ) === 2 && NH_Access::get_post_level( $v ) === 3, 'hub type defaults' );
-ok( NH_Access::get_post_level( $f ) === 1, 'hub public → base when login required' );
+ok( NH_Access::get_post_level( $f ) === 0 && NH_Access::can_view( $f, 0 ), 'hub: Everyone level readable without login' );
 ok( NH_Access::rank( NH_Access::get_post_level( $x ) ) === NH_Access::max_rank(), 'hub unknown level fails closed' );
 ok( NH_Access::get_user_level( 11 ) === 3 && NH_Access::can_view( $v, 11 ) && NH_Access::can_view( $a, 11 ), 'hub: Pro reads video + article' );
 NHM_Members::set_plan( 10, 2, d( 0 ), d( 30 ) ); NH_Access::flush();
@@ -183,12 +185,12 @@ ok( ! NH_Access::can_view( $a, 0 ), 'hub: guest locked' );
 ok( NH_Access::can_view( $x, 15 ), 'hub: editor sees all' );
 ok( NH_Access::can_view( $x, 13 ), 'hub: consulting (top) reads top-level content' );
 // level deleted → hub type default remap
-update_option( 'nh_hub_type_levels', array( 'video' => 3 ) );
+update_option( 'nh_hub_type_levels', array( 72 => 3 ) );
 $GLOBALS['wpdb']->insert( 'wp_postmeta', array( 'post_id' => 202, 'meta_key' => '_nh_min_level', 'meta_value' => '3' ) );
 NHM_Levels::delete( 3, 2 );
 NH_Access::flush();
 $tl = get_option( 'nh_hub_type_levels' );
-ok( (int) $tl['video'] === NHM_Levels::successor( 2 ) || (int) $tl['video'] === 6, 'hub type default moved up after delete' );
+ok( (int) $tl[72] === NHM_Levels::successor( 2 ) || (int) $tl[72] === 6, 'hub type default moved up after delete' );
 ok( (int) get_post_meta( 202, '_nh_min_level' ) === 6, 'hub resource moved to next level up (Enterprise)' );
 ok( NHM_Members::level( 11 ) === 2, 'Pro people moved to chosen level' );
 
