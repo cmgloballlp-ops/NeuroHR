@@ -185,3 +185,16 @@ if ( ! function_exists( 'get_transient' ) ) { function get_transient( $k ) { ret
 $GLOBALS['wpdb']->pdo->exec( "CREATE TABLE IF NOT EXISTS wp_nhm_refunds (id INTEGER PRIMARY KEY AUTOINCREMENT, number TEXT DEFAULT '', invoice_id INT DEFAULT 0, payment_id INT DEFAULT 0, user_id INT DEFAULT 0, company_id INT DEFAULT 0, status TEXT DEFAULT 'requested', source TEXT DEFAULT 'member', reason TEXT DEFAULT '', details TEXT, usage_info TEXT, paid_amount REAL DEFAULT 0, fee REAL NULL, amount REAL DEFAULT 0, method TEXT DEFAULT '', stripe_refund TEXT DEFAULT '', reference TEXT DEFAULT '', refund_date TEXT, reject_reason TEXT, admin_note TEXT, decided_by INT DEFAULT 0, decided_at TEXT, token TEXT DEFAULT '', created_at TEXT, updated_at TEXT)" );
 $GLOBALS['wpdb']->pdo->exec( "CREATE TABLE IF NOT EXISTS wp_nhm_payments (id INTEGER PRIMARY KEY AUTOINCREMENT, invoice_id INT DEFAULT 0, user_id INT DEFAULT 0, method TEXT DEFAULT '', status TEXT DEFAULT 'pending', amount REAL DEFAULT 0, currency TEXT DEFAULT 'MYR', mode TEXT DEFAULT '', stripe_session TEXT DEFAULT '', stripe_intent TEXT DEFAULT '', stripe_method TEXT DEFAULT '', payer_name TEXT DEFAULT '', paid_at TEXT, reference TEXT DEFAULT '', note TEXT, slip TEXT DEFAULT '', admin_note TEXT, reviewed_by INT DEFAULT 0, reviewed_at TEXT, created_at TEXT, updated_at TEXT)" );
 if ( ! function_exists( 'rest_url' ) ) { function rest_url( $p = '' ) { return 'https://example.test/wp-json/' . ltrim( $p, '/' ); } }
+
+// 0.5: conditionals used by the member-area shell / phone app.
+foreach ( array( 'is_feed', 'is_embed', 'is_robots', 'is_trackback', 'is_customize_preview' ) as $nhm_fn ) {
+	if ( ! function_exists( $nhm_fn ) ) {
+		eval( 'function ' . $nhm_fn . '() { return false; }' ); // phpcs:ignore
+	}
+}
+if ( ! function_exists( 'get_page_template_slug' ) ) { function get_page_template_slug( $id = 0 ) { return ''; } }
+if ( ! function_exists( 'wp_doing_ajax' ) ) { function wp_doing_ajax() { return false; } }
+if ( ! function_exists( 'wp_parse_url' ) ) { function wp_parse_url( $u, $c = -1 ) { return parse_url( $u, $c ); } }
+if ( ! function_exists( 'register_nav_menus' ) ) { function register_nav_menus( $a ) {} }
+if ( ! function_exists( 'get_nav_menu_locations' ) ) { function get_nav_menu_locations() { return array(); } }
+if ( ! function_exists( 'wp_get_nav_menu_items' ) ) { function wp_get_nav_menu_items( $m ) { return array(); } }

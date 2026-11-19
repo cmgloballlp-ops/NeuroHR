@@ -57,16 +57,17 @@ function nh_hub_footer() {
 }
 
 /**
- * Level ID => name, in ladder order, with 0 = Public first (left out when the hub needs a login).
+ * Level ID => name, in ladder order, with 0 = Everyone (no login) first.
  * Names and order come from NeuroHR Members when it is active.
+ * $for_type_defaults: while the hub needs a login, a whole type can not be opened to
+ * everyone — only single resources can (free samples), so 0 is left out.
  */
-function nh_hub_level_labels() {
-	$labels = array( 0 => __( 'Public', 'neurohr-hub' ) );
+function nh_hub_level_labels( $for_type_defaults = false ) {
+	$labels = array( 0 => __( 'Everyone', 'neurohr-hub' ) );
 	foreach ( NH_Access::levels() as $id => $level ) {
 		$labels[ $id ] = $level['name'];
 	}
-	// Whole hub behind login: "Public" would mean the same as Free, so it is not offered.
-	if ( class_exists( 'NH_Login' ) && NH_Login::required() ) {
+	if ( $for_type_defaults && class_exists( 'NH_Login' ) && NH_Login::required() ) {
 		unset( $labels[0] );
 	}
 	return $labels;
@@ -107,7 +108,7 @@ function nh_hub_type_badge( $post ) {
 	}
 	return sprintf(
 		'<span class="nh-badge nh-badge--%1$s">%2$s</span>',
-		esc_attr( $type->slug ),
+		esc_attr( NH_Types::kind( $type ) ), // Colour by behaviour, so renamed types keep it.
 		esc_html( $type->name )
 	);
 }
@@ -131,6 +132,7 @@ function nh_hub_render_card( $post ) {
 			<?php echo nh_hub_type_badge( $post ); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped in helper. ?>
 			<?php echo nh_hub_lock_badge( $post ); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped in helper. ?>
 			<?php echo NH_Review::badge( $post ); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped in method. ?>
+			<?php echo NH_Lang::badge( $post ); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped in method. ?>
 		</div>
 		<h2 class="nh-card__title"><a href="<?php echo esc_url( get_permalink( $post ) ); ?>"><?php echo esc_html( get_the_title( $post ) ); ?></a></h2>
 		<p class="nh-card__excerpt"><?php echo esc_html( nh_hub_excerpt( $post, 24 ) ); ?></p>
@@ -152,12 +154,23 @@ function nh_hub_render_row( $post, $show_meta = false ) {
 		$meta  = ( $terms && ! is_wp_error( $terms ) ) ? $terms[0]->name : $data['label'];
 	}
 	$locked = is_user_logged_in() && ! NH_Access::can_view( $post );
+	$type   = nh_hub_get_type( $post );
+	$kind   = $type ? NH_Types::kind( $type ) : '';
+	$ext    = '';
+	if ( 'download' === $kind ) {
+		$file = NH_Media::get_file( $post->ID );
+		$ext  = is_array( $file ) && ! empty( $file['name'] ) ? strtoupper( pathinfo( $file['name'], PATHINFO_EXTENSION ) ) : 'FILE';
+		$ext  = in_array( $ext, array( 'DOCX', 'DOC' ), true ) ? 'DOC' : ( in_array( $ext, array( 'XLSX', 'XLS', 'CSV' ), true ) ? 'XLS' : ( in_array( $ext, array( 'PPTX', 'PPT' ), true ) ? 'PPT' : substr( $ext, 0, 4 ) ) );
+	}
 	?>
-	<a class="nh-row" href="<?php echo esc_url( get_permalink( $post ) ); ?>">
+	<a class="nh-row<?php echo $kind ? ' nh-row--' . esc_attr( $kind ) : ''; ?><?php echo $locked ? ' is-locked' : ''; ?>" href="<?php echo esc_url( get_permalink( $post ) ); ?>">
+		<?php if ( $ext ) : ?><span class="nh-row__ext nh-row__ext--<?php echo esc_attr( strtolower( $ext ) ); ?>" aria-hidden="true"><?php echo esc_html( $ext ); ?></span><?php endif; ?>
 		<span class="nh-row__main">
-			<span class="nh-row__title"><?php echo esc_html( get_the_title( $post ) ); ?> <?php echo NH_Review::badge( $post ); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped in method. ?></span>
+			<span class="nh-row__title"><?php echo esc_html( get_the_title( $post ) ); ?> <?php echo NH_Review::badge( $post ); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped in method. ?> <?php echo NH_Lang::badge( $post ); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped in method. ?></span>
 			<span class="nh-row__excerpt"><?php echo esc_html( nh_hub_excerpt( $post, 26 ) ); ?></span>
+			<span class="nh-row__sub"><?php echo esc_html( $meta ? $meta : ( $type ? $type->name : '' ) ); ?></span>
 		</span>
+		<span class="nh-row__date"><?php echo esc_html( get_the_date( 'j M', $post ) ); ?></span>
 		<span class="nh-row__side">
 			<?php if ( $meta ) : ?>
 				<span class="nh-row__meta"><?php echo esc_html( $meta ); ?></span>
@@ -175,22 +188,5 @@ function nh_hub_render_row( $post, $show_meta = false ) {
  * FAQ row: answer shown inline when the user has access, teaser + link otherwise.
  */
 function nh_hub_render_faq( $post ) {
-	$post = get_post( $post );
-	?>
-	<details class="nh-faq">
-		<summary>
-			<span><?php echo esc_html( get_the_title( $post ) ); ?></span>
-			<?php echo nh_hub_lock_badge( $post ); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped in helper. ?>
-		</summary>
-		<div class="nh-faq__answer">
-			<?php
-			if ( NH_Access::can_view( $post ) ) {
-				echo wp_kses_post( apply_filters( 'the_content', $post->post_content ) );
-			} else {
-				echo NH_Access::locked_html( $post ); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped in method.
-			}
-			?>
-		</div>
-	</details>
-	<?php
+	echo NH_Faq::render_item( $post ); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped in method.
 }

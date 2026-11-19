@@ -23,19 +23,19 @@ class NH_Rewrite {
 	const OPTION_LEGACY = 'nh_hub_legacy_topics';
 
 	/** Words a resource slug may never use, because the address would clash with a hub page. */
-	const RESERVED = array( 'tag', 'page', 'feed', 'type', 'topic', 'embed', 'search' );
+	const RESERVED = array( 'tag', 'page', 'feed', 'type', 'topic', 'embed', 'search', 'saved' );
 
 	public static function init() {
 		add_filter( 'query_vars', array( __CLASS__, 'query_vars' ) );
 		// add_rules() is called from NH_Post_Types::register(), before the post type's own rules.
 		add_action( 'init', array( __CLASS__, 'maybe_flush' ), 100 );
 
-		add_filter( 'post_type_link', array( __CLASS__, 'post_link' ), 10, 2 );
+		add_filter( 'post_type_link', array( __CLASS__, 'post_link' ), 10, 3 );
 		add_filter( 'term_link', array( __CLASS__, 'term_link' ), 10, 3 );
 		add_filter( 'wp_unique_post_slug', array( __CLASS__, 'avoid_reserved_slug' ), 10, 6 );
 		add_action( 'template_redirect', array( __CLASS__, 'redirects' ), 1 );
 
-		foreach ( array( NH_Post_Types::TAX_TYPE, NH_Post_Types::TAX_TOPIC, NH_Post_Types::TAX_CASE_TOPIC ) as $taxonomy ) {
+		foreach ( array_merge( array( NH_Post_Types::TAX_TYPE ), array_keys( NH_Sections::topic_taxonomies() ) ) as $taxonomy ) {
 			add_action( "created_{$taxonomy}", array( __CLASS__, 'schedule_rebuild' ) );
 			add_action( "edited_{$taxonomy}", array( __CLASS__, 'schedule_rebuild' ) );
 			add_action( "delete_{$taxonomy}", array( __CLASS__, 'schedule_rebuild' ) );
@@ -51,7 +51,7 @@ class NH_Rewrite {
 
 	public static function slugs() {
 		$slugs = get_option( self::OPTION_SLUGS );
-		if ( ! is_array( $slugs ) || ! isset( $slugs[ NH_Post_Types::TAX_CASE_TOPIC ] ) ) {
+		if ( ! is_array( $slugs ) || array_diff( array_keys( NH_Sections::topic_taxonomies() ), array_keys( $slugs ) ) ) {
 			$slugs = self::rebuild_slugs();
 		}
 		return $slugs;
@@ -59,8 +59,8 @@ class NH_Rewrite {
 
 	public static function rebuild_slugs() {
 		$slugs = array();
-		foreach ( array( NH_Post_Types::TAX_TOPIC, NH_Post_Types::TAX_CASE_TOPIC ) as $taxonomy ) {
-			$terms              = get_terms( array( 'taxonomy' => $taxonomy, 'hide_empty' => false, 'fields' => 'slugs' ) );
+		foreach ( array_keys( NH_Sections::topic_taxonomies() ) as $taxonomy ) {
+			$terms              = taxonomy_exists( $taxonomy ) ? get_terms( array( 'taxonomy' => $taxonomy, 'hide_empty' => false, 'fields' => 'slugs' ) ) : array();
 			$slugs[ $taxonomy ] = is_wp_error( $terms ) ? array() : array_values( $terms );
 		}
 		update_option( self::OPTION_SLUGS, $slugs, true );
@@ -79,6 +79,15 @@ class NH_Rewrite {
 	public static function maybe_flush() {
 		if ( get_option( self::OPTION_FLUSH ) ) {
 			delete_option( self::OPTION_FLUSH );
+			// Drop this request's hub rules first: they were built with the old addresses
+			// (a section address may just have changed), then add the current ones.
+			global $wp_rewrite;
+			foreach ( (array) $wp_rewrite->extra_rules_top as $regex => $query ) {
+				if ( false !== strpos( (string) $query, NH_Sections::QUERY_VAR . '=' ) || 0 === strpos( (string) $query, 'index.php?' . NH_Post_Types::CPT . '=$matches' ) ) {
+					unset( $wp_rewrite->extra_rules_top[ $regex ] );
+				}
+			}
+			NH_Sections::flush();
 			self::add_rules();
 			flush_rewrite_rules( false );
 		}
@@ -141,24 +150,55 @@ class NH_Rewrite {
 	}
 
 	/** /knowledge/{slug}/, /legal-case-insights/{slug}/ or /faq/{slug}/ depending on the type. */
-	public static function post_link( $link, $post ) {
-		if ( NH_Post_Types::CPT !== $post->post_type || '' === $post->post_name
-			|| in_array( $post->post_status, array( 'draft', 'pending', 'auto-draft' ), true ) ) {
+	public static function post_link( $link, $post, $leavename = false ) {
+		if ( NH_Post_Types::CPT !== $post->post_type ) {
+			return $link;
+		}
+		// The editor asks for a template (leavename) to show the editable "Link" field:
+		// keep the placeholder, which WordPress turns into %pagename%.
+		$slug = $leavename ? '%' . NH_Post_Types::CPT . '%' : $post->post_name;
+		if ( '' === $slug || ( ! $leavename && in_array( $post->post_status, array( 'draft', 'pending', 'auto-draft' ), true ) ) ) {
 			return $link;
 		}
 		$section = NH_Sections::get( NH_Sections::of_post( $post ) );
-		return home_url( user_trailingslashit( $section['base'] . '/' . $post->post_name ) );
+		return home_url( user_trailingslashit( $section['base'] . '/' . $slug ) );
+	}
+
+	/**
+	 * After a resource's address (slug) was changed: the resource behind an old address
+	 * like /knowledge/old-slug/, or null. WordPress keeps old slugs in _wp_old_slug.
+	 */
+	public static function old_slug_target( $path ) {
+		$bases = array();
+		foreach ( NH_Sections::all() as $section ) {
+			$bases[] = preg_quote( $section['base'], '#' );
+		}
+		if ( ! preg_match( '#^/(?:' . implode( '|', $bases ) . ')/([^/]+)/?$#', $path, $m ) ) {
+			return null;
+		}
+		$ids = get_posts(
+			array(
+				'post_type'      => NH_Post_Types::CPT,
+				'post_status'    => 'publish',
+				'meta_key'       => '_wp_old_slug', // phpcs:ignore WordPress.DB.SlowDBQuery
+				'meta_value'     => sanitize_title( rawurldecode( $m[1] ) ), // phpcs:ignore WordPress.DB.SlowDBQuery
+				'posts_per_page' => 1,
+				'fields'         => 'ids',
+				'no_found_rows'  => true,
+			)
+		);
+		return $ids ? get_post( $ids[0] ) : null;
 	}
 
 	public static function term_link( $link, $term, $taxonomy ) {
-		if ( NH_Post_Types::TAX_TOPIC === $taxonomy ) {
-			return self::url( 'knowledge', $term->slug );
-		}
-		if ( NH_Post_Types::TAX_CASE_TOPIC === $taxonomy ) {
-			return self::url( 'cases', $term->slug );
-		}
 		if ( NH_Post_Types::TAX_TYPE === $taxonomy ) {
-			return self::url( NH_Sections::for_type( $term->slug ) );
+			$key = NH_Sections::for_type_id( $term->term_id );
+			return self::url( '' !== $key ? $key : 'knowledge' );
+		}
+		if ( isset( NH_Sections::topic_taxonomies()[ $taxonomy ] ) ) {
+			// HR Topics are shared by several sections: link to the first that uses them.
+			$key = NH_Sections::for_taxonomy( $taxonomy );
+			return '' !== $key ? self::url( $key, $term->slug ) : $link;
 		}
 		return $link;
 	}
@@ -176,12 +216,25 @@ class NH_Rewrite {
 
 	/* ---------- Redirects ---------- */
 
-	private static function request_path() {
+	public static function request_path() {
 		$uri = isset( $_SERVER['REQUEST_URI'] ) ? esc_url_raw( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '/';
 		return (string) wp_parse_url( $uri, PHP_URL_PATH );
 	}
 
 	public static function redirects() {
+		// A hidden section (Settings → Sections) has no pages for readers; editors still see them.
+		$key = get_query_var( NH_Sections::QUERY_VAR );
+		if ( is_string( $key ) && '' !== $key && 'all' !== $key ) {
+			$section = NH_Sections::get( $key );
+			if ( $section && ! $section['visible'] && ! current_user_can( 'edit_posts' ) ) {
+				global $wp_query;
+				$wp_query->set_404();
+				status_header( 404 );
+				nocache_headers();
+				return;
+			}
+		}
+
 		if ( 'all' === get_query_var( NH_Sections::QUERY_VAR ) && '' === NH_Frontend::keyword() ) {
 			wp_safe_redirect( self::url( 'knowledge' ) );
 			exit;
@@ -198,8 +251,20 @@ class NH_Rewrite {
 			return;
 		}
 
+		// The post type's own archive (/knowledge/) when the Knowledge Hub has another address now.
+		if ( is_post_type_archive( NH_Post_Types::CPT ) && ! is_feed() && ! get_query_var( NH_Sections::QUERY_VAR ) ) {
+			wp_safe_redirect( self::url( 'knowledge' ), 301 );
+			exit;
+		}
+
 		if ( ! is_404() ) {
 			return;
+		}
+
+		$renamed = self::old_slug_target( self::request_path() );
+		if ( $renamed ) {
+			wp_safe_redirect( get_permalink( $renamed ), 301 );
+			exit;
 		}
 
 		$target = self::legacy_target( self::request_path() );
@@ -207,6 +272,30 @@ class NH_Rewrite {
 			wp_safe_redirect( $target, 301 );
 			exit;
 		}
+
+		$target = self::old_base_target( self::request_path() );
+		if ( $target ) {
+			wp_safe_redirect( $target, 301 );
+			exit;
+		}
+	}
+
+	/** A section's old address (Settings → Sections changed it): same page at the new address. */
+	public static function old_base_target( $path ) {
+		foreach ( NH_Sections::old_bases() as $old => $key ) {
+			$section = NH_Sections::get( $key );
+			if ( ! $section || $section['base'] === $old ) {
+				continue;
+			}
+			$prefix = '/' . trim( $old, '/' );
+			if ( $path === $prefix || 0 === strpos( $path, $prefix . '/' ) ) {
+				$rest  = substr( $path, strlen( $prefix ) );
+				$query = isset( $_SERVER['QUERY_STRING'] ) ? sanitize_text_field( wp_unslash( $_SERVER['QUERY_STRING'] ) ) : '';
+				$url   = home_url( '/' . $section['base'] . ( '' !== $rest ? $rest : '/' ) );
+				return '' !== $query ? $url . '?' . $query : $url;
+			}
+		}
+		return '';
 	}
 
 	/** Old BetterDocs and v0.3 listing addresses => new section/topic address ('' when unknown). */

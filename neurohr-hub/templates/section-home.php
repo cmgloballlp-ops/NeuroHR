@@ -22,10 +22,11 @@ nh_hub_header();
 			<?php echo NH_Display::render_hero( $nh_section ); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped in method. ?>
 			<div class="nh-section-home__search">
 				<?php echo NH_Display::search_box( $nh_section ); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped in method. ?>
+				<?php echo NH_Lang::switcher( $nh_section ); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped in method. ?>
 			</div>
 			<?php
-			if ( 'faq' === $nh_section ) {
-				echo NH_Display::faq_list(); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped in method.
+			if ( NH_Sections::is_faq( $nh_section ) ) {
+				echo NH_Faq::render_section(); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped in method.
 			} else {
 				echo NH_Display::topic_cards( $nh_section ); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped in method.
 			}

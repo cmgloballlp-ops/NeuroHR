@@ -8,6 +8,17 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 return array(
+	'0.5.0' => array(
+		'date'  => '17 Nov 2026',
+		'items' => array(
+			'Greeting: [nhm_greeting] shows "Good morning, Marcus!" by the member\'s own time (morning 5:00 to 11:59, afternoon 12:00 to 17:59, evening 18:00 to 20:59, "Working late, Marcus?" 21:00 to 4:59). [nhm_greeting part="line"] adds one of 20 short lines, a different one each visit. Texts and lines: Settings → Member Area → Greeting.',
+			'Phone app layout (phones only, computers keep the sidebar): bottom bar Home · Hub · Search · Templates · More, a full-screen search with results while typing and recent searches, and a More sheet with your profile, 6 shortcuts, My Account, Plan & Billing, My Company, Notifications and Log Out. Shortcuts: Appearance → Menus → "Phone: More shortcuts".',
+			'App home on the Dashboard page (phones): date, greeting, a swipeable orange plan card with a days-left ring, a card with today\'s line, a Renew / Upgrade / Templates card, and "Latest for You" (newest 5 from the Knowledge Hub and HR News, by day).',
+			'My Account on phones opens as a list (Profile, Security, Notifications, Plan & Billing, My Company); each section has a back link. The plan card on phones is orange.',
+			'Install as an app (PWA): members can add NeuroHR to their home screen (Android: "Install the NeuroHR App" in the More sheet; iPhone: steps for Share → Add to Home Screen). Members-only pages are never stored on the phone; only the look is kept, plus an offline page. Settings → Member Area → Install as an App (name, icon, colours).',
+			'The search box no longer shows a square box from the theme while you type.',
+		),
+	),
 	'0.4.5' => array(
 		'date'  => '14 Nov 2026',
 		'items' => array(

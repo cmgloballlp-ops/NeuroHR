@@ -9,6 +9,63 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 return array(
+	'0.13.0' => array(
+		'date'    => '2026-11-17',
+		'changes' => array(
+			'Saved: a bookmark button on every resource. Saved items are listed at /knowledge/saved/ (newest first, up to 300 per member).',
+			'Share button: opens the phone\'s share sheet, or copies the link on a computer.',
+			'Phones: lists show as a timeline with dates; templates show as cards with a file badge (DOC, XLS, PDF…) and a download or lock icon; resources get Save and Share at the top and a sticky "Ready-to-use template" bar when they reference a template.',
+			'Gives NeuroHR Members 0.5 the newest items for "Latest for You" (in the reader\'s language) and the links for the phone bottom bar and More sheet.',
+		),
+	),
+	'0.12.1' => array(
+		'date'    => '2026-11-17',
+		'changes' => array(
+			'Under a resource: "Referenced in" is no longer shown (it repeated resources already listed); editors still see it in the References box. Headings in Title Case: Further Reading, Related Legal Cases, Related Videos, Templates to Download, Related Questions, You May Also Like, Frequently Asked Questions.',
+		),
+	),
+	'0.12.0' => array(
+		'date'    => '2026-11-17',
+		'changes' => array(
+			'Settings → Sections manages the sections: name, address, which Resource Types are in it (a type belongs to one section), topic group, heading texts, order, shown or hidden. Add new sections and new topic groups. A changed address keeps working: the old one redirects (301).',
+			'Resource Types can be renamed freely, slug included: the hub knows them by ID. Settings → Resource types sets each type\'s behaviour (Article, Legal case, FAQ, Video, Template download) and default level. Types in no section are flagged.',
+			'Fixed: renaming a Resource Type\'s slug emptied its section. On update, renamed types are recognised, and each built-in section takes its type\'s name and address (e.g. HR Insights → /hr-insights/).',
+		),
+	),
+	'0.11.0' => array(
+		'date'    => '2026-11-17',
+		'changes' => array(
+			'Languages: each resource is 中文 or English (Bahasa Melayu reserved, Settings → General → Languages). Translations are linked in the editor ("Language & translations" box, or "+ Create 中文 version" for a linked draft copy). Lists, topic cards, search and suggestions show each content once, in the reader\'s language (Language switch on section pages, member\'s My account language, else 中文); content without that translation shows in its own language with a small label. Search looks in every version. "Also available in" on translated resources, hreflang for search engines. Existing content is English.',
+			'Attachments box on every resource: upload / choose files or add links, rename, reorder, remove. Uploaded files are protected (only readers of the resource); readers below the level see the names with a lock. Old BetterDocs files: tick "Move to protected folder" (or Import BetterDocs → Protect all attachment files) — they stay attachments.',
+			'PDF and pictures open in a new tab instead of downloading, for attachments and Templates.',
+			'[nh_hub_latest]: several sections (section="knowledge,videos") and topics (topic="slug,slug").',
+			'Settings → Shortcodes: every shortcode with its options, this site\'s topic and FAQ group codes, and examples to copy.',
+		),
+	),
+	'0.10.0' => array(
+		'date'    => '2026-11-17',
+		'changes' => array(
+			'Free samples: access level "Everyone (no login)" on a single resource. Visitors can read it (and its video or template file) without logging in, see a "Create a free account" box under it, and Google may list it (sitemap, no noindex). Everything else still needs a login. Old stored "0" values (which meant Free) stay Free.',
+			'Editable address: the "Link" field in the editor works for resources. Old addresses redirect (301) to the new one.',
+			'References box: pick any number of resources, search by kind; shown under the resource grouped as Further reading, Related legal cases, Related videos, Templates to download, Related questions. "You may also like" (automatic) is separate and can be switched off per resource.',
+			'"Referenced in": every resource lists the resources that reference it.',
+			'Inline cards: [nh_ref id="123"] in the text (button "Copy card" in the References box) shows that resource as a small card, with a lock when the reader has no access.',
+			'FAQ anywhere: FAQ Groups; [nh_faq group="slug"] or [nh_faq ids="1,2"] on any page or post; an "FAQ under this resource" box; /faq/ grouped by FAQ group. Each question keeps its own level ("Everyone" = public answer); locked answers show only the question and a log in / upgrade line. Public answers are added as Google FAQ data.',
+		),
+	),
+	'0.9.1' => array(
+		'date'    => '2026-11-15',
+		'changes' => array(
+			'Dashboard, Settings and the other hub admin screens use the full screen width.',
+		),
+	),
+	'0.9.0' => array(
+		'date'    => '2026-11-15',
+		'changes' => array(
+			'Videos can be a file kept on this site instead of YouTube / Vimeo: no outside title, logo or link on the player. Every request checks login and level, so a copied video address does not work for anyone else, opened in a browser tab, or on another site.',
+			'Video files are served in 2 MB pieces (seeking works, iPhone works, shared hosting stays responsive). Large files can be uploaded with cPanel / FTP into wp-content/uploads/nh-protected/incoming/ and picked in the editor.',
+		),
+	),
 	'0.8.2' => array(
 		'date'    => '2026-10-30',
 		'changes' => array(

@@ -61,15 +61,21 @@ class NH_Dashboard {
 		return $section ? add_query_arg( NH_Admin_List::PARAM, $section, $url ) : $url;
 	}
 
+	/** Icon by what the section's types are (article, case, FAQ, template, video). */
 	private static function section_icon( $key ) {
 		$icons = array(
-			'knowledge' => 'dashicons-book-alt',
-			'cases'     => 'dashicons-businessperson',
-			'faq'       => 'dashicons-editor-help',
-			'templates' => 'dashicons-media-document',
-			'videos'    => 'dashicons-video-alt3',
+			'video'      => 'dashicons-video-alt3',
+			'download'   => 'dashicons-media-document',
+			'faq'        => 'dashicons-editor-help',
+			'case-study' => 'dashicons-businessperson',
+			'article'    => 'dashicons-book-alt',
 		);
-		return isset( $icons[ $key ] ) ? $icons[ $key ] : 'dashicons-admin-page';
+		foreach ( $icons as $kind => $icon ) {
+			if ( NH_Sections::has_kind( $key, $kind ) ) {
+				return $icon;
+			}
+		}
+		return 'dashicons-admin-page';
 	}
 
 	private static function title_link( $post ) {
@@ -155,7 +161,7 @@ class NH_Dashboard {
 						$checks['topic']['items'][] = $p;
 					}
 				}
-				if ( ! has_excerpt( $p ) && 'faq' !== $type->slug ) {
+				if ( ! has_excerpt( $p ) && 'faq' !== NH_Types::kind( $type ) ) {
 					$checks['excerpt']['items'][] = $p;
 				}
 			}

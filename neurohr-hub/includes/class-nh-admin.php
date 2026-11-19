@@ -63,7 +63,7 @@ class NH_Admin {
 				esc_html( 0 === $level ? $label . ' ' . __( '(no login)', 'neurohr-hub' ) : $label . ( NH_Access::rank( $level ) < NH_Access::max_rank() ? ' +' : '' ) )
 			);
 		}
-		echo '<p class="description">' . esc_html__( 'Use "Type default" unless this resource is an exception, e.g. an article opened to Free users.', 'neurohr-hub' ) . '</p>';
+		echo '<p class="description">' . esc_html__( 'Use "Type default" unless this resource is an exception, e.g. an article opened to Free users. "Everyone" makes it a free sample: visitors can read it without logging in, and Google can list it.', 'neurohr-hub' ) . '</p>';
 	}
 
 	public static function save_level( $post_id, $post ) {
@@ -165,8 +165,9 @@ class NH_Admin {
 			'general'   => array( __( 'General', 'neurohr-hub' ), 'dashicons-admin-generic' ),
 			'sections'  => array( __( 'Sections', 'neurohr-hub' ), 'dashicons-screenoptions' ),
 			'levels'    => array( __( 'Membership levels', 'neurohr-hub' ), 'dashicons-groups' ),
-			'types'     => array( __( 'Type defaults', 'neurohr-hub' ), 'dashicons-lock' ),
+			'types'     => array( __( 'Resource types', 'neurohr-hub' ), 'dashicons-lock' ),
 			'look'      => array( __( 'Look', 'neurohr-hub' ), 'dashicons-art' ),
+			'shortcodes' => array( __( 'Shortcodes', 'neurohr-hub' ), 'dashicons-shortcode' ),
 			'changelog' => array( __( 'Changelog', 'neurohr-hub' ), 'dashicons-backup' ),
 		);
 	}
@@ -208,14 +209,23 @@ class NH_Admin {
 		return $clean;
 	}
 
+	/** Type ID => level. The same form sends each type's behaviour (nh_kind[ID]), saved as term meta. */
 	public static function sanitize_type_levels( $input ) {
 		$clean = array();
-		foreach ( (array) $input as $slug => $level ) {
-			$slug = sanitize_title( $slug );
-			if ( '' !== $slug ) {
-				$clean[ $slug ] = NH_Access::valid_level( $level );
+		foreach ( (array) $input as $id => $level ) {
+			$id = absint( $id );
+			if ( $id && term_exists( $id, NH_Post_Types::TAX_TYPE ) ) {
+				$clean[ $id ] = NH_Access::valid_level( $level );
 			}
 		}
+		// phpcs:ignore WordPress.Security.NonceVerification -- options.php checked the settings nonce.
+		$kinds = isset( $_POST['nh_kind'] ) ? (array) wp_unslash( $_POST['nh_kind'] ) : array(); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput
+		foreach ( $kinds as $id => $kind ) {
+			if ( absint( $id ) && term_exists( absint( $id ), NH_Post_Types::TAX_TYPE ) && current_user_can( 'manage_options' ) ) {
+				NH_Types::set_kind( absint( $id ), sanitize_key( $kind ) );
+			}
+		}
+		NH_Frontend::flush_topic_cache();
 		return $clean;
 	}
 
@@ -274,6 +284,28 @@ class NH_Admin {
 					<?php esc_html_e( 'Guests are sent to the login page and back afterwards. Hub pages stay out of search engines, sitemaps, site search and the REST API.', 'neurohr-hub' ); ?></span></label>
 			</section>
 
+			<?php self::card( __( 'Languages', 'neurohr-hub' ), __( 'Content languages (the hub interface stays English). Link translations in the editor: each content is then listed once, in the reader\'s language; content without that translation shows in the language it has.', 'neurohr-hub' ) ); ?>
+				<input type="hidden" name="<?php echo esc_attr( NH_Display::OPTION ); ?>[lang_present]" value="1">
+				<?php $nh_on = explode( ',', (string) $d['lang_enabled'] ); ?>
+				<?php foreach ( NH_Lang::all() as $code => $info ) : ?>
+					<label class="nh-toggle"><input type="checkbox" name="<?php echo esc_attr( NH_Display::OPTION ); ?>[lang_enabled][]" value="<?php echo esc_attr( $code ); ?>" <?php checked( in_array( $code, $nh_on, true ) ); ?>>
+						<span><strong><?php echo esc_html( $info['name'] ); ?></strong><?php echo 'ms' === $code ? ' — ' . esc_html__( 'reserved: switch on when you start Malay content', 'neurohr-hub' ) : ''; ?></span></label>
+				<?php endforeach; ?>
+				<div class="nh-fields">
+					<?php foreach ( array( 'lang_default_view' => __( 'Readers see first', 'neurohr-hub' ), 'lang_default_new' => __( 'Language of new resources', 'neurohr-hub' ) ) as $key => $label ) : ?>
+						<div class="nh-field"><label><?php echo esc_html( $label ); ?></label>
+							<select name="<?php echo esc_attr( NH_Display::OPTION . '[' . $key . ']' ); ?>">
+								<?php foreach ( NH_Lang::enabled() as $code => $info ) : ?>
+									<option value="<?php echo esc_attr( $code ); ?>" <?php selected( $d[ $key ], $code ); ?>><?php echo esc_html( $info['name'] ); ?></option>
+								<?php endforeach; ?>
+							</select>
+							<?php if ( 'lang_default_view' === $key ) : ?>
+								<p class="description"><?php esc_html_e( 'Members can choose their own language in My account; the Language switch on section pages also changes it.', 'neurohr-hub' ); ?></p>
+							<?php endif; ?></div>
+					<?php endforeach; ?>
+				</div>
+			</section>
+
 			<?php self::card( __( 'Content review', 'neurohr-hub' ), __( 'Update and re-check existing content instead of adding new versions. Tick "Reviewed today" in the editor (or use the bulk action in the list) after checking a resource.', 'neurohr-hub' ) ); ?>
 				<div class="nh-fields">
 					<div class="nh-field nh-field--short"><label for="nh-review-months"><?php esc_html_e( 'Due for review after (months)', 'neurohr-hub' ); ?></label>
@@ -285,7 +317,7 @@ class NH_Admin {
 				</div>
 			</section>
 
-			<?php self::card( __( 'Section addresses', 'neurohr-hub' ), __( 'Fixed on purpose: changing them would break every link. No normal page may use these addresses.', 'neurohr-hub' ) ); ?>
+			<?php self::card( __( 'Section addresses', 'neurohr-hub' ), __( 'Change names, addresses and Resource Types in the Sections tab. Old addresses keep working (redirect). No normal page may use these addresses.', 'neurohr-hub' ) ); ?>
 				<table class="nh-admin-table">
 					<?php foreach ( NH_Sections::all() as $key => $section ) : ?>
 						<tr><td><?php echo esc_html( $section['label'] ); ?></td><td><a href="<?php echo esc_url( NH_Rewrite::url( $key ) ); ?>" target="_blank"><?php echo esc_html( NH_Rewrite::url( $key ) ); ?></a></td></tr>
@@ -310,58 +342,7 @@ class NH_Admin {
 	}
 
 	private static function tab_sections() {
-		$d     = NH_Display::get();
-		$pages = get_pages( array( 'post_status' => 'publish', 'sort_column' => 'post_title' ) );
-		?>
-		<form method="post" action="options.php">
-			<?php settings_fields( 'nh_hub_sections' ); ?>
-
-			<?php self::card( __( 'Knowledge Hub', 'neurohr-hub' ), __( 'Top of /knowledge/.', 'neurohr-hub' ) ); ?>
-				<div class="nh-fields">
-					<?php self::text_row( __( 'Small heading', 'neurohr-hub' ), 'eyebrow', $d['eyebrow'] ); ?>
-					<?php self::text_row( __( 'Title', 'neurohr-hub' ), 'title', $d['title'] ); ?>
-					<?php self::text_row( __( 'Introduction', 'neurohr-hub' ), 'intro', $d['intro'], 'textarea' ); ?>
-					<div class="nh-field"><label><?php esc_html_e( 'Image (optional)', 'neurohr-hub' ); ?></label><?php self::image_field( NH_Display::OPTION . '[image_id]', $d['image_id'], 'nh-hero-image' ); ?></div>
-				</div>
-				<details class="nh-advanced">
-					<summary><?php esc_html_e( 'Advanced: design the Knowledge Hub home yourself', 'neurohr-hub' ); ?></summary>
-					<div class="nh-field"><label for="nh-home-page"><?php esc_html_e( 'Use this page instead of the built-in layout', 'neurohr-hub' ); ?></label>
-						<select id="nh-home-page" name="<?php echo esc_attr( NH_Display::OPTION ); ?>[home_page]">
-							<option value="0"><?php esc_html_e( 'Built-in layout (recommended)', 'neurohr-hub' ); ?></option>
-							<?php foreach ( $pages as $page ) : ?>
-								<option value="<?php echo (int) $page->ID; ?>" <?php selected( (int) $d['home_page'], $page->ID ); ?>><?php echo esc_html( $page->post_title ); ?></option>
-							<?php endforeach; ?>
-						</select>
-						<p class="description"><?php esc_html_e( 'Live parts for that page:', 'neurohr-hub' ); ?> <code>[nh_hub_search section="knowledge"]</code> <code>[nh_hub_topics section="knowledge"]</code> <code>[nh_hub_latest section="cases"]</code> <code>[nh_hub_sections]</code></p></div>
-				</details>
-			</section>
-
-			<?php
-			$others = array(
-				'cases'     => array( __( 'Legal Case Insights', 'neurohr-hub' ), '/legal-case-insights/' ),
-				'templates' => array( __( 'Templates', 'neurohr-hub' ), '/templates/' ),
-				'videos'    => array( __( 'Videos', 'neurohr-hub' ), '/videos/' ),
-				'faq'       => array( __( 'FAQ', 'neurohr-hub' ), '/faq/' ),
-			);
-			?>
-			<div class="nh-admin-grid">
-				<?php foreach ( $others as $key => $o ) : ?>
-					<?php /* translators: %s: address */ self::card( $o[0], sprintf( __( 'Top of %s.', 'neurohr-hub' ), $o[1] ) ); ?>
-						<?php self::text_row( __( 'Title', 'neurohr-hub' ), $key . '_title', $d[ $key . '_title' ] ); ?>
-						<?php self::text_row( __( 'Introduction', 'neurohr-hub' ), $key . '_intro', $d[ $key . '_intro' ], 'textarea' ); ?>
-					</section>
-				<?php endforeach; ?>
-			</div>
-
-			<?php self::card( __( 'Topic cards', 'neurohr-hub' ) ); ?>
-				<div class="nh-field nh-field--short"><label for="nh-per-topic"><?php esc_html_e( 'Items shown per topic card', 'neurohr-hub' ); ?></label>
-					<input id="nh-per-topic" type="number" min="1" max="10" name="<?php echo esc_attr( NH_Display::OPTION ); ?>[per_topic]" value="<?php echo (int) $d['per_topic']; ?>"></div>
-				<p class="description"><?php esc_html_e( 'Icons and order are set per topic: Knowledge Hub → HR Topics / Case Topics → edit a topic.', 'neurohr-hub' ); ?></p>
-			</section>
-
-			<?php submit_button(); ?>
-		</form>
-		<?php
+		NH_Admin_Sections::render();
 	}
 
 	private static function tab_levels() {
@@ -418,21 +399,31 @@ class NH_Admin {
 
 	private static function tab_types() {
 		$type_levels = NH_Access::get_type_levels();
-		$type_terms  = NH_Frontend::sort_types( (array) get_terms( array( 'taxonomy' => NH_Post_Types::TAX_TYPE, 'hide_empty' => false ) ) );
+		$type_terms  = NH_Types::terms();
+		$sections    = NH_Sections::all();
 		?>
 		<form method="post" action="options.php">
 			<?php settings_fields( 'nh_hub_types' ); ?>
-			<?php self::card( __( 'Default level per resource type', 'neurohr-hub' ), __( 'Used by every resource left on "Type default". A level picked on a resource itself always wins.', 'neurohr-hub' ) ); ?>
-				<table class="nh-admin-table">
-					<thead><tr><th><?php esc_html_e( 'Resource type', 'neurohr-hub' ); ?></th><th><?php esc_html_e( 'Section', 'neurohr-hub' ); ?></th><th><?php esc_html_e( 'Default level', 'neurohr-hub' ); ?></th></tr></thead>
+			<?php self::card( __( 'Resource types', 'neurohr-hub' ), __( 'Behaviour decides what a type is (its editor boxes and page layout); the level is used by every resource left on "Type default" (a level picked on a resource itself always wins). Types can be renamed freely in Knowledge Hub → Resource Types, also their slug.', 'neurohr-hub' ) ); ?>
+				<table class="nh-admin-table" style="max-width:none">
+					<thead><tr><th><?php esc_html_e( 'Resource type', 'neurohr-hub' ); ?></th><th><?php esc_html_e( 'Behaves as', 'neurohr-hub' ); ?></th><th><?php esc_html_e( 'Section', 'neurohr-hub' ); ?></th><th><?php esc_html_e( 'Default level', 'neurohr-hub' ); ?></th></tr></thead>
 					<tbody>
 					<?php foreach ( $type_terms as $type_term ) : ?>
-						<?php $current = isset( $type_levels[ $type_term->slug ] ) ? $type_levels[ $type_term->slug ] : NH_Access::default_level(); ?>
+						<?php
+						$tid     = (int) $type_term->term_id;
+						$current = isset( $type_levels[ $tid ] ) ? $type_levels[ $tid ] : NH_Access::default_level();
+						$owner   = NH_Sections::for_type_id( $tid );
+						?>
 						<tr>
-							<td><?php echo esc_html( $type_term->name ); ?></td>
-							<td class="description"><?php echo esc_html( NH_Sections::get( NH_Sections::for_type( $type_term->slug ) )['label'] ); ?></td>
-							<td><select name="<?php echo esc_attr( NH_Access::OPTION_TYPES . '[' . $type_term->slug . ']' ); ?>">
-								<?php foreach ( nh_hub_level_labels() as $level => $label ) : ?>
+							<td><strong><?php echo esc_html( $type_term->name ); ?></strong> <span class="description"><?php echo esc_html( $type_term->slug ); ?></span></td>
+							<td><select name="nh_kind[<?php echo (int) $tid; ?>]">
+								<?php foreach ( NH_Types::kinds() as $kind => $label ) : ?>
+									<option value="<?php echo esc_attr( $kind ); ?>" <?php selected( NH_Types::kind( $type_term ), $kind ); ?>><?php echo esc_html( $label ); ?></option>
+								<?php endforeach; ?>
+							</select></td>
+							<td><?php echo $owner ? esc_html( $sections[ $owner ]['label'] ) : '<span style="color:#b32d2e">' . esc_html__( 'none — set it in Sections', 'neurohr-hub' ) . '</span>'; ?></td>
+							<td><select name="<?php echo esc_attr( NH_Access::OPTION_TYPES . '[' . $tid . ']' ); ?>">
+								<?php foreach ( nh_hub_level_labels( true ) as $level => $label ) : ?>
 									<option value="<?php echo (int) $level; ?>" <?php selected( $current, $level ); ?>><?php echo esc_html( $label ); ?></option>
 								<?php endforeach; ?>
 							</select></td>
@@ -475,6 +466,10 @@ class NH_Admin {
 			<?php submit_button(); ?>
 		</form>
 		<?php
+	}
+
+	private static function tab_shortcodes() {
+		NH_Shortcode_Docs::render();
 	}
 
 	private static function tab_changelog() {

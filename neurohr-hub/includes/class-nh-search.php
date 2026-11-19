@@ -96,6 +96,10 @@ class NH_Search {
 				$terms = get_the_terms( $p, $data['taxonomy'] );
 				$meta  = ( $terms && ! is_wp_error( $terms ) ) ? $terms[0]->name : '';
 			}
+			$langs = NH_Lang::badge_text( $p );
+			if ( '' !== $langs ) {
+				$meta = trim( $meta . ' · ' . $langs, ' ·' );
+			}
 			$can     = NH_Access::can_view( $p );
 			$items[] = array(
 				'title'  => html_entity_decode( get_the_title( $p ), ENT_QUOTES, 'UTF-8' ),

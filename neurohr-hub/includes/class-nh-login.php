@@ -3,7 +3,9 @@
  * "Login required" for the whole Knowledge Hub (Settings → General, on by default).
  *
  * Guests are sent to the login page and back afterwards. Hub content is also kept out of
- * the REST API, site search and sitemaps for guests. The RSS feed stays readable with a
+ * the REST API, site search and sitemaps for guests.
+ * Exception: resources set to "Everyone" are free samples — readable without login,
+ * indexable, and listed in the sitemap. The RSS feed stays readable with a
  * secret key, so MailerLite can still send new-content emails.
  */
 
@@ -21,6 +23,7 @@ class NH_Login {
 		add_action( 'pre_get_posts', array( __CLASS__, 'exclude_from_search' ) );
 		add_filter( 'wp_sitemaps_post_types', array( __CLASS__, 'sitemap_post_types' ) );
 		add_filter( 'wp_sitemaps_taxonomies', array( __CLASS__, 'sitemap_taxonomies' ) );
+		add_filter( 'wp_sitemaps_posts_query_args', array( __CLASS__, 'sitemap_public_only' ), 10, 2 );
 		add_filter( 'wp_robots', array( __CLASS__, 'noindex' ) );
 	}
 
@@ -96,6 +99,19 @@ class NH_Login {
 			exit;
 		}
 
+		// Free samples ("Everyone") open without login.
+		if ( is_singular( NH_Post_Types::CPT ) && NH_Access::is_public( get_queried_object() ) ) {
+			return;
+		}
+		// A free sample whose address was changed: send visitors straight to the new one.
+		if ( is_404() ) {
+			$renamed = NH_Rewrite::old_slug_target( NH_Rewrite::request_path() );
+			if ( $renamed && NH_Access::is_public( $renamed ) ) {
+				wp_safe_redirect( get_permalink( $renamed ), 301 );
+				exit;
+			}
+		}
+
 		if ( NH_Frontend::is_hub() || self::is_old_hub_url() ) {
 			nocache_headers();
 			wp_safe_redirect( self::login_url( self::current_url() ), 302 );
@@ -145,11 +161,42 @@ class NH_Login {
 		$query->set( 'post_type', array_values( $types ) );
 	}
 
+	/** With login required, the sitemap keeps resources only for the free samples. */
 	public static function sitemap_post_types( $types ) {
-		if ( self::required() ) {
+		if ( self::required() && ! self::public_ids() ) {
 			unset( $types[ NH_Post_Types::CPT ] );
 		}
 		return $types;
+	}
+
+	public static function sitemap_public_only( $args, $post_type ) {
+		if ( NH_Post_Types::CPT === $post_type ) {
+			$args['nh_all_langs'] = true; // Every language version may be listed (hreflang links them).
+		}
+		if ( NH_Post_Types::CPT === $post_type && self::required() ) {
+			$ids             = self::public_ids();
+			$args['post__in'] = $ids ? $ids : array( 0 );
+		}
+		return $args;
+	}
+
+	/** IDs of published resources set to Everyone. */
+	public static function public_ids() {
+		return array_map(
+			'intval',
+			get_posts(
+				array(
+					'post_type'      => NH_Post_Types::CPT,
+					'post_status'    => 'publish',
+					'posts_per_page' => -1,
+					'fields'         => 'ids',
+					'meta_key'       => NH_Access::META, // phpcs:ignore WordPress.DB.SlowDBQuery
+					'meta_value'     => '0', // phpcs:ignore WordPress.DB.SlowDBQuery
+					'no_found_rows'  => true,
+					'nh_all_langs'   => true,
+				)
+			)
+		);
 	}
 
 	public static function sitemap_taxonomies( $taxonomies ) {
@@ -162,6 +209,9 @@ class NH_Login {
 	}
 
 	public static function noindex( $robots ) {
+		if ( is_singular( NH_Post_Types::CPT ) && NH_Access::is_public( get_queried_object() ) ) {
+			return $robots; // Free samples may be found on Google.
+		}
 		if ( self::required() && NH_Frontend::is_hub() ) {
 			$robots['noindex']  = true;
 			$robots['nofollow'] = true;

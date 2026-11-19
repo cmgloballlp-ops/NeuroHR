@@ -52,6 +52,9 @@ class NH_Display {
 			'review_months' => 12,
 			'updated_days'  => 30,
 			'print_notice'  => NH_Print::default_notice(),
+			'lang_enabled'      => 'zh,en',
+			'lang_default_new'  => 'zh',
+			'lang_default_view' => 'zh',
 		);
 	}
 
@@ -100,6 +103,21 @@ class NH_Display {
 			$color        = sanitize_hex_color( $input['color'] );
 			$out['color'] = $color ? $color : $d['color'];
 		}
+		// Languages: the form sends lang_present so that unticking every box is noticed.
+		if ( isset( $input['lang_present'] ) ) {
+			$on = array();
+			foreach ( (array) ( isset( $input['lang_enabled'] ) ? $input['lang_enabled'] : array() ) as $code ) {
+				$code = NH_Lang::valid( $code );
+				if ( $code ) {
+					$on[] = $code;
+				}
+			}
+			$out['lang_enabled'] = $on ? implode( ',', array_unique( $on ) ) : 'en';
+			foreach ( array( 'lang_default_new', 'lang_default_view' ) as $key ) {
+				$code        = isset( $input[ $key ] ) ? NH_Lang::valid( $input[ $key ] ) : '';
+				$out[ $key ] = ( $code && in_array( $code, explode( ',', $out['lang_enabled'] ), true ) ) ? $code : explode( ',', $out['lang_enabled'] )[0];
+			}
+		}
 		foreach ( array( 'require_login', 'style_posts' ) as $key ) {
 			if ( isset( $input[ $key ] ) ) {
 				$out[ $key ] = empty( $input[ $key ] ) ? 0 : 1;
@@ -110,15 +128,9 @@ class NH_Display {
 
 	/** Hero texts of a section. */
 	public static function hero_texts( $section ) {
-		$s = self::get();
-		if ( 'cases' === $section ) {
-			return array( 'eyebrow' => $s['eyebrow'], 'title' => $s['cases_title'], 'intro' => $s['cases_intro'], 'image_id' => 0 );
-		}
-		if ( 'faq' === $section ) {
-			return array( 'eyebrow' => '', 'title' => $s['faq_title'], 'intro' => $s['faq_intro'], 'image_id' => 0 );
-		}
-		if ( 'templates' === $section || 'videos' === $section ) {
-			return array( 'eyebrow' => '', 'title' => $s[ $section . '_title' ], 'intro' => $s[ $section . '_intro' ], 'image_id' => 0 );
+		$s = NH_Sections::get( $section );
+		if ( ! $s ) {
+			return array( 'eyebrow' => '', 'title' => '', 'intro' => '', 'image_id' => 0 );
 		}
 		return array( 'eyebrow' => $s['eyebrow'], 'title' => $s['title'], 'intro' => $s['intro'], 'image_id' => (int) $s['image_id'] );
 	}
@@ -242,7 +254,7 @@ class NH_Display {
 			return '<p class="nh-empty">' . esc_html__( 'Nothing here yet.', 'neurohr-hub' ) . '</p>';
 		}
 
-		$cache_key = 'nh_cards_' . $section . '_' . $items;
+		$cache_key = 'nh_cards_' . $section . '_' . $items . '_' . NH_Lang::preferred(); // One version per content, in the reader's language.
 		$cards     = get_transient( $cache_key );
 		if ( ! is_array( $cards ) ) {
 			$cards = array();
@@ -290,6 +302,7 @@ class NH_Display {
 							<li>
 								<a href="<?php echo esc_url( get_permalink( $id ) ); ?>"><?php echo esc_html( get_the_title( $id ) ); ?></a>
 								<?php echo NH_Review::badge( $id ); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped in method. ?>
+								<?php echo NH_Lang::badge( $id ); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped in method. ?>
 								<?php echo self::lock_icon( $id ); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped in method. ?>
 							</li>
 						<?php endforeach; ?>
@@ -313,7 +326,7 @@ class NH_Display {
 				'post_status'    => 'publish',
 				'posts_per_page' => 200,
 				'orderby'        => array( 'menu_order' => 'ASC', 'title' => 'ASC' ),
-				'tax_query'      => array( NH_Sections::type_clause( 'faq' ) ), // phpcs:ignore WordPress.DB.SlowDBQuery
+				'tax_query'      => array( NH_Types::kind_clause( 'faq' ) ), // phpcs:ignore WordPress.DB.SlowDBQuery
 			)
 		);
 		if ( ! $faqs ) {
@@ -368,7 +381,7 @@ class NH_Display {
 		self::ensure_assets();
 		ob_start();
 		echo '<div class="nh-hub nh-sc"><nav class="nh-sections" aria-label="' . esc_attr__( 'Sections', 'neurohr-hub' ) . '">';
-		foreach ( NH_Sections::all() as $key => $section ) {
+		foreach ( NH_Sections::visible() as $key => $section ) {
 			printf(
 				'<a href="%1$s">%2$s <span class="nh-count">%3$d</span></a>',
 				esc_url( NH_Rewrite::url( $key ) ),
@@ -389,17 +402,55 @@ class NH_Display {
 		return '<div class="nh-hub nh-sc">' . self::topic_cards( self::section_att( $atts ), $atts['items'], $atts['columns'] ) . '</div>';
 	}
 
+	/**
+	 * [nh_hub_latest] — newest resources as cards.
+	 * section: knowledge | cases | faq | templates | videos | all, or several: "knowledge,videos"
+	 * topic:   HR Topic or Case Topic slug(s): "termination-dismissal,dismissal-cases"
+	 * access:  "public" = only free samples (Everyone)
+	 * count:   1–24 (default 6)
+	 */
 	public static function sc_latest( $atts = array() ) {
 		self::ensure_assets();
-		$atts  = shortcode_atts( array( 'section' => 'knowledge', 'count' => 6 ), $atts, 'nh_hub_latest' );
-		$posts = get_posts(
-			array(
-				'post_type'      => NH_Post_Types::CPT,
-				'post_status'    => 'publish',
-				'posts_per_page' => max( 1, min( 24, (int) $atts['count'] ) ),
-				'tax_query'      => array( NH_Sections::type_clause( self::section_att( $atts ) ) ), // phpcs:ignore WordPress.DB.SlowDBQuery
-			)
+		$atts = shortcode_atts( array( 'section' => 'knowledge', 'count' => 6, 'access' => '', 'topic' => '' ), $atts, 'nh_hub_latest' );
+		$args = array(
+			'post_type'      => NH_Post_Types::CPT,
+			'post_status'    => 'publish',
+			'posts_per_page' => max( 1, min( 24, (int) $atts['count'] ) ),
 		);
+		$tax_query = array();
+
+		$sections = array_filter( array_map( 'sanitize_key', array_map( 'trim', explode( ',', (string) $atts['section'] ) ) ) );
+		if ( ! in_array( 'all', $sections, true ) ) {
+			$types = array();
+			foreach ( $sections as $key ) {
+				$section = NH_Sections::get( $key );
+				if ( $section && 'all' !== $key ) {
+					$types = array_merge( $types, $section['type_ids'] );
+				}
+			}
+			if ( ! $types ) {
+				$types = NH_Sections::get( 'knowledge' )['type_ids'];
+			}
+			$tax_query[] = array( 'taxonomy' => NH_Post_Types::TAX_TYPE, 'field' => 'term_id', 'terms' => $types ? array_values( array_unique( $types ) ) : array( 0 ) );
+		}
+
+		$topics = array_filter( array_map( 'sanitize_title', array_map( 'trim', explode( ',', (string) $atts['topic'] ) ) ) );
+		if ( $topics ) {
+			$any = array( 'relation' => 'OR' );
+			foreach ( array_keys( NH_Sections::topic_taxonomies() ) as $taxonomy ) {
+				$any[] = array( 'taxonomy' => $taxonomy, 'field' => 'slug', 'terms' => $topics );
+			}
+			$tax_query[] = $any;
+		}
+		if ( $tax_query ) {
+			$args['tax_query'] = array_merge( array( 'relation' => 'AND' ), $tax_query ); // phpcs:ignore WordPress.DB.SlowDBQuery
+		}
+		// access="public": only free samples — for a public page that shows what members get.
+		if ( 'public' === $atts['access'] ) {
+			$args['meta_key']   = NH_Access::META; // phpcs:ignore WordPress.DB.SlowDBQuery
+			$args['meta_value'] = '0'; // phpcs:ignore WordPress.DB.SlowDBQuery
+		}
+		$posts = get_posts( $args );
 		if ( ! $posts ) {
 			return '';
 		}

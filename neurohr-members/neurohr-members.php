@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       NeuroHR Members
  * Description:       Membership levels with billing terms, company accounts with seats, invoices (PDF), expiry and reminders, login / registration / account pages by shortcode, page protection, a member-area layout, menu and Elementor visibility, and a hidden WordPress login. Replaces MemberPress for NeuroHR and supplies the level to the Knowledge Hub and Simple Payroll.
- * Version:           0.4.5
+ * Version:           0.5.0
  * Author:            NeuroHR
  * Requires at least: 6.0
  * Requires PHP:      7.4
@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'NHM_VERSION', '0.4.5' );
+define( 'NHM_VERSION', '0.5.0' );
 define( 'NHM_API_VERSION', 1 );
 define( 'NHM_FILE', __FILE__ );
 define( 'NHM_DIR', plugin_dir_path( __FILE__ ) );
@@ -42,6 +42,8 @@ require_once NHM_DIR . 'includes/class-nhm-hidewp.php';
 require_once NHM_DIR . 'includes/class-nhm-avatar.php';
 require_once NHM_DIR . 'includes/class-nhm-visibility.php';
 require_once NHM_DIR . 'includes/class-nhm-shell.php';
+require_once NHM_DIR . 'includes/class-nhm-app.php';
+require_once NHM_DIR . 'includes/class-nhm-pwa.php';
 require_once NHM_DIR . 'includes/class-nhm-stripe.php';
 require_once NHM_DIR . 'includes/class-nhm-renew.php';
 require_once NHM_DIR . 'includes/class-nhm-refunds.php';
@@ -62,6 +64,8 @@ NHM_HideWP::init();
 NHM_Avatar::init();
 NHM_Visibility::init();
 NHM_Shell::init();
+NHM_App::init();
+NHM_PWA::init();
 NHM_Stripe::init();
 NHM_Renew::init();
 NHM_Refunds::init();

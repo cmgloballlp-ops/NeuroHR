@@ -535,29 +535,19 @@ class NH_Import_BetterDocs {
 
 	/** Box under the upload form: move BetterDocs attachments into protected downloads. */
 	private static function render_attachments_box() {
-		$count = count(
-			get_posts(
-				array(
-					'post_type'      => NH_Post_Types::CPT,
-					'post_status'    => 'any',
-					'posts_per_page' => -1,
-					'fields'         => 'ids',
-					'meta_key'       => NH_Related::ATTACH_META, // phpcs:ignore WordPress.DB.SlowDBQuery -- admin tool.
-				)
-			)
-		);
+		$count = count( NH_Attachments::with_public_files() );
 		if ( ! $count ) {
 			return;
 		}
 		?>
 		<hr style="margin:24px 0">
 		<h2><?php esc_html_e( 'BetterDocs attachments', 'neurohr-hub' ); ?></h2>
-		<p><?php echo esc_html( sprintf( /* translators: %d: count */ _n( '%d resource still has BetterDocs attachments.', '%d resources still have BetterDocs attachments.', $count, 'neurohr-hub' ), $count ) ); ?>
-			<?php esc_html_e( 'Files stored on this site become protected Template downloads (readable by the same members as the resource) and are linked under it. Links to other sites stay as they are.', 'neurohr-hub' ); ?></p>
+		<p><?php echo esc_html( sprintf( /* translators: %d: count */ _n( '%d resource has attachment files that are still public.', '%d resources have attachment files that are still public.', $count, 'neurohr-hub' ), $count ) ); ?>
+			<?php esc_html_e( 'They move into the protected folder and stay attachments of their resource; only its readers can open them. Links to other sites stay as they are. (One resource at a time: tick "Move to protected folder" in its Attachments box.)', 'neurohr-hub' ); ?></p>
 		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 			<input type="hidden" name="action" value="<?php echo esc_attr( self::ACTION ); ?>">
 			<?php wp_nonce_field( self::ACTION ); ?>
-			<button type="submit" name="step" value="attachments" class="button"><?php esc_html_e( 'Move attachments into protected downloads', 'neurohr-hub' ); ?></button>
+			<button type="submit" name="step" value="attachments" class="button"><?php esc_html_e( 'Protect all attachment files', 'neurohr-hub' ); ?></button>
 		</form>
 		<?php
 	}
@@ -566,10 +556,10 @@ class NH_Import_BetterDocs {
 		$r = get_option( self::REPORT . '_files', array() );
 		?>
 		<div class="notice notice-success inline"><p>
-			<?php echo esc_html( sprintf( /* translators: 1: moved, 2: kept */ __( 'Moved into protected downloads: %1$d. Links to other sites kept: %2$d.', 'neurohr-hub' ), count( isset( $r['moved'] ) ? $r['moved'] : array() ), isset( $r['kept'] ) ? (int) $r['kept'] : 0 ) ); ?>
+			<?php echo esc_html( sprintf( /* translators: 1: moved, 2: kept */ __( 'Moved into the protected folder: %1$d. Links to other sites kept: %2$d.', 'neurohr-hub' ), count( isset( $r['moved'] ) ? $r['moved'] : array() ), isset( $r['kept'] ) ? (int) $r['kept'] : 0 ) ); ?>
 		</p></div>
 		<?php if ( ! empty( $r['moved'] ) ) : ?>
-			<p><strong><?php esc_html_e( 'The original public copies are still in the media library. Check the new downloads, then delete these files from Media:', 'neurohr-hub' ); ?></strong></p>
+			<p><strong><?php esc_html_e( 'Moved (the public copies were removed from the media library):', 'neurohr-hub' ); ?></strong></p>
 			<ul style="list-style:disc;padding-left:20px">
 				<?php foreach ( $r['moved'] as $m ) : ?>
 					<li><?php echo esc_html( $m['title'] ); ?> — <code><?php echo esc_html( $m['url'] ); ?></code></li>
@@ -577,7 +567,7 @@ class NH_Import_BetterDocs {
 			</ul>
 		<?php endif; ?>
 		<?php if ( ! empty( $r['missing'] ) ) : ?>
-			<div class="notice notice-warning inline"><p><strong><?php esc_html_e( 'Not moved (file not found on this site — upload it to a Template resource by hand):', 'neurohr-hub' ); ?></strong> <?php echo esc_html( implode( '; ', $r['missing'] ) ); ?></p></div>
+			<div class="notice notice-warning inline"><p><strong><?php esc_html_e( 'Not moved (file not found on this site — upload it again in the resource\'s Attachments box):', 'neurohr-hub' ); ?></strong> <?php echo esc_html( implode( '; ', $r['missing'] ) ); ?></p></div>
 		<?php endif; ?>
 		<?php
 	}

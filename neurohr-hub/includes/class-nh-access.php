@@ -210,10 +210,8 @@ class NH_Access {
 
 	/* ---------- Resources ---------- */
 
-	/**
-	 * Resource type slug => default level, used when a resource has no own level.
-	 */
-	public static function default_type_levels() {
+	/** Behaviour (NH_Types kind) => level for types nobody has set yet. */
+	public static function default_kind_levels() {
 		return array(
 			'article'    => 2,
 			'case-study' => 2,
@@ -223,13 +221,28 @@ class NH_Access {
 		);
 	}
 
-	public static function get_type_levels() {
-		$levels = get_option( self::OPTION_TYPES, null );
-		if ( ! is_array( $levels ) ) {
-			$levels = array();
+	/**
+	 * Type term ID => default level, used when a resource has no own level.
+	 * Keyed by ID since 0.12, so renaming a type (name or slug) keeps its level.
+	 */
+	public static function default_type_levels() {
+		$kind_levels = self::default_kind_levels();
+		$out         = array();
+		foreach ( NH_Types::terms() as $term ) {
+			$out[ (int) $term->term_id ] = $kind_levels[ NH_Types::kind( $term ) ];
 		}
-		// Saved values win; types missing from the option fall back to the built-in default.
-		$levels = array_merge( self::default_type_levels(), $levels );
+		return $out;
+	}
+
+	public static function get_type_levels() {
+		$saved  = get_option( self::OPTION_TYPES, null );
+		$levels = self::default_type_levels();
+		// Saved values win; types missing from the option fall back to their behaviour's default.
+		foreach ( is_array( $saved ) ? $saved : array() as $id => $level ) {
+			if ( is_numeric( $id ) ) {
+				$levels[ (int) $id ] = $level;
+			}
+		}
 		return array_map( array( __CLASS__, 'valid_level' ), $levels );
 	}
 
@@ -252,7 +265,7 @@ class NH_Access {
 		$levels = self::get_type_levels();
 		$level  = null;
 		foreach ( $terms as $term ) {
-			$type_level = isset( $levels[ $term->slug ] ) ? $levels[ $term->slug ] : self::default_level();
+			$type_level = isset( $levels[ (int) $term->term_id ] ) ? $levels[ (int) $term->term_id ] : self::default_level();
 			if ( null === $level || self::rank( $type_level ) > self::rank( $level ) ) {
 				$level = $type_level;
 			}
@@ -266,10 +279,19 @@ class NH_Access {
 		if ( ! $post ) {
 			return self::default_level();
 		}
-		$raw   = get_post_meta( $post->ID, self::META, true );
-		$level = '' === $raw ? self::get_type_level( $post ) : self::valid_level( $raw );
-		// With login required for the whole hub, "Public" (0) is the same as Free.
+		$raw = get_post_meta( $post->ID, self::META, true );
+		if ( '' !== $raw ) {
+			// Own level. 0 = Everyone: readable without login, even while the hub needs one.
+			return self::valid_level( $raw );
+		}
+		$level = self::get_type_level( $post );
+		// A type default can only open a whole type to everyone when the hub needs no login.
 		return ( 0 === $level && NH_Login::required() ) ? self::base_level() : $level;
+	}
+
+	/** Readable without login (a free sample). */
+	public static function is_public( $post ) {
+		return 0 === self::get_post_level( $post );
 	}
 
 	public static function can_view( $post, $user_id = null ) {

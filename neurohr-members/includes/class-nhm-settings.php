@@ -72,6 +72,21 @@ class NHM_Settings {
 			'shell_promo_url'    => '',
 			'shell_footer_text'  => '© {year} {site}. All rights reserved.',
 
+			// Phone app + greeting (0.5).
+			'app_on'             => 1,       // Bottom bar, search screen and More sheet on phones.
+			'app_home'           => 1,       // App home (greeting, plan card, Latest for You) on the Dashboard page, phones only.
+			'greet_morning'      => 'Good morning, {name}!',
+			'greet_afternoon'    => 'Good afternoon, {name}!',
+			'greet_evening'      => 'Good evening, {name}!',
+			'greet_late'         => 'Working late, {name}?',
+			'greet_lines'        => '',      // One per line; empty = the 20 built-in lines.
+			'pwa_on'             => 1,       // Installable app (manifest + service worker).
+			'pwa_name'           => 'NeuroHR',
+			'pwa_short'          => 'NeuroHR',
+			'pwa_icon'           => '',      // Square image, 512×512 or bigger; empty = Site Icon.
+			'pwa_color'          => '#f47b20',
+			'pwa_bg'             => '#f7f3ee',
+
 			// Registration (form fields are in the nhm_fields option, see NHM_Fields).
 			'registration_open'  => 1,
 			'verify_email'       => 1, // New accounts confirm their email address before they can log in.

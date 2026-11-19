@@ -116,8 +116,129 @@ class NH_Upgrade {
 		if ( '' !== $from && version_compare( $from, '0.4.0', '<' ) ) {
 			self::to_040();
 		}
+		if ( '' !== $from && version_compare( $from, '0.12.0', '<' ) ) {
+			self::to_0120();
+		}
+		if ( '' !== $from && version_compare( $from, '0.11.0', '<' ) ) {
+			self::to_0110();
+		}
+		if ( '' !== $from && version_compare( $from, '0.10.0', '<' ) ) {
+			self::to_0100();
+			self::index_refs();
+		}
 		// Every install: the protected folder for template files.
 		NH_Media::ensure_dir();
+	}
+
+	/**
+	 * 0.10.0: level 0 now means "Everyone, no login". Before, while the hub needed a login,
+	 * a stored 0 counted as Free — keep those resources Free so nothing becomes public.
+	 */
+	private static function to_0100() {
+		if ( ! NH_Login::required() ) {
+			return; // 0 already meant public.
+		}
+		$ids = get_posts(
+			array(
+				'post_type'      => NH_Post_Types::CPT,
+				'post_status'    => 'any',
+				'posts_per_page' => -1,
+				'fields'         => 'ids',
+				'meta_key'       => NH_Access::META, // phpcs:ignore WordPress.DB.SlowDBQuery
+				'meta_value'     => '0', // phpcs:ignore WordPress.DB.SlowDBQuery
+				'nh_all_langs'   => true,
+			)
+		);
+		foreach ( $ids as $id ) {
+			update_post_meta( $id, NH_Access::META, NH_Access::base_level() );
+		}
+	}
+
+	/**
+	 * 0.12.0: types are known by ID and behaviour; sections become editable.
+	 * - Each type gets its behaviour (also a type whose name/slug was changed, e.g. HR Insights).
+	 * - Type default levels move from slug keys to type IDs.
+	 * - Sections are saved with their types; a built-in section whose type was renamed takes
+	 *   the type's name and address (HR Insights → /hr-insights/). Old addresses redirect.
+	 */
+	public static function to_0120() {
+		$defaults = array( 'article' => 'Article', 'case-study' => 'Case Study', 'faq' => 'FAQ', 'video' => 'Video', 'download' => 'Download' );
+		$by_kind  = array();
+		foreach ( array_keys( NH_Types::kinds() ) as $kind ) {
+			$by_kind[ $kind ] = NH_Types::find_or_create( $kind );
+		}
+
+		// Type levels: slug => level  becomes  ID => level.
+		$levels = get_option( NH_Access::OPTION_TYPES, null );
+		if ( is_array( $levels ) ) {
+			$new = array();
+			foreach ( $levels as $key => $level ) {
+				if ( is_numeric( $key ) ) {
+					$new[ (int) $key ] = (int) $level;
+					continue;
+				}
+				$term = get_term_by( 'slug', $key, NH_Post_Types::TAX_TYPE );
+				$id   = $term ? (int) $term->term_id : ( isset( $by_kind[ $key ] ) ? (int) $by_kind[ $key ] : 0 );
+				if ( $id ) {
+					$new[ $id ] = (int) $level;
+				}
+			}
+			update_option( NH_Access::OPTION_TYPES, $new );
+		}
+
+		if ( is_array( get_option( NH_Sections::OPTION ) ) ) {
+			return; // Already set up.
+		}
+		$sections = NH_Sections::stored(); // Built-ins with their types and heading texts.
+		$labels   = NH_Sections::builtins();
+		$order    = 0;
+		foreach ( $sections as $key => $section ) {
+			$sections[ $key ]['order'] = $order++;
+			$kind                      = $labels[ $key ]['kind'];
+			$term                      = $by_kind[ $kind ] ? get_term( $by_kind[ $kind ], NH_Post_Types::TAX_TYPE ) : null;
+			if ( ! $term || is_wp_error( $term ) || $term->name === $defaults[ $kind ] ) {
+				continue;
+			}
+			// The type was renamed: the section follows (name and address).
+			$old_label                 = $sections[ $key ]['label'];
+			$sections[ $key ]['label'] = $term->name;
+			$sections[ $key ]['base']  = $term->slug !== $kind ? $term->slug : sanitize_title( $term->name );
+			if ( $sections[ $key ]['title'] === $old_label ) {
+				$sections[ $key ]['title'] = $term->name;
+			}
+		}
+		// Save as if done in Settings → Sections: addresses are checked, old ones redirect.
+		update_option( NH_Sections::OPTION, NH_Sections::stored(), true ); // Current state first, so old addresses are known.
+		NH_Sections::flush();
+		$messages = NH_Sections::save( $sections );
+		if ( $messages ) {
+			update_option( 'nh_hub_section_notices', $messages, false );
+		}
+	}
+
+	/** 0.11.0: everything written before languages existed is English. */
+	private static function to_0110() {
+		$ids = get_posts(
+			array(
+				'post_type'      => NH_Post_Types::CPT,
+				'post_status'    => 'any',
+				'posts_per_page' => -1,
+				'fields'         => 'ids',
+				'nh_all_langs'   => true,
+				'meta_query'     => array( array( 'key' => NH_Lang::META, 'compare' => 'NOT EXISTS' ) ), // phpcs:ignore WordPress.DB.SlowDBQuery
+			)
+		);
+		foreach ( $ids as $id ) {
+			update_post_meta( $id, NH_Lang::META, 'en' );
+		}
+	}
+
+	/** 0.10.0: index existing references so "Referenced in" works for old content too. */
+	private static function index_refs() {
+		$ids = get_posts( array( 'post_type' => NH_Post_Types::CPT, 'post_status' => 'any', 'posts_per_page' => -1, 'fields' => 'ids', 'nh_all_langs' => true ) );
+		foreach ( $ids as $id ) {
+			NH_Related::sync_refs( $id );
+		}
 	}
 
 	/**

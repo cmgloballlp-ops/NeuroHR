@@ -182,3 +182,10 @@ body.nhm-shell-on *, body.nhm-shell-on *::before, body.nhm-shell-on *::after { b
 .nhs-search .nhs-live a.nh-live__all { display: block; margin-top: 4px; padding: 10px 12px; border-top: 1px solid var(--nhs-line); color: var(--nhs-brand-dark) !important; font-weight: 600; font-size: 14px; }
 .nhs-search .nhs-live .nh-live__empty { margin: 0; padding: 12px; color: var(--nhs-muted); font-size: 14px; }
 @media (max-width: 600px) { .nhs-search .nhs-live a.nh-live__item { flex-direction: column; gap: 2px; } }
+
+/* 0.5: no square box from the theme while typing in the search (the pill shows the focus). */
+.nhs-search input:focus,
+.nhs-search input:focus-visible,
+.nhs-search input:active { outline: none !important; box-shadow: none !important; border: 0 !important; background: transparent !important; border-radius: 0 !important; }
+.nhs-search input::-webkit-search-decoration,
+.nhs-search input::-webkit-search-cancel-button { -webkit-appearance: none; appearance: none; }

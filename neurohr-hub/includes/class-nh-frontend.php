@@ -36,7 +36,7 @@ class NH_Frontend {
 	/** A section page: home, topic or search results. */
 	public static function is_section_page() {
 		$key = get_query_var( NH_Sections::QUERY_VAR );
-		return is_string( $key ) && null !== NH_Sections::get( $key );
+		return is_string( $key ) && null !== NH_Sections::get( $key ) && ! is_404(); // 404: hidden section.
 	}
 
 	public static function is_tag_page() {
@@ -132,15 +132,15 @@ class NH_Frontend {
 		}
 	}
 
-	/** Sort Resource Type terms in the default order (Article, Case Study, FAQ, …). Used by admin screens. */
+	/** Sort Resource Type terms by behaviour (articles, cases, FAQ, videos, templates), then name. */
 	public static function sort_types( $terms ) {
 		$terms = is_array( $terms ) ? array_filter( $terms, function ( $t ) { return $t instanceof WP_Term; } ) : array();
-		$order = array_flip( array_keys( NH_Post_Types::default_types() ) );
+		$order = array_flip( array_keys( NH_Types::kinds() ) );
 		usort(
 			$terms,
 			function ( $a, $b ) use ( $order ) {
-				$x = isset( $order[ $a->slug ] ) ? $order[ $a->slug ] : 99;
-				$y = isset( $order[ $b->slug ] ) ? $order[ $b->slug ] : 99;
+				$x = $order[ NH_Types::kind( $a ) ];
+				$y = $order[ NH_Types::kind( $b ) ];
 				return $x === $y ? strcmp( $a->name, $b->name ) : $x - $y;
 			}
 		);

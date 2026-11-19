@@ -580,9 +580,21 @@ class NHM_Account {
 		}
 		$html .= NHM_Forms::render_messages( 'account' );
 
+		// Phones (app layout): My account opens as a list; each item opens its section with a back link.
+		$base = remove_query_arg( array( 'nhm_msg', 'nhm_invite', 'tab' ), NHM_Forms::current_url() );
+		$wrap = 'nhm-account';
+		if ( class_exists( 'NHM_App' ) && NHM_App::on() && count( $tabs ) > 1 ) {
+			// phpcs:ignore WordPress.Security.NonceVerification
+			if ( ! isset( $_GET['tab'] ) && $tab === key( $tabs ) && ! $token ) {
+				$html .= self::app_menu( $tabs, $m, $base );
+				$wrap .= ' nhm-account--menu';
+			} else {
+				$html .= '<p class="nhm-appback"><a href="' . esc_url( $base ) . '"><span aria-hidden="true">‹</span> ' . esc_html__( 'My Account', 'neurohr-members' ) . '</a></p><h2 class="nhm-apptitle">' . esc_html( $tabs[ $tab ] ) . '</h2>';
+			}
+		}
+
 		if ( count( $tabs ) > 1 ) {
 			$html .= '<nav class="nhm-tabs" aria-label="' . esc_attr__( 'Account Sections', 'neurohr-members' ) . '">';
-			$base  = remove_query_arg( array( 'nhm_msg', 'nhm_invite', 'tab' ), NHM_Forms::current_url() );
 			foreach ( $tabs as $key => $label ) {
 				$html .= '<a class="nhm-tab' . ( $key === $tab ? ' is-on' : '' ) . '" href="' . esc_url( add_query_arg( 'tab', $key, $base ) ) . '"' . ( $key === $tab ? ' aria-current="page"' : '' ) . '>' . esc_html( $label ) . '</a>';
 			}
@@ -610,7 +622,51 @@ class NHM_Account {
 		if ( 'yes' === $atts['logout'] ) {
 			$html .= '<p class="nhm-logout"><a href="' . esc_url( wp_logout_url() ) . '">' . esc_html__( 'Log Out', 'neurohr-members' ) . '</a></p>';
 		}
-		return NHM_Forms::wrap( $html, 'nhm-account' );
+		return NHM_Forms::wrap( $html, $wrap );
+	}
+
+	/** My account as a list (phones). */
+	private static function app_menu( $tabs, $m, $base ) {
+		$user = wp_get_current_user();
+		$co   = $m['company_id'] ? NHM_Companies::get( $m['company_id'] ) : null;
+		$h    = '<div class="nhm-acc-app">';
+		$h   .= '<div class="nhm-acc-app__me">' . NHM_Avatar::img( $user->ID, 76, 'nhm-acc-app__avatar' ) . '<b>' . esc_html( $user->display_name ) . '</b><span>' . esc_html( $user->user_email ) . '</span><p class="nhm-acc-app__pills"><span class="is-plan">' . esc_html( $m['name'] ) . '</span>' . ( $co ? '<span>' . esc_html( $co['name'] ) . '</span>' : '' ) . '</p></div>';
+		$info = array(
+			'profile'       => array( 'user', __( 'Name, phone, job title', 'neurohr-members' ) ),
+			'security'      => array( 'lock', __( 'Password, devices', 'neurohr-members' ) ),
+			'notifications' => array( 'bell', __( 'Newsletter, new content', 'neurohr-members' ) ),
+			'billing'       => array( 'card', self::status_text( $m ) ),
+			'company'       => array( 'building', $co ? sprintf( /* translators: 1: used, 2: seats */ __( '%1$d of %2$d seats used', 'neurohr-members' ), NHM_Companies::seats_used( $co['id'] ), $co['seats'] ) : '' ),
+		);
+		$groups = array(
+			__( 'Account', 'neurohr-members' )    => array( 'profile', 'security', 'notifications' ),
+			__( 'Membership', 'neurohr-members' ) => array( 'billing', 'company' ),
+		);
+		foreach ( $groups as $title => $keys ) {
+			$rows = '';
+			foreach ( $keys as $k ) {
+				if ( ! isset( $tabs[ $k ] ) ) {
+					continue;
+				}
+				$label = 'company' === $k ? __( 'My Company', 'neurohr-members' ) : $tabs[ $k ];
+				$rows .= '<a href="' . esc_url( add_query_arg( 'tab', $k, $base ) ) . '"><i>' . self::app_icon( $info[ $k ][0] ) . '</i><span><b>' . esc_html( $label ) . '</b><small>' . esc_html( $info[ $k ][1] ) . '</small></span><em aria-hidden="true">›</em></a>';
+			}
+			if ( '' !== $rows ) {
+				$h .= '<section class="nhm-acc-app__sec"><p>' . esc_html( $title ) . '</p>' . $rows . '</section>';
+			}
+		}
+		return $h . '<a class="nhm-acc-app__out" href="' . esc_url( wp_logout_url() ) . '">' . esc_html__( 'Log Out', 'neurohr-members' ) . '</a></div>';
+	}
+
+	private static function app_icon( $name ) {
+		$p = array(
+			'user'     => '<circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/>',
+			'lock'     => '<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>',
+			'bell'     => '<path d="M6 8a6 6 0 0 1 12 0c0 7 3 8 3 8H3s3-1 3-8M10 20a2 2 0 0 0 4 0"/>',
+			'card'     => '<rect x="3" y="5" width="18" height="14" rx="3"/><path d="M3 10h18"/>',
+			'building' => '<path d="M3 21V7l9-4 9 4v14M9 21v-6h6v6"/>',
+		);
+		return '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' . $p[ $name ] . '</svg>';
 	}
 
 	public static function status_text( $m ) {

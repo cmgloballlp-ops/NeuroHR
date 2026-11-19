@@ -10,9 +10,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class NH_Topic_Meta {
 
-	/** HR topics and case topics both get an icon and an order. */
+	/** Every topic group (HR Topics, Case Topics, own groups) gets an icon and an order. */
 	public static function taxonomies() {
-		return array( NH_Post_Types::TAX_TOPIC, NH_Post_Types::TAX_CASE_TOPIC );
+		return array_keys( NH_Sections::topic_taxonomies() );
 	}
 
 	public static function init() {

@@ -107,6 +107,8 @@ class NHM_Visibility {
 			'mail'      => __( 'Mail', 'neurohr-members' ),
 			'chat'      => __( 'Chat / Support', 'neurohr-members' ),
 			'help'      => __( 'Help', 'neurohr-members' ),
+			'bookmark'  => __( 'Bookmark / Saved', 'neurohr-members' ),
+			'bell'      => __( 'Bell / Notifications', 'neurohr-members' ),
 			'settings'  => __( 'Settings', 'neurohr-members' ),
 			'logout'    => __( 'Log Out', 'neurohr-members' ),
 		);

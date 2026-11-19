@@ -155,6 +155,19 @@ class NHM_Admin_Settings {
 			'shell_promo_text'  => 'text',
 			'shell_promo_url'   => 'url',
 			'shell_footer_text' => 'text',
+			'app_on'            => 'bool',
+			'app_home'          => 'bool',
+			'greet_morning'     => 'text',
+			'greet_afternoon'   => 'text',
+			'greet_evening'     => 'text',
+			'greet_late'        => 'text',
+			'greet_lines'       => 'textarea',
+			'pwa_on'            => 'bool',
+			'pwa_name'          => 'text',
+			'pwa_short'         => 'text',
+			'pwa_icon'          => 'url',
+			'pwa_color'         => 'color',
+			'pwa_bg'            => 'color',
 		);
 		if ( 'emails' === $tab ) {
 			foreach ( array_keys( NHM_Emails::registry() ) as $key ) {
@@ -738,6 +751,38 @@ class NHM_Admin_Settings {
 		echo '<section class="nhm-admin-card"><h2><span class="dashicons dashicons-editor-insertmore"></span>' . esc_html__( 'Footer', 'neurohr-members' ) . '</h2><div class="nhm-fields">';
 		self::text( 'shell_footer_text', __( 'Footer Text', 'neurohr-members' ), __( '{year} and {site} are filled in.', 'neurohr-members' ) );
 		echo '</div></section>';
+
+		echo '<section class="nhm-admin-card"><h2><span class="dashicons dashicons-smiley"></span>' . esc_html__( 'Greeting', 'neurohr-members' ) . '</h2>';
+		echo '<p class="nhm-admin-card__intro">' . wp_kses_post( __( 'Put <code>[nhm_greeting]</code> on the Dashboard page for "Good morning, Marcus!" by the member\'s own time, and <code>[nhm_greeting part="line"]</code> for one of the lines below (a different one each visit). {name} is the first name; without a first name it becomes "Good morning!".', 'neurohr-members' ) ) . '</p><div class="nhm-fields">';
+		self::text( 'greet_morning', __( 'Morning (5:00 to 11:59)', 'neurohr-members' ) );
+		self::text( 'greet_afternoon', __( 'Afternoon (12:00 to 17:59)', 'neurohr-members' ) );
+		self::text( 'greet_evening', __( 'Evening (18:00 to 20:59)', 'neurohr-members' ) );
+		self::text( 'greet_late', __( 'Late (21:00 to 4:59)', 'neurohr-members' ) );
+		$lines = (string) NHM_Settings::get( 'greet_lines' );
+		echo '<p class="nhm-field nhm-field--wide"><label for="nhm-s-greet_lines">' . esc_html__( 'Lines (one per line)', 'neurohr-members' ) . '</label><textarea id="nhm-s-greet_lines" name="' . esc_attr( self::name( 'greet_lines' ) ) . '" rows="10">' . esc_textarea( '' !== trim( $lines ) ? $lines : implode( "\n", NHM_App::default_lines() ) ) . '</textarea><span class="description">' . esc_html__( 'Empty all lines to go back to the 20 built-in ones.', 'neurohr-members' ) . '</span></p>';
+		echo '</div></section>';
+
+		echo '<section class="nhm-admin-card"><h2><span class="dashicons dashicons-smartphone"></span>' . esc_html__( 'Phone App', 'neurohr-members' ) . '</h2>';
+		echo '<p class="nhm-admin-card__intro">' . esc_html__( 'On phones the member area looks like an app: a bottom bar (Home · Hub · Search · Templates · More), a full-screen search, and a More sheet. Computers keep the sidebar.', 'neurohr-members' ) . '</p>';
+		self::toggle( 'app_on', __( 'Use the app layout on phones', 'neurohr-members' ) );
+		self::toggle( 'app_home', __( 'App home on the Dashboard page', 'neurohr-members' ), __( 'Phones see the greeting, the plan card with days left and "Latest for You" at the top of the page set in Pages → "Logged-in members who open the home page go to". Your Elementor content stays below it on computers.', 'neurohr-members' ) );
+		echo '<p class="description">' . wp_kses_post( sprintf( /* translators: %s: link */ __( 'The shortcuts in the More sheet: <a href="%s">Appearance → Menus</a>, location "Phone: More shortcuts" (6 look best, each with an icon). Without a menu: HR News, Case Insights, Videos, Saved, FAQ and Payroll.', 'neurohr-members' ), esc_url( admin_url( 'nav-menus.php' ) ) ) ) . '</p>';
+		echo '</section>';
+
+		echo '<section class="nhm-admin-card"><h2><span class="dashicons dashicons-download"></span>' . esc_html__( 'Install as an App (PWA)', 'neurohr-members' ) . '</h2>';
+		echo '<p class="nhm-admin-card__intro">' . esc_html__( 'Members can add NeuroHR to their home screen and open it like an app (Android: an "Install" button in the More sheet; iPhone: Share → Add to Home Screen). Members-only pages are never stored on the phone; only the look (CSS, fonts, pictures) is kept so it opens fast, plus a friendly page when there is no internet.', 'neurohr-members' ) . '</p>';
+		self::toggle( 'pwa_on', __( 'Let members install the app', 'neurohr-members' ) );
+		echo '<div class="nhm-fields">';
+		self::text( 'pwa_name', __( 'App Name', 'neurohr-members' ), '', 'text', 'NeuroHR' );
+		self::text( 'pwa_short', __( 'Name Under the Icon', 'neurohr-members' ), __( 'Short, about 12 letters.', 'neurohr-members' ), 'text', 'NeuroHR' );
+		echo '<p class="nhm-field"><label for="nhm-s-pwa_icon">' . esc_html__( 'App Icon', 'neurohr-members' ) . '</label><span class="nhm-color-row"><input type="text" id="nhm-s-pwa_icon" name="' . esc_attr( self::name( 'pwa_icon' ) ) . '" value="' . esc_attr( NHM_Settings::get( 'pwa_icon' ) ) . '" placeholder="https://…/icon-512.png"> <button type="button" class="button" data-nhm-media="nhm-s-pwa_icon">' . esc_html__( 'Choose', 'neurohr-members' ) . '</button></span><span class="description">' . esc_html__( 'Square PNG, 512 × 512 px or bigger. Empty = the Site Icon (Appearance → Customize → Site Identity).', 'neurohr-members' ) . '</span></p>';
+		self::text( 'pwa_color', __( 'Top Bar Colour', 'neurohr-members' ), '', 'text', '#f47b20' );
+		self::text( 'pwa_bg', __( 'Opening Screen Colour', 'neurohr-members' ), '', 'text', '#f7f3ee' );
+		echo '</div>';
+		if ( NHM_Settings::get( 'pwa_on' ) && ! NHM_PWA::icon_url( 512 ) ) {
+			echo '<div class="notice notice-warning inline"><p>' . esc_html__( 'Add an app icon (or a Site Icon) so phones can install the app.', 'neurohr-members' ) . '</p></div>';
+		}
+		echo '</section>';
 	}
 
 	private static function tab_setup() {
