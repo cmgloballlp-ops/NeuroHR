@@ -58,7 +58,7 @@ ok( NHM_Refunds::can_request( $inv, 70 ), 'can ask within 72 hours' );
 ok( ! NHM_Refunds::can_request( $inv, 71 ), 'only the payer' );
 $_GET = array( 'tab' => 'billing' );
 $html = NHM_Account::render( array() );
-ok( false !== strpos( $html, 'Request a refund' ) && false !== strpos( $html, 'name="nhm_reason"' ) && false !== strpos( $html, '?p=13' ), 'button + dialog with policy link' );
+ok( false !== strpos( $html, 'Request a Refund' ) && false !== strpos( $html, 'name="nhm_reason"' ) && false !== strpos( $html, '?p=13' ), 'button + dialog with policy link' );
 $_GET = array();
 post( 'refund_request', array( 'nhm_invoice' => $inv['id'], 'nhm_reason' => '' ) );
 ok( false !== strpos( form_errors( 'refund' ), 'reason' ), 'reason needed' );
@@ -73,7 +73,7 @@ ok( NHM_Levels::base_id() === NHM_Members::level( 70 ), 'access paused at once' 
 ok( (bool) preg_grep( '/received your refund request/', subjects() ) && (bool) preg_grep( '/Refund request: Kim/', subjects() ), 'member + admin emails' );
 ok( ! NHM_Refunds::can_request( NHM_Invoices::get( $inv['id'] ), 70 ), 'no second request while open' );
 $_GET = array( 'tab' => 'billing' );
-ok( false !== strpos( NHM_Account::render( array() ), 'reviewing your refund request' ), 'My account explains the pause' );
+ok( false !== strpos( NHM_Account::render( array() ), 'reviewing your refund request' ), 'My Account explains the pause' );
 $_GET = array();
 
 // ---------- Reject → access back ----------
@@ -119,7 +119,7 @@ ok( 1 === count( NHM_Refunds::query( array( 'invoice_id' => $inv['id'], 'status'
 wp_set_current_user( 70 );
 $_GET = array( 'tab' => 'billing' );
 $html = NHM_Account::render( array() );
-ok( false !== strpos( $html, 'Refund Note ' . $req['number'] ) && false !== strpos( $html, 'nhm_refund_pdf=' . $req['token'] ) && false === strpos( $html, 'Request a refund' ), 'member sees the Refund Note link' );
+ok( false !== strpos( $html, 'Refund Note ' . $req['number'] ) && false !== strpos( $html, 'nhm_refund_pdf=' . $req['token'] ) && false === strpos( $html, 'Request a Refund' ), 'member sees the Refund Note link' );
 $_GET = array();
 
 // ---------- After 72 hours: no button ----------

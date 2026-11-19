@@ -133,11 +133,42 @@ Refunds (phase 2, to build):
 - Reports: received / refunded / net; auto-renewals due in the next 30 days.
 - Later: Privacy Policy text (usage logging), Google login.
 
-## Backlog — noted 30 Oct 2026 (after 0.4.3), build together later
+## Done since 30 Oct 2026
 
-1. **My account → Invoices table UI**: cells have no padding / poor alignment (first column touches the border, actions column too wide). Rename "PDF" to **View invoice**; make "Request a refund" a proper button style that lines up with it.
-2. **Request a refund pop-up**: broken layout on the live site: labels right-aligned, intro text runs off to the side with a horizontal scrollbar, title crowds the × button. Likely theme (Blocksy/Elementor) styles leaking into the dialog; restyle like the approved modal design.
-3. **Invitation page** (replaces item 3 above; owner confirmed the invite already works through the register page): build a separate, invitation-only page. It shows the company name, the email (locked) and name / password / optional profile fields, plus the Terms tick box. No plans or pricing. People who already have an account see "Log in to accept".
-4. **Company tab → seats table**: add padding and alignment. Add a **Remove** button per person (with a confirm pop-up; not for the owner), and pending invitations with Resend / Cancel.
-5. **Security → Change password**: the two fields are misaligned; align the boxes and put the help text under them.
-6. **GitHub**: push Members, Knowledge Hub and Simple Payroll to the owner's repositories once the repo names are given.
+- 0.4.4 (PR #1): invoices table, refund pop-up, invitation page `[nhm_invite]`, seats table with Remove / Send again / Cancel, change-password alignment, code on GitHub (cmgloballlp-ops/NeuroHR).
+- 0.4.5 (PR #2): Bill To Individual / Company (NRIC / Passport No.), Title Case everywhere, full-width admin lists.
+
+## Backlog — to build together later
+
+1. **Top-bar search box**: when typing, a rectangular box shows inside the rounded search field (the theme's focus outline/border on the input). Remove it so only the rounded orange ring shows. Likely fix: `.nhs-search input:focus, .nhs-search input:focus-visible { outline: none !important; box-shadow: none !important; border: 0 !important; }`.
+
+2. **Dashboard greeting by time of day** (owner confirmed 15 Nov 2026): `[nhm_greeting]` replaces "Welcome back, [nhm_user field="first_name"]!".
+   - Good morning 5:00–11:59 · Good afternoon 12:00–17:59 · Good evening 18:00–20:59 · "Working late, {name}?" 21:00–4:59. Member's time zone, else Asia/Kuala_Lumpur. No first name → "Good morning!".
+   - Plus one warm line under it, picked at random from **20 lines**, never the same as the one shown last time (remember the last one per member). Lines editable in Settings (one per line). Approved default lines (15 Nov 2026):
+     1. Here's what's new in Malaysian HR today.
+     2. Ready to make HR a little easier today?
+     3. Your next great HR decision starts here.
+     4. Good HR is built one small step at a time.
+     5. Let's turn today's HR questions into answers.
+     6. Great teams start with great HR. You've got this.
+     7. A quick read today can save a big headache tomorrow.
+     8. Stay ahead of the latest employment law updates.
+     9. Templates, guides and tools, all ready when you are.
+     10. Every policy you get right makes your team stronger.
+     11. Take a moment to explore something new today.
+     12. HR made simpler, one resource at a time.
+     13. Your people are your business. We're here to help.
+     14. Clear policies, happy teams, fewer surprises.
+     15. Small improvements in HR add up to big results.
+     16. Have a question? The answer may be just a search away.
+     17. Thanks for building a better workplace.
+     18. Smart HR starts with the right knowledge.
+     19. Let's make today a productive one.
+     20. Good to see you again. Let's get started.
+
+## Ideas, not decided
+
+- Payment gateways: possibly Billplz for FPX, Curlec for auto-renew, Stripe for the rest. Needs a gateway layer first. Owner's own comparison of fees comes first.
+- Mobile app feel + PWA (asked 17 Nov 2026, discussing): installable "NeuroHR" app (manifest, icons, service worker at site root, offline page, "Install the app" prompt / iOS Add to Home Screen steps), mobile-first member area (bottom tab bar, bigger touch targets). Members-only pages are never cached by the service worker. Push notifications possible later. Waiting for owner's answers (name, icon, start page, offline reading, push).
+  - Style reference from owner (17 Nov 2026): soft "app" look like a fitness/planner app: date + greeting header with avatar top right, big rounded colour hero card with a progress ring (swipeable), white bottom sheet with a timeline list (Today / Yesterday), rounded cards with soft shadows, bottom tab bar with a raised round centre button. NeuroHR version would use orange instead of teal. Mock-up to be shown before building.
+  - 17 Nov 2026: owner approved the style and colours of the mock-ups (Dashboard, Hub list, Templates, Search, More, Article, My Account, Plan & Billing). Bottom bar: Home · Hub · (Search) · Templates · More. "Latest for You" shows the newest 5 + See all. The More shortcuts must be editable by the owner later (plan: a menu location in Appearance → Menus with icons).

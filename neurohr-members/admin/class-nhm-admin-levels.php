@@ -84,7 +84,7 @@ class NHM_Admin_Levels {
 								</div>
 							<?php endif; ?>
 							<?php if ( ! $level['is_base'] ) : ?>
-							<h4 class="nhm-level__sub"><?php esc_html_e( 'Price and term', 'neurohr-members' ); ?></h4>
+							<h4 class="nhm-level__sub"><?php esc_html_e( 'Price and Term', 'neurohr-members' ); ?></h4>
 							<div class="nhm-fields nhm-term" data-nhm-term>
 								<p class="nhm-field"><label><?php esc_html_e( 'Price', 'neurohr-members' ); ?> (<?php echo esc_html( NHM_Settings::get( 'currency' ) ); ?>)</label><input type="text" inputmode="decimal" name="<?php echo esc_attr( $name ); ?>[amount]" value="<?php echo esc_attr( number_format( (float) $level['amount'], 2, '.', '' ) ); ?>">
 								<span class="description"><?php esc_html_e( '0 = free: choosing this level starts it at once, no invoice.', 'neurohr-members' ); ?></span></p>
@@ -117,7 +117,7 @@ class NHM_Admin_Levels {
 							echo esc_html( sprintf( __( 'Now: %1$s %2$s. Bought today, it ends on %3$s.', 'neurohr-members' ), NHM_Levels::price_text( $id ), NHM_Levels::term_label( $id ), $end ? NHM_Emails::format_date( $end ) : __( 'never', 'neurohr-members' ) ) );
 							?>
 							</p>
-							<h4 class="nhm-level__sub"><?php esc_html_e( 'Name and pricing table', 'neurohr-members' ); ?></h4>
+							<h4 class="nhm-level__sub"><?php esc_html_e( 'Name and Pricing Table', 'neurohr-members' ); ?></h4>
 							<?php endif; ?>
 							<div class="nhm-fields">
 								<p class="nhm-field"><label><?php esc_html_e( 'Name', 'neurohr-members' ); ?></label><input type="text" name="<?php echo esc_attr( $name ); ?>[name]" value="<?php echo esc_attr( $level['name'] ); ?>"></p>
@@ -158,12 +158,12 @@ class NHM_Admin_Levels {
 			<form class="nhm-admin-card" method="post" action="<?php echo esc_url( $post ); ?>">
 				<input type="hidden" name="action" value="nhm_add_level">
 				<?php wp_nonce_field( 'nhm_add_level' ); ?>
-				<h2><span class="dashicons dashicons-plus-alt2"></span><?php esc_html_e( 'Add a level', 'neurohr-members' ); ?></h2>
+				<h2><span class="dashicons dashicons-plus-alt2"></span><?php esc_html_e( 'Add a Level', 'neurohr-members' ); ?></h2>
 				<p class="nhm-admin-card__intro"><?php esc_html_e( 'It is added at the top of the ladder. Drag it to its place afterwards.', 'neurohr-members' ); ?></p>
 				<p class="nhm-field"><input type="text" name="name" placeholder="<?php esc_attr_e( 'e.g. Enterprise', 'neurohr-members' ); ?>" required> <?php submit_button( __( 'Add level', 'neurohr-members' ), 'secondary', '', false ); ?></p>
 			</form>
 			<section class="nhm-admin-card">
-				<h2><span class="dashicons dashicons-info-outline"></span><?php esc_html_e( 'Good to know', 'neurohr-members' ); ?></h2>
+				<h2><span class="dashicons dashicons-info-outline"></span><?php esc_html_e( 'Good to Know', 'neurohr-members' ); ?></h2>
 				<ul class="nhm-list">
 					<li><?php esc_html_e( 'Renaming is safe: other plugins store the ID, not the name.', 'neurohr-members' ); ?></li>
 					<li><?php esc_html_e( 'Moving a level changes what it can open in the Knowledge Hub and on protected pages.', 'neurohr-members' ); ?></li>

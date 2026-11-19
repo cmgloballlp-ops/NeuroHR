@@ -121,7 +121,7 @@ class NHM_Protect {
 		$h .= '<p class="nhm-locked__title">' . esc_html( $level && ! $level['is_base'] ? sprintf( __( 'This page is for %s members and above.', 'neurohr-members' ), $name ) : __( 'Please log in to see this page.', 'neurohr-members' ) ) . '</p>';
 		$h .= '<p class="nhm-actions">';
 		if ( ! is_user_logged_in() ) {
-			$h .= '<a class="nhm-btn nhm-btn--primary" href="' . esc_url( NHM_Auth::login_url( get_permalink( $post ) ) ) . '">' . esc_html__( 'Log in', 'neurohr-members' ) . '</a>';
+			$h .= '<a class="nhm-btn nhm-btn--primary" href="' . esc_url( NHM_Auth::login_url( get_permalink( $post ) ) ) . '">' . esc_html__( 'Log In', 'neurohr-members' ) . '</a>';
 		} else {
 			/* translators: %s: level */
 			$h .= '<a class="nhm-btn nhm-btn--primary" href="' . esc_url( NHM_Levels::upgrade_url( $need ) ) . '">' . esc_html( sprintf( __( 'Upgrade to %s', 'neurohr-members' ), $name ) ) . '</a>';

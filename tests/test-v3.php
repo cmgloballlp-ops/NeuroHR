@@ -126,13 +126,13 @@ ok( NHM_Visibility::allowed( 'min', 4 ), 'staff pass "plan or higher"' );
 function item( $id, $parent, $url = '/x/', $title = 'X' ) { $o = new stdClass(); $o->ID = $id; $o->menu_item_parent = $parent; $o->url = $url; $o->title = $title; $o->classes = array(); return $o; }
 update_post_meta( 501, '_nhm_vis', 'min' ); update_post_meta( 501, '_nhm_vis_level', 3 );
 update_post_meta( 503, '_nhm_vis', 'guests' );
-$menu = array( item( 502, 501 ), item( 501, 0 ), item( 503, 0 ), item( 504, 0, '#nhm-login', 'Log in / Log out' ), item( 505, 0, '#nhm-register' ), item( 506, 0, '#nhm-upgrade' ), item( 507, 0, '#nhm-user' ), item( 508, 507, '/a/' ) );
+$menu = array( item( 502, 501 ), item( 501, 0 ), item( 503, 0 ), item( 504, 0, '#nhm-login', 'Log In / Log Out' ), item( 505, 0, '#nhm-register' ), item( 506, 0, '#nhm-upgrade' ), item( 507, 0, '#nhm-user' ), item( 508, 507, '/a/' ) );
 wp_set_current_user( 30 );
 $out = NHM_Visibility::filter_items( $menu );
 $ids = array_map( function ( $i ) { return $i->ID; }, $out );
 ok( array( 504, 506, 507, 508 ) === $ids, 'free member menu: pro item + its child gone, guests-only gone, register gone: ' . implode( ',', $ids ) );
 $by = array(); foreach ( $out as $i ) { $by[ $i->ID ] = $i; }
-ok( 'Log out' === $by[504]->title && false !== strpos( $by[504]->url, '/logout/' ), 'login item becomes Log out' );
+ok( 'Log Out' === $by[504]->title && false !== strpos( $by[504]->url, '/logout/' ), 'login item becomes Log Out' );
 ok( false !== strpos( $by[507]->title, 'Free' ) && false !== strpos( $by[507]->title, '<img' ), 'member name + photo item' );
 wp_set_current_user( 0 );
 $menu = array( item( 502, 501 ), item( 501, 0 ), item( 503, 0 ), item( 504, 0, '#nhm-login' ), item( 505, 0, '#nhm-register' ), item( 506, 0, '#nhm-upgrade' ), item( 507, 0, '#nhm-user' ), item( 508, 507, '/a/' ) );
@@ -162,17 +162,17 @@ ok( 'Pro' === NHM_Shell::plan_line( 31 ), 'top bar: only the plan without a comp
 wp_set_current_user( 30 );
 $open = NHM_Shell::open();
 ok( false !== strpos( $open, 'nhs-side' ) && false !== strpos( $open, 'Amanda Tan' ) && false !== strpos( $open, 'Corporate · BrightPath' ) && false !== strpos( $open, 'Neuro<span>HR</span>' ), 'shell top bar, sidebar, logo' );
-ok( false !== strpos( $open, 'Grow people' ) && false !== strpos( $open, 'My company' ) && false !== strpos( $open, '/logout/' ), 'promo, owner company link, logout' );
+ok( false !== strpos( $open, 'Grow people' ) && false !== strpos( $open, 'My Company' ) && false !== strpos( $open, '/logout/' ), 'promo, owner company link, logout' );
 ok( false !== strpos( $open, '<main class="nhs-main"' ) && '' === NHM_Shell::open(), 'opens once' );
 $close = NHM_Shell::close();
 ok( 0 === strpos( $close, '</main></div><footer class="nhs-footer"><span>© ' . wp_date( 'Y' ) . ' NeuroHR.' ), 'footer text: ' . substr( $close, 0, 90 ) );
 ok( false !== strpos( NHM_Shell::open( 'div' ), '<div class="nhs-main"' ) && 0 === strpos( NHM_Shell::close(), '</div></div>' ), 'div mode for plugin templates' );
 ok( 'https://example.test/' === NHM_Shell::search_target()[0] && 's' === NHM_Shell::search_target()[1], 'search: whole site without the hub' );
 
-// ---------- My account tabs ----------
+// ---------- My Account tabs ----------
 $_SERVER['REQUEST_URI'] = '/account/';
 $html = NHM_Account::render( array() );
-ok( false !== strpos( $html, 'nhm-tabs' ) && false !== strpos( $html, '>Company<' ) && false !== strpos( $html, '>Notifications<' ) && false !== strpos( $html, 'Profile information' ) && false !== strpos( $html, 'Contact details' ) && false !== strpos( $html, 'Preferences' ), 'tabs + profile tab' );
+ok( false !== strpos( $html, 'nhm-tabs' ) && false !== strpos( $html, '>Company<' ) && false !== strpos( $html, '>Notifications<' ) && false !== strpos( $html, 'Profile Information' ) && false !== strpos( $html, 'Contact Details' ) && false !== strpos( $html, 'Preferences' ), 'tabs + profile tab' );
 ok( false !== strpos( $html, 'enctype="multipart/form-data"' ) && false !== strpos( $html, 'name="nhm_photo"' ), 'photo upload form' );
 wp_set_current_user( 31 );
 $html = NHM_Account::render( array() );
@@ -180,12 +180,12 @@ ok( false === strpos( $html, '>Company<' ), 'no company tab without a company' )
 $_GET = array( 'tab' => 'security' );
 update_user_meta( 31, 'session_tokens', array( hash( 'sha256', 'tok1' ) => array( 'expiration' => time() + 999, 'login' => time() - 60, 'ua' => 'Mozilla/5.0 (Windows NT 10.0) Chrome/120' ), hash( 'sha256', 'other' ) => array( 'expiration' => time() + 999, 'login' => time() - 9999, 'ua' => 'Mozilla/5.0 (iPhone) Safari/604' ) ) );
 $html = NHM_Account::render( array() );
-ok( false !== strpos( $html, 'Chrome on Windows' ) && false !== strpos( $html, 'Safari on iPhone' ) && false !== strpos( $html, 'This device' ) && false !== strpos( $html, 'all other devices' ), 'security tab: sessions' );
+ok( false !== strpos( $html, 'Chrome on Windows' ) && false !== strpos( $html, 'Safari on iPhone' ) && false !== strpos( $html, 'This device' ) && false !== strpos( $html, 'All Other Devices' ), 'security tab: sessions' );
 $r = post( 'sessions', array() );
 ok( $r && false !== strpos( $r, 'sessions_ended' ) && 1 === count( get_user_meta( 31, 'session_tokens', true ) ), 'log out other devices' );
 $_GET = array( 'tab' => 'notifications' );
 $html = NHM_Account::render( array() );
-ok( false !== strpos( $html, 'Newsletter' ) && false !== strpos( $html, 'Events &amp; webinars' ) && false === strpos( $html, 'New content' ) && false !== strpos( $html, 'Always on' ), 'notifications: groups that are set up + locked plan emails' );
+ok( false !== strpos( $html, 'Newsletter' ) && false !== strpos( $html, 'Events &amp; Webinars' ) && false === strpos( $html, 'New Content' ) && false !== strpos( $html, 'Always on' ), 'notifications: groups that are set up + locked plan emails' );
 $GLOBALS['remote'] = array();
 $r = post( 'notifications', array( 'nhm_n_events' => 1 ) );
 ok( $r && 1 === (int) get_user_meta( 31, 'nhm_notify_events', true ) && 'POST' === $GLOBALS['remote'][0][1]['method'] && false !== strpos( $GLOBALS['remote'][0][1]['body'], '"333"' ), 'events on → MailerLite group 333' );

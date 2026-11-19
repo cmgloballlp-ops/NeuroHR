@@ -188,7 +188,7 @@ class NHM_PDF {
 		}
 		$bill = array_merge( $bill, isset( $b['address'] ) ? (array) $b['address'] : array() );
 		$bids = array();
-		foreach ( array( 'code' => 'Client code', 'reg_no' => 'Reg. No.', 'tin' => 'TIN', 'sst_no' => 'SST No.' ) as $k => $label ) {
+		foreach ( array( 'code' => 'Client code', 'reg_no' => ( isset( $b['type'] ) && 'individual' === $b['type'] ? 'NRIC / Passport No.' : 'Reg. No.' ), 'tin' => 'TIN', 'sst_no' => 'SST No.' ) as $k => $label ) {
 			if ( ! empty( $b[ $k ] ) ) {
 				$bids[] = $label . ': ' . $b[ $k ];
 			}

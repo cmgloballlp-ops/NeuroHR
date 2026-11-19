@@ -110,10 +110,10 @@ list( $p ) = sent_params( 'checkout/sessions' );
 ok( 'cus_1' === $p['customer'] && ! isset( $p['customer_email'] ) && ! isset( $p['customer_creation'] ), 'existing customer re-used' );
 NHM_Invoices::void( $inv2['id'] );
 
-// ---------- My account card ----------
+// ---------- My Account card ----------
 $_GET = array( 'tab' => 'billing' );
 $html = NHM_Account::render( array() );
-ok( false !== strpos( $html, 'id="nhm-autorenew"' ) && false !== strpos( $html, 'Visa •••• 4242' ) && false !== strpos( $html, 'Update card' ) && false !== strpos( $html, 'Turn off auto-renew' ) && false !== strpos( $html, 'RM 199.00' ), 'auto-renew card' );
+ok( false !== strpos( $html, 'id="nhm-autorenew"' ) && false !== strpos( $html, 'Visa •••• 4242' ) && false !== strpos( $html, 'Update Card' ) && false !== strpos( $html, 'Turn Off Auto-Renew' ) && false !== strpos( $html, 'RM 199.00' ), 'auto-renew card' );
 $_GET = array();
 
 // ---------- Price lock ----------
@@ -183,7 +183,7 @@ $GLOBALS['mails'] = array();
 NHM_Cron::run();
 ok( ! preg_grep( '/has ended/i', subjects() ), 'no "ended" email during grace' );
 $_GET = array( 'tab' => 'billing' );
-ok( false !== strpos( NHM_Account::render( array() ), 'charge your card on' ), 'My account shows the problem' );
+ok( false !== strpos( NHM_Account::render( array() ), 'charge your card on' ), 'My Account shows the problem' );
 $_GET = array();
 // Second try day.
 $a = NHM_Renew::get( 60 ); $a['retry'] = day( 0 ); $a['grace'] = day( 0 ); NHM_Renew::save( 60, $a );
@@ -206,7 +206,7 @@ $a = NHM_Renew::get( 60 );
 ok( $a['on'] && 199.0 === (float) $a['price'], 'paid the renewal invoice: back on at 199 (lock kept)' );
 ok( NHM_Levels::term_end( $lite, day( -1 ) ) === NHM_Members::personal( 60 )['expiry'], 'term continues from the old last day' );
 
-// ---------- Turn off / on in My account ----------
+// ---------- Turn off / on in My Account ----------
 $r = post( 'autorenew_off', array( 'nhm_reason' => 'Too expensive', 'nhm_reason_more' => 'budget' ) );
 $a = NHM_Renew::get( 60 );
 ok( false !== strpos( (string) $r, 'autorenew_off' ) && ! $a['on'] && 'Too expensive: budget' === $a['off_reason'] && '4242' === $a['last4'], 'off with reason, card kept' );

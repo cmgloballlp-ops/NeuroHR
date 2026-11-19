@@ -43,7 +43,7 @@ class NHM_Payments {
 	public static function methods() {
 		return array(
 			'stripe' => __( 'Online (card, FPX, GrabPay)', 'neurohr-members' ),
-			'bank'   => __( 'Bank transfer', 'neurohr-members' ),
+			'bank'   => __( 'Bank Transfer', 'neurohr-members' ),
 			'qr'     => __( 'DuitNow QR', 'neurohr-members' ),
 		);
 	}
@@ -305,7 +305,7 @@ class NHM_Payments {
 		);
 		$icons = array( 'stripe' => 'card', 'bank' => 'bank', 'qr' => 'qr' );
 		foreach ( $methods as $key => $label ) {
-			$titles = array( 'stripe' => __( 'Pay online', 'neurohr-members' ), 'bank' => __( 'Bank transfer', 'neurohr-members' ), 'qr' => __( 'DuitNow QR', 'neurohr-members' ) );
+			$titles = array( 'stripe' => __( 'Pay Online', 'neurohr-members' ), 'bank' => __( 'Bank Transfer', 'neurohr-members' ), 'qr' => __( 'DuitNow QR', 'neurohr-members' ) );
 			$h     .= '<a class="nhm-pay__method' . ( $key === $chosen ? ' is-on' : '' ) . '" href="' . esc_url( add_query_arg( 'method', $key, $base ) ) . '#nhm-pay-panel"' . ( $key === $chosen ? ' aria-current="true"' : '' ) . '>'
 				. self::icon( $icons[ $key ] ) . '<span><strong>' . esc_html( $titles[ $key ] ) . '</strong><small>' . esc_html( $sub[ $key ] ) . '</small></span></a>';
 		}
@@ -324,7 +324,7 @@ class NHM_Payments {
 				$h  .= '<p class="nhm-field nhm-pay__renew"><label class="nhm-check"><input type="checkbox" name="nhm_autorenew" value="1"' . ( $on ? ' checked' : '' ) . '> <span>' . esc_html( $txt ) . ' <span class="nhm-muted">' . esc_html__( '(card payments only)', 'neurohr-members' ) . '</span></span></label></p>';
 			}
 			/* translators: %s: amount */
-			$h .= NHM_Forms::button( sprintf( __( 'Pay %s now', 'neurohr-members' ), $total ), 'nhm-btn nhm-btn--primary nhm-btn--block' ) . '</form>';
+			$h .= NHM_Forms::button( sprintf( __( 'Pay %s Now', 'neurohr-members' ), $total ), 'nhm-btn nhm-btn--primary nhm-btn--block' ) . '</form>';
 			$h .= '<p class="nhm-muted nhm-pay__secure">' . esc_html__( 'Secure payment by Stripe', 'neurohr-members' ) . ( 'test' === NHM_Stripe::mode() ? ' · <strong>TEST MODE</strong>' : '' ) . '</p>';
 		} else {
 			$h .= '<div class="nhm-pay__how">';
@@ -335,9 +335,9 @@ class NHM_Payments {
 					$h .= self::row( __( 'Bank', 'neurohr-members' ), $s['bank_name'] );
 				}
 				if ( $s['bank_account_name'] ) {
-					$h .= self::row( __( 'Account name', 'neurohr-members' ), $s['bank_account_name'] );
+					$h .= self::row( __( 'Account Name', 'neurohr-members' ), $s['bank_account_name'] );
 				}
-				$h .= self::row( __( 'Account no.', 'neurohr-members' ), $s['bank_account_no'], true );
+				$h .= self::row( __( 'Account No.', 'neurohr-members' ), $s['bank_account_no'], true );
 			} else {
 				$h .= '<div class="nhm-pay__details"><p class="nhm-pay__step">' . esc_html__( '1. Scan and pay', 'neurohr-members' ) . '</p>';
 				$qr   = (string) NHM_Settings::get( 'qr_image' );
@@ -346,7 +346,7 @@ class NHM_Payments {
 				if ( $qrn ) {
 					$h .= '<span>' . esc_html( $qrn ) . '</span>';
 				}
-				$h .= '</div><p class="nhm-muted">' . esc_html__( 'Type the amount below yourself in your app. Paying on this phone? Save the QR image and open it in your banking app.', 'neurohr-members' ) . ' <a href="' . esc_url( $qr ) . '" download>' . esc_html__( 'Save QR image', 'neurohr-members' ) . '</a></p>';
+				$h .= '</div><p class="nhm-muted">' . esc_html__( 'Type the amount below yourself in your app. Paying on this phone? Save the QR image and open it in your banking app.', 'neurohr-members' ) . ' <a href="' . esc_url( $qr ) . '" download>' . esc_html__( 'Save QR Image', 'neurohr-members' ) . '</a></p>';
 				$h .= '<dialog class="nhm-modal nhm-modal--qr" id="nhm-qr-big" aria-label="' . esc_attr__( 'DuitNow QR code', 'neurohr-members' ) . '"><div class="nhm-modal__box"><a href="#" class="nhm-modal__close" data-nhm-close aria-label="' . esc_attr__( 'Close', 'neurohr-members' ) . '">&times;</a>'
 					. '<img src="' . esc_url( $qr ) . '" alt="' . esc_attr__( 'DuitNow QR code', 'neurohr-members' ) . '">'
 					. ( $qrn ? '<p class="nhm-modal--qr__name">' . esc_html( $qrn ) . '</p>' : '' )
@@ -403,19 +403,19 @@ class NHM_Payments {
 		$h   .= NHM_Forms::open( 'pay_proof', 'nhm-pay__form', true );
 		$h   .= '<input type="hidden" name="nhm_pay_token" value="' . esc_attr( $inv['token'] ) . '"><input type="hidden" name="nhm_method" value="' . esc_attr( $method ) . '">';
 		$h   .= '<input type="hidden" name="MAX_FILE_SIZE" value="' . (int) self::MAX_SLIP . '">';
-		$h   .= NHM_Forms::field( array( 'name' => 'nhm_payer', 'label' => __( 'Paid by (name or company)', 'neurohr-members' ), 'value' => $v( 'nhm_payer', $user && $user->ID ? $user->display_name : ( isset( $inv['bill_to']['name'] ) ? $inv['bill_to']['name'] : '' ) ), 'required' => true, 'autocomplete' => 'name' ) );
+		$h   .= NHM_Forms::field( array( 'name' => 'nhm_payer', 'label' => __( 'Paid by (Name or Company)', 'neurohr-members' ), 'value' => $v( 'nhm_payer', $user && $user->ID ? $user->display_name : ( isset( $inv['bill_to']['name'] ) ? $inv['bill_to']['name'] : '' ) ), 'required' => true, 'autocomplete' => 'name' ) );
 		$h   .= '<div class="nhm-grid">';
-		$h   .= NHM_Forms::field( array( 'name' => 'nhm_paid_date', 'label' => __( 'Date paid', 'neurohr-members' ), 'type' => 'date', 'value' => $v( 'nhm_paid_date', NHM_Settings::today() ), 'required' => true, 'attrs' => 'max="' . esc_attr( NHM_Settings::today() ) . '"' ) );
+		$h   .= NHM_Forms::field( array( 'name' => 'nhm_paid_date', 'label' => __( 'Date Paid', 'neurohr-members' ), 'type' => 'date', 'value' => $v( 'nhm_paid_date', NHM_Settings::today() ), 'required' => true, 'attrs' => 'max="' . esc_attr( NHM_Settings::today() ) . '"' ) );
 		$h   .= NHM_Forms::field( array( 'name' => 'nhm_paid_time', 'label' => __( 'Time', 'neurohr-members' ), 'type' => 'time', 'value' => $v( 'nhm_paid_time' ) ) );
-		$h   .= NHM_Forms::field( array( 'name' => 'nhm_paid_amount', 'label' => __( 'Amount paid (RM)', 'neurohr-members' ), 'value' => $v( 'nhm_paid_amount', number_format( (float) $inv['total'], 2, '.', '' ) ), 'required' => true, 'attrs' => 'inputmode="decimal"' ) );
-		$h   .= NHM_Forms::field( array( 'name' => 'nhm_reference', 'label' => __( 'Bank reference no.', 'neurohr-members' ), 'value' => $v( 'nhm_reference' ) ) );
+		$h   .= NHM_Forms::field( array( 'name' => 'nhm_paid_amount', 'label' => __( 'Amount Paid (RM)', 'neurohr-members' ), 'value' => $v( 'nhm_paid_amount', number_format( (float) $inv['total'], 2, '.', '' ) ), 'required' => true, 'attrs' => 'inputmode="decimal"' ) );
+		$h   .= NHM_Forms::field( array( 'name' => 'nhm_reference', 'label' => __( 'Bank Reference No.', 'neurohr-members' ), 'value' => $v( 'nhm_reference' ) ) );
 		$h   .= '</div>';
-		$h   .= '<p class="nhm-field nhm-field--file"><label for="nhm-slip">' . esc_html__( 'Payment slip or screenshot', 'neurohr-members' ) . ' <span class="nhm-req" aria-hidden="true">*</span></label>'
+		$h   .= '<p class="nhm-field nhm-field--file"><label for="nhm-slip">' . esc_html__( 'Payment Slip or Screenshot', 'neurohr-members' ) . ' <span class="nhm-req" aria-hidden="true">*</span></label>'
 			. '<input class="nhm-input" type="file" id="nhm-slip" name="nhm_slip" accept="image/jpeg,image/png,application/pdf" required>'
 			. '<span class="nhm-help">' . esc_html__( 'JPG, PNG or PDF, up to 5 MB.', 'neurohr-members' ) . '</span></p>';
-		$h .= NHM_Forms::field( array( 'name' => 'nhm_pay_note', 'label' => __( 'Note for us', 'neurohr-members' ), 'type' => 'textarea', 'value' => $v( 'nhm_pay_note' ) ) );
+		$h .= NHM_Forms::field( array( 'name' => 'nhm_pay_note', 'label' => __( 'Note for Us', 'neurohr-members' ), 'type' => 'textarea', 'value' => $v( 'nhm_pay_note' ) ) );
 		$h .= self::refund_box( 'pay_proof' );
-		$h .= NHM_Forms::button( __( 'Send payment details', 'neurohr-members' ), 'nhm-btn nhm-btn--primary nhm-btn--block' ) . '</form>';
+		$h .= NHM_Forms::button( __( 'Send Payment Details', 'neurohr-members' ), 'nhm-btn nhm-btn--primary nhm-btn--block' ) . '</form>';
 		return $h;
 	}
 

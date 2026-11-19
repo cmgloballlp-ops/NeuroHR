@@ -37,7 +37,7 @@ class NHM_Admin_Dashboard {
 		$companies = NHM_Companies::query( array( 'limit' => 100000 ) );
 		$active_c  = count( array_filter( $companies, array( 'NHM_Companies', 'is_active' ) ) );
 
-		echo '<div class="wrap nhm-admin nhm-dash">';
+		echo '<div class="wrap nhm-admin nhm-admin--full nhm-dash">';
 		NHM_Admin::header(
 			__( 'Members', 'neurohr-members' ),
 			'<a class="button" href="' . esc_url( admin_url( 'admin.php?page=nhm-invoices&action=new' ) ) . '">' . esc_html__( 'New invoice', 'neurohr-members' ) . '</a> <a class="button" href="' . esc_url( admin_url( 'admin.php?page=nhm-companies&action=new' ) ) . '">' . esc_html__( 'Add company', 'neurohr-members' ) . '</a>'
@@ -66,7 +66,7 @@ class NHM_Admin_Dashboard {
 
 		echo '<div class="nhm-admin-grid">';
 		// Waiting for payment.
-		echo '<section class="nhm-admin-card"><h2><span class="dashicons dashicons-hourglass"></span>' . esc_html__( 'Plan applications waiting for payment', 'neurohr-members' ) . '</h2>';
+		echo '<section class="nhm-admin-card"><h2><span class="dashicons dashicons-hourglass"></span>' . esc_html__( 'Plan Applications Waiting for Payment', 'neurohr-members' ) . '</h2>';
 		if ( $pending ) {
 			echo '<table class="widefat striped"><tbody>';
 			foreach ( $pending as $inv ) {
@@ -79,7 +79,7 @@ class NHM_Admin_Dashboard {
 		echo '</section>';
 
 		// Ending soon.
-		echo '<section class="nhm-admin-card"><h2><span class="dashicons dashicons-clock"></span>' . esc_html__( 'Plans ending within 30 days', 'neurohr-members' ) . '</h2>';
+		echo '<section class="nhm-admin-card"><h2><span class="dashicons dashicons-clock"></span>' . esc_html__( 'Plans Ending Within 30 Days', 'neurohr-members' ) . '</h2>';
 		$soon_c = array_filter( $companies, function ( $c ) { $d = NHM_Members::days_left( $c['expiry_date'] ); return null !== $d && $d >= 0 && $d <= 30; } );
 		if ( $expiring || $soon_c ) {
 			echo '<table class="widefat striped"><tbody>';
@@ -99,7 +99,7 @@ class NHM_Admin_Dashboard {
 		echo '</section>';
 
 		// People per level.
-		echo '<section class="nhm-admin-card"><h2><span class="dashicons dashicons-chart-bar"></span>' . esc_html__( 'People per plan (now)', 'neurohr-members' ) . '</h2><table class="nhm-admin-table"><tbody>';
+		echo '<section class="nhm-admin-card"><h2><span class="dashicons dashicons-chart-bar"></span>' . esc_html__( 'People per Plan (Now)', 'neurohr-members' ) . '</h2><table class="nhm-admin-table"><tbody>';
 		$max = max( 1, max( $by_level ? $by_level : array( 1 ) ) );
 		foreach ( NHM_Levels::all() as $id => $level ) {
 			$n = isset( $by_level[ $id ] ) ? $by_level[ $id ] : 0;
@@ -108,7 +108,7 @@ class NHM_Admin_Dashboard {
 		echo '</tbody></table></section>';
 
 		// Recent sign-ups.
-		echo '<section class="nhm-admin-card"><h2><span class="dashicons dashicons-admin-users"></span>' . esc_html__( 'Newest accounts', 'neurohr-members' ) . '</h2><table class="widefat striped"><tbody>';
+		echo '<section class="nhm-admin-card"><h2><span class="dashicons dashicons-admin-users"></span>' . esc_html__( 'Newest Accounts', 'neurohr-members' ) . '</h2><table class="widefat striped"><tbody>';
 		foreach ( $recent as $r ) {
 			echo '<tr><td><a href="' . esc_url( get_edit_user_link( $r['user']->ID ) . '#nhm' ) . '">' . esc_html( $r['user']->display_name ) . '</a><br><span class="nhm-muted">' . esc_html( $r['user']->user_email ) . '</span></td><td>' . NHM_Admin::level_badge( $r['m']['level'] ) . '</td><td>' . esc_html( mysql2date( 'j M Y', get_date_from_gmt( $r['user']->user_registered ) ) ) . '</td></tr>'; // phpcs:ignore WordPress.Security.EscapeOutput
 		}

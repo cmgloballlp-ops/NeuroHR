@@ -232,7 +232,7 @@ class NHM_Admin_Payments {
 		$rows = NHM_Payments::query( array( 'invoice_id' => $inv['id'], 'limit' => 20 ) );
 		$h    = '';
 		if ( 'unpaid' === $inv['status'] ) {
-			$h .= '<section class="nhm-admin-card"><h2><span class="dashicons dashicons-admin-links"></span>' . esc_html__( 'Payment link', 'neurohr-members' ) . '</h2>';
+			$h .= '<section class="nhm-admin-card"><h2><span class="dashicons dashicons-admin-links"></span>' . esc_html__( 'Payment Link', 'neurohr-members' ) . '</h2>';
 			$h .= '<p class="nhm-admin-card__intro">' . esc_html__( 'Anyone with this link can see and pay this invoice (also without logging in). It is in the invoice emails.', 'neurohr-members' ) . '</p>';
 			$h .= '<input type="text" class="widefat" readonly value="' . esc_attr( NHM_Payments::pay_url( $inv ) ) . '" onclick="this.select()"></section>';
 		}
@@ -292,7 +292,7 @@ class NHM_Admin_Payments {
 		$waiting = NHM_Payments::count_waiting();
 		$base    = admin_url( 'admin.php?page=nhm-payments' );
 
-		echo '<div class="wrap nhm-admin"><div class="nhm-admin__head"><h1>' . esc_html__( 'Payments', 'neurohr-members' ) . '</h1></div>';
+		echo '<div class="wrap nhm-admin nhm-admin--full"><div class="nhm-admin__head"><h1>' . esc_html__( 'Payments', 'neurohr-members' ) . '</h1></div>';
 		NHM_Admin::render_flash();
 		if ( ! NHM_Payments::available() ) {
 			echo '<div class="notice notice-warning inline"><p>' . wp_kses_post( sprintf( /* translators: %s: link */ __( 'No way to pay is switched on yet. Set it up in <a href="%s">Settings → Payments</a>.', 'neurohr-members' ), esc_url( admin_url( 'admin.php?page=nhm-settings&tab=payments' ) ) ) ) . '</p></div>';
@@ -333,7 +333,7 @@ class NHM_Admin_Payments {
 			return;
 		}
 
-		echo '<div class="nhm-admin-card nhm-admin-card--flush"><table class="widefat striped"><thead><tr><th>' . esc_html__( 'Date', 'neurohr-members' ) . '</th><th>' . esc_html__( 'Invoice', 'neurohr-members' ) . '</th><th>' . esc_html__( 'Paid by', 'neurohr-members' ) . '</th><th>' . esc_html__( 'Method', 'neurohr-members' ) . '</th><th class="num">' . esc_html__( 'Amount', 'neurohr-members' ) . '</th><th>' . esc_html__( 'Status', 'neurohr-members' ) . '</th><th></th></tr></thead><tbody>';
+		echo '<div class="nhm-admin-card nhm-admin-card--flush"><table class="widefat striped"><thead><tr><th>' . esc_html__( 'Date', 'neurohr-members' ) . '</th><th>' . esc_html__( 'Invoice', 'neurohr-members' ) . '</th><th>' . esc_html__( 'Paid By', 'neurohr-members' ) . '</th><th>' . esc_html__( 'Method', 'neurohr-members' ) . '</th><th class="num">' . esc_html__( 'Amount', 'neurohr-members' ) . '</th><th>' . esc_html__( 'Status', 'neurohr-members' ) . '</th><th></th></tr></thead><tbody>';
 		if ( ! $rows ) {
 			echo '<tr><td colspan="7">' . esc_html__( 'No payments yet.', 'neurohr-members' ) . '</td></tr>';
 		}

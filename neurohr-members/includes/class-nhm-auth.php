@@ -528,7 +528,7 @@ class NHM_Auth {
 		if ( $open ) {
 			/* translators: %s: invoice number */
 			$h .= '<p>' . esc_html( sprintf( __( 'You have already applied. Invoice %s is waiting for payment.', 'neurohr-members' ), $open[0]['number'] ) ) . '</p>';
-			$h .= '<p class="nhm-actions">' . ( NHM_Payments::payable( $open[0] ) && ! NHM_Payments::waiting_for( $open[0]['id'] ) ? '<a class="nhm-btn nhm-btn--primary" href="' . esc_url( NHM_Payments::pay_url( $open[0] ) ) . '">' . esc_html__( 'Pay now', 'neurohr-members' ) . '</a> ' : '' ) . '<a class="nhm-btn" href="' . esc_url( NHM_Invoices::download_url( $open[0] ) ) . '">' . esc_html__( 'Download invoice', 'neurohr-members' ) . '</a></p>';
+			$h .= '<p class="nhm-actions">' . ( NHM_Payments::payable( $open[0] ) && ! NHM_Payments::waiting_for( $open[0]['id'] ) ? '<a class="nhm-btn nhm-btn--primary" href="' . esc_url( NHM_Payments::pay_url( $open[0] ) ) . '">' . esc_html__( 'Pay Now', 'neurohr-members' ) . '</a> ' : '' ) . '<a class="nhm-btn" href="' . esc_url( NHM_Invoices::download_url( $open[0] ) ) . '">' . esc_html__( 'Download Invoice', 'neurohr-members' ) . '</a></p>';
 		} elseif ( true !== $check ) {
 			$h .= '<p class="nhm-muted">' . esc_html( $check ) . '</p>';
 		} else {
@@ -790,7 +790,7 @@ class NHM_Auth {
 			/* translators: %s: name */
 			$html .= '<p class="nhm-lead">' . esc_html( sprintf( __( 'You are logged in as %s.', 'neurohr-members' ), $user->display_name ) ) . '</p>';
 			$html .= '<p class="nhm-actions"><a class="nhm-btn nhm-btn--primary" href="' . esc_url( self::after_login_url() ) . '">' . esc_html__( 'Continue', 'neurohr-members' ) . '</a> ';
-			$html .= '<a class="nhm-btn" href="' . esc_url( wp_logout_url( self::login_url() ) ) . '">' . esc_html__( 'Log out', 'neurohr-members' ) . '</a></p>';
+			$html .= '<a class="nhm-btn" href="' . esc_url( wp_logout_url( self::login_url() ) ) . '">' . esc_html__( 'Log Out', 'neurohr-members' ) . '</a></p>';
 			return NHM_Forms::wrap( $html, 'nhm-login' );
 		}
 		// phpcs:ignore WordPress.Security.NonceVerification
@@ -799,11 +799,11 @@ class NHM_Auth {
 		$html .= NHM_Forms::render_messages( 'login' );
 		$html .= NHM_Forms::open( 'login' );
 		$html .= '<input type="hidden" name="redirect_to" value="' . esc_attr( $redirect ) . '">';
-		$html .= NHM_Forms::field( array( 'name' => 'log', 'label' => __( 'Email address', 'neurohr-members' ), 'type' => 'text', 'value' => NHM_Forms::value( 'login', 'log' ), 'required' => true, 'autocomplete' => 'username', 'attrs' => 'inputmode="email"' ) );
+		$html .= NHM_Forms::field( array( 'name' => 'log', 'label' => __( 'Email Address', 'neurohr-members' ), 'type' => 'text', 'value' => NHM_Forms::value( 'login', 'log' ), 'required' => true, 'autocomplete' => 'username', 'attrs' => 'inputmode="email"' ) );
 		$html .= NHM_Forms::field( array( 'name' => 'pwd', 'label' => __( 'Password', 'neurohr-members' ), 'type' => 'password', 'required' => true, 'autocomplete' => 'current-password' ) );
-		$html .= '<p class="nhm-row"><label class="nhm-check"><input type="checkbox" name="rememberme" value="1" checked> ' . esc_html__( 'Keep me logged in', 'neurohr-members' ) . '</label>';
-		$html .= '<a class="nhm-link" href="' . esc_url( add_query_arg( 'nhm_modal', 'lost' ) ) . '" data-nhm-dialog="nhm-lost-modal">' . esc_html__( 'Forgot password?', 'neurohr-members' ) . '</a></p>';
-		$html .= NHM_Forms::button( __( 'Log in', 'neurohr-members' ), 'nhm-btn nhm-btn--primary nhm-btn--block' );
+		$html .= '<p class="nhm-row"><label class="nhm-check"><input type="checkbox" name="rememberme" value="1" checked> ' . esc_html__( 'Keep Me Logged In', 'neurohr-members' ) . '</label>';
+		$html .= '<a class="nhm-link" href="' . esc_url( add_query_arg( 'nhm_modal', 'lost' ) ) . '" data-nhm-dialog="nhm-lost-modal">' . esc_html__( 'Forgot Password?', 'neurohr-members' ) . '</a></p>';
+		$html .= NHM_Forms::button( __( 'Log In', 'neurohr-members' ), 'nhm-btn nhm-btn--primary nhm-btn--block' );
 		$html .= '</form>';
 		if ( self::registration_open() && nhm_register_url() ) {
 			$html .= '<p class="nhm-switch">' . esc_html__( 'No account yet?', 'neurohr-members' ) . ' <a href="' . esc_url( nhm_register_url() ) . '">' . esc_html__( 'Create a free account', 'neurohr-members' ) . '</a></p>';
@@ -882,11 +882,11 @@ class NHM_Auth {
 		if ( $invite ) {
 			$html .= '<input type="hidden" name="nhm_invite" value="' . esc_attr( $token ) . '">';
 		}
-		$html .= NHM_Forms::field( array( 'name' => 'nhm_name', 'label' => __( 'Full name', 'neurohr-members' ), 'value' => NHM_Forms::value( 'register', 'nhm_name' ), 'required' => true, 'autocomplete' => 'name' ) );
+		$html .= NHM_Forms::field( array( 'name' => 'nhm_name', 'label' => __( 'Full Name', 'neurohr-members' ), 'value' => NHM_Forms::value( 'register', 'nhm_name' ), 'required' => true, 'autocomplete' => 'name' ) );
 		$html .= NHM_Forms::field(
 			array(
 				'name'         => 'nhm_email',
-				'label'        => __( 'Email address', 'neurohr-members' ),
+				'label'        => __( 'Email Address', 'neurohr-members' ),
 				'type'         => 'email',
 				'value'        => $invite ? $invite['email'] : NHM_Forms::value( 'register', 'nhm_email' ),
 				'required'     => true,
@@ -928,7 +928,7 @@ class NHM_Auth {
 		$html .= '</form>';
 		if ( ! $invite && nhm_login_url() ) {
 			$back  = $level ? NHM_Levels::register_url( $level['id'] ) : $redirect;
-			$html .= '<p class="nhm-switch">' . esc_html__( 'Already have an account?', 'neurohr-members' ) . ' <a href="' . esc_url( self::login_url( $back ) ) . '">' . esc_html__( 'Log in', 'neurohr-members' ) . '</a></p>';
+			$html .= '<p class="nhm-switch">' . esc_html__( 'Already have an account?', 'neurohr-members' ) . ' <a href="' . esc_url( self::login_url( $back ) ) . '">' . esc_html__( 'Log In', 'neurohr-members' ) . '</a></p>';
 		}
 		return NHM_Forms::wrap( $html, 'nhm-register' );
 	}
@@ -947,7 +947,7 @@ class NHM_Auth {
 			$h  = '<div class="nhm-invite-hero nhm-invite-hero--empty"><h2 class="nhm-invite-hero__title">' . esc_html__( 'This invitation link has expired or was already used', 'neurohr-members' ) . '</h2>';
 			$h .= '<p class="nhm-lead">' . esc_html__( 'Please ask the person who manages your company account to send you a new invitation.', 'neurohr-members' ) . '</p>';
 			if ( ! is_user_logged_in() && nhm_login_url() ) {
-				$h .= '<p class="nhm-actions"><a class="nhm-btn" href="' . esc_url( nhm_login_url() ) . '">' . esc_html__( 'Log in', 'neurohr-members' ) . '</a></p>';
+				$h .= '<p class="nhm-actions"><a class="nhm-btn" href="' . esc_url( nhm_login_url() ) . '">' . esc_html__( 'Log In', 'neurohr-members' ) . '</a></p>';
 			}
 			return NHM_Forms::wrap( $h . '</div>', 'nhm-register nhm-invite-page' );
 		}
@@ -972,11 +972,11 @@ class NHM_Auth {
 		}
 		$h .= NHM_Forms::render_messages( 'register' );
 		$h .= NHM_Forms::open( 'register' ) . '<input type="hidden" name="nhm_invite" value="' . esc_attr( $token ) . '"><input type="hidden" name="redirect_to" value="">';
-		$h .= NHM_Forms::field( array( 'name' => 'nhm_email', 'label' => __( 'Email address', 'neurohr-members' ), 'type' => 'email', 'value' => $invite['email'], 'required' => true, 'attrs' => 'readonly', 'help' => __( 'Your account uses the address the invitation was sent to.', 'neurohr-members' ) ) );
-		$h .= NHM_Forms::field( array( 'name' => 'nhm_name', 'label' => __( 'Full name', 'neurohr-members' ), 'value' => NHM_Forms::value( 'register', 'nhm_name' ), 'required' => true, 'autocomplete' => 'name' ) );
+		$h .= NHM_Forms::field( array( 'name' => 'nhm_email', 'label' => __( 'Email Address', 'neurohr-members' ), 'type' => 'email', 'value' => $invite['email'], 'required' => true, 'attrs' => 'readonly', 'help' => __( 'Your account uses the address the invitation was sent to.', 'neurohr-members' ) ) );
+		$h .= NHM_Forms::field( array( 'name' => 'nhm_name', 'label' => __( 'Full Name', 'neurohr-members' ), 'value' => NHM_Forms::value( 'register', 'nhm_name' ), 'required' => true, 'autocomplete' => 'name' ) );
 		$min = max( 6, (int) NHM_Settings::get( 'min_password' ) );
 		/* translators: %d: number of characters */
-		$h .= NHM_Forms::field( array( 'name' => 'nhm_password', 'label' => __( 'Choose a password', 'neurohr-members' ), 'type' => 'password', 'required' => true, 'autocomplete' => 'new-password', 'help' => sprintf( __( 'At least %d characters.', 'neurohr-members' ), $min ), 'attrs' => 'minlength="' . (int) $min . '"' ) );
+		$h .= NHM_Forms::field( array( 'name' => 'nhm_password', 'label' => __( 'Choose a Password', 'neurohr-members' ), 'type' => 'password', 'required' => true, 'autocomplete' => 'new-password', 'help' => sprintf( __( 'At least %d characters.', 'neurohr-members' ), $min ), 'attrs' => 'minlength="' . (int) $min . '"' ) );
 		foreach ( NHM_Fields::for_register() as $key => $f ) {
 			$value = NHM_Forms::raw( 'register', 'nhm_' . $key, 'checkboxes' === $f['type'] ? array() : '' );
 			if ( 'company' === $key && '' === $value && $company ) {
@@ -989,7 +989,7 @@ class NHM_Auth {
 			$h .= '<p class="nhm-field nhm-field--terms"><label class="nhm-check"><input type="checkbox" name="nhm_terms" value="1" required' . checked( '1', NHM_Forms::value( 'register', 'nhm_terms' ), false ) . '> <span>' . wp_kses( $terms, array( 'a' => array( 'href' => array(), 'target' => array(), 'rel' => array() ), 'span' => array( 'class' => array() ) ) ) . ' <span class="nhm-req">*</span></span></label></p>';
 		}
 		$h .= NHM_Forms::spam_fields();
-		$h .= NHM_Forms::button( __( 'Join and log in', 'neurohr-members' ), 'nhm-btn nhm-btn--primary nhm-btn--block' ) . '</form>';
+		$h .= NHM_Forms::button( __( 'Join and Log In', 'neurohr-members' ), 'nhm-btn nhm-btn--primary nhm-btn--block' ) . '</form>';
 		$h .= '<p class="nhm-switch">' . esc_html__( 'Already have an account with this email?', 'neurohr-members' ) . ' <a href="' . esc_url( self::login_url( NHM_Companies::invite_url( $token ) ) ) . '">' . esc_html__( 'Log in to accept', 'neurohr-members' ) . '</a></p>';
 		return NHM_Forms::wrap( $h, 'nhm-register nhm-invite-page' );
 	}
@@ -1023,12 +1023,12 @@ class NHM_Auth {
 			$html .= NHM_Forms::render_messages( 'reset' );
 			if ( ! is_wp_error( $check ) ) {
 				$min   = max( 6, (int) NHM_Settings::get( 'min_password' ) );
-				$html .= '<h2 class="nhm-modal__title">' . esc_html__( 'Choose a new password', 'neurohr-members' ) . '</h2>';
+				$html .= '<h2 class="nhm-modal__title">' . esc_html__( 'Choose a New Password', 'neurohr-members' ) . '</h2>';
 				$html .= NHM_Forms::open( 'reset' );
 				$html .= '<input type="hidden" name="rp_key" value="' . esc_attr( $key ) . '"><input type="hidden" name="rp_login" value="' . esc_attr( $login ) . '">';
 				/* translators: %d: number of characters */
-				$html .= NHM_Forms::field( array( 'name' => 'pass1', 'label' => __( 'New password', 'neurohr-members' ), 'type' => 'password', 'required' => true, 'autocomplete' => 'new-password', 'help' => sprintf( __( 'At least %d characters.', 'neurohr-members' ), $min ), 'attrs' => 'minlength="' . (int) $min . '"' ) );
-				$html .= NHM_Forms::button( __( 'Save new password', 'neurohr-members' ), 'nhm-btn nhm-btn--primary nhm-btn--block' );
+				$html .= NHM_Forms::field( array( 'name' => 'pass1', 'label' => __( 'New Password', 'neurohr-members' ), 'type' => 'password', 'required' => true, 'autocomplete' => 'new-password', 'help' => sprintf( __( 'At least %d characters.', 'neurohr-members' ), $min ), 'attrs' => 'minlength="' . (int) $min . '"' ) );
+				$html .= NHM_Forms::button( __( 'Save New Password', 'neurohr-members' ), 'nhm-btn nhm-btn--primary nhm-btn--block' );
 				return $html . '</form>';
 			}
 			if ( ! NHM_Forms::has_errors( 'reset' ) ) {
@@ -1043,8 +1043,8 @@ class NHM_Auth {
 		}
 		$html .= '<p class="nhm-lead">' . esc_html__( 'Enter the email address of your account. We will send you a link to choose a new password.', 'neurohr-members' ) . '</p>';
 		$html .= NHM_Forms::open( 'lost' );
-		$html .= NHM_Forms::field( array( 'name' => 'user_login', 'label' => __( 'Email address', 'neurohr-members' ), 'type' => 'email', 'value' => NHM_Forms::value( 'lost', 'user_login' ), 'required' => true, 'autocomplete' => 'email' ) );
-		$html .= NHM_Forms::button( __( 'Send reset link', 'neurohr-members' ), 'nhm-btn nhm-btn--primary nhm-btn--block' );
+		$html .= NHM_Forms::field( array( 'name' => 'user_login', 'label' => __( 'Email Address', 'neurohr-members' ), 'type' => 'email', 'value' => NHM_Forms::value( 'lost', 'user_login' ), 'required' => true, 'autocomplete' => 'email' ) );
+		$html .= NHM_Forms::button( __( 'Send Reset Link', 'neurohr-members' ), 'nhm-btn nhm-btn--primary nhm-btn--block' );
 		$html .= '</form>';
 		if ( $page_mode ) {
 			$html .= '<p class="nhm-switch"><a href="' . esc_url( self::login_url() ) . '">' . esc_html__( 'Back to log in', 'neurohr-members' ) . '</a></p>';

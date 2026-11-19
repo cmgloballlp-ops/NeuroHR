@@ -57,11 +57,11 @@ class NHM_Admin_Invoices {
 		$base    = admin_url( 'admin.php?page=nhm-invoices' );
 		$keep    = array_filter( array( 'user' => $user, 'company' => $company, 's' => $search ) );
 
-		echo '<div class="wrap nhm-admin">';
+		echo '<div class="wrap nhm-admin nhm-admin--full">';
 		NHM_Admin::header( __( 'Invoices', 'neurohr-members' ), '<a class="button button-primary" href="' . esc_url( admin_url( 'admin.php?page=nhm-invoices&action=new' ) ) . '">' . esc_html__( 'New invoice', 'neurohr-members' ) . '</a>' );
 		$tabs = array(
 			''        => array( __( 'All', 'neurohr-members' ), array_sum( wp_list_pluck( $sum, 'n' ) ) ),
-			'pending' => array( __( 'Waiting to start a plan', 'neurohr-members' ), $pending ),
+			'pending' => array( __( 'Waiting to Start a Plan', 'neurohr-members' ), $pending ),
 			'unpaid'  => array( __( 'Unpaid', 'neurohr-members' ), $sum['unpaid']['n'] ),
 			'paid'    => array( __( 'Paid', 'neurohr-members' ), $sum['paid']['n'] ),
 			'void'    => array( __( 'Void', 'neurohr-members' ), $sum['void']['n'] ),
@@ -85,7 +85,7 @@ class NHM_Admin_Invoices {
 		}
 		echo '</form>';
 
-		echo '<div class="nhm-admin-card nhm-admin-card--flush"><table class="widefat striped"><thead><tr><th>' . esc_html__( 'Invoice', 'neurohr-members' ) . '</th><th>' . esc_html__( 'Date', 'neurohr-members' ) . '</th><th>' . esc_html__( 'Bill to', 'neurohr-members' ) . '</th><th>' . esc_html__( 'Plan', 'neurohr-members' ) . '</th><th class="num">' . esc_html__( 'Total', 'neurohr-members' ) . '</th><th>' . esc_html__( 'Status', 'neurohr-members' ) . '</th><th></th></tr></thead><tbody>';
+		echo '<div class="nhm-admin-card nhm-admin-card--flush"><table class="widefat striped"><thead><tr><th>' . esc_html__( 'Invoice', 'neurohr-members' ) . '</th><th>' . esc_html__( 'Date', 'neurohr-members' ) . '</th><th>' . esc_html__( 'Bill To', 'neurohr-members' ) . '</th><th>' . esc_html__( 'Plan', 'neurohr-members' ) . '</th><th class="num">' . esc_html__( 'Total', 'neurohr-members' ) . '</th><th>' . esc_html__( 'Status', 'neurohr-members' ) . '</th><th></th></tr></thead><tbody>';
 		if ( ! $rows ) {
 			echo '<tr><td colspan="7" class="nhm-empty">' . esc_html__( 'No invoices here.', 'neurohr-members' ) . '</td></tr>';
 		}
@@ -247,7 +247,7 @@ class NHM_Admin_Invoices {
 			<?php if ( $inv['id'] ) : ?>
 				<?php if ( ! empty( $inv['bill_to'] ) ) : ?>
 					<section class="nhm-admin-card nhm-billto">
-						<h2><?php esc_html_e( 'Bill to (on the invoice)', 'neurohr-members' ); ?></h2>
+						<h2><?php esc_html_e( 'Bill to (On the Invoice)', 'neurohr-members' ); ?></h2>
 						<strong><?php echo esc_html( isset( $inv['bill_to']['name'] ) ? $inv['bill_to']['name'] : '' ); ?></strong><br>
 						<?php echo wp_kses_post( implode( '<br>', array_map( 'esc_html', array_filter( array_merge( array( ! empty( $inv['bill_to']['attention'] ) ? 'Attn: ' . $inv['bill_to']['attention'] : '' ), (array) ( isset( $inv['bill_to']['address'] ) ? $inv['bill_to']['address'] : array() ), array( ! empty( $inv['bill_to']['tin'] ) ? 'TIN: ' . $inv['bill_to']['tin'] : '', isset( $inv['bill_to']['email'] ) ? $inv['bill_to']['email'] : '' ) ) ) ) ) ); ?>
 					</section>
@@ -257,7 +257,7 @@ class NHM_Admin_Invoices {
 					<form class="nhm-admin-card nhm-pay" id="nhm-pay" method="post" action="<?php echo esc_url( $post ); ?>">
 						<input type="hidden" name="action" value="nhm_invoice_action"><input type="hidden" name="do" value="paid"><input type="hidden" name="id" value="<?php echo (int) $inv['id']; ?>">
 						<?php wp_nonce_field( 'nhm_invoice_action' ); ?>
-						<h2><span class="dashicons dashicons-yes-alt"></span><?php esc_html_e( 'Mark as paid', 'neurohr-members' ); ?></h2>
+						<h2><span class="dashicons dashicons-yes-alt"></span><?php esc_html_e( 'Mark as Paid', 'neurohr-members' ); ?></h2>
 						<?php if ( $inv['level_id'] ) : ?>
 							<p class="nhm-admin-card__intro">
 							<?php
@@ -302,7 +302,7 @@ class NHM_Admin_Invoices {
 				?>
 				</section>
 			<?php else : ?>
-				<section class="nhm-admin-card"><h2><?php esc_html_e( 'How it works', 'neurohr-members' ); ?></h2>
+				<section class="nhm-admin-card"><h2><?php esc_html_e( 'How It Works', 'neurohr-members' ); ?></h2>
 					<ul class="nhm-list">
 						<li><?php esc_html_e( 'The invoice number is given when you create it.', 'neurohr-members' ); ?></li>
 						<li><?php esc_html_e( '"Bill to" is copied from the company or person (their Billing details) at that moment.', 'neurohr-members' ); ?></li>

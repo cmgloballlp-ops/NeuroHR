@@ -153,9 +153,11 @@ class NHM_Invoices {
 			return trim( (string) get_user_meta( $user_id, $k, true ) );
 		};
 		$address = array_filter( array_map( 'trim', explode( "\n", $m( 'nhm_bill_address' ) ) ) );
+		$company = 'company' === NHM_Account::bill_type( $user_id ) ? $m( 'nhm_bill_company' ) : '';
 		return array(
-			'name'      => $m( 'nhm_bill_company' ) ? $m( 'nhm_bill_company' ) : ( $m( 'nhm_bill_name' ) ? $m( 'nhm_bill_name' ) : $user->display_name ),
-			'attention' => $m( 'nhm_bill_company' ) ? ( $m( 'nhm_bill_name' ) ? $m( 'nhm_bill_name' ) : $user->display_name ) : '',
+			'type'      => $company ? 'company' : 'individual',
+			'name'      => $company ? $company : ( $m( 'nhm_bill_name' ) ? $m( 'nhm_bill_name' ) : $user->display_name ),
+			'attention' => $company ? ( $m( 'nhm_bill_name' ) ? $m( 'nhm_bill_name' ) : $user->display_name ) : '',
 			'reg_no'    => $m( 'nhm_bill_reg' ),
 			'tin'       => $m( 'nhm_bill_tin' ),
 			'sst_no'    => '',
