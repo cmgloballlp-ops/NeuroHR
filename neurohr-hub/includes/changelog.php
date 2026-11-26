@@ -9,6 +9,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 return array(
+	'0.14.0' => array(
+		'date'    => '2026-11-27',
+		'changes' => array(
+			'The phone look of the hub moved to the new NeuroHR App plugin, so all phone design is in one place. Without NeuroHR App, phones show the normal responsive hub.',
+			'For NeuroHR App: a small header on phones (back button, title, Save and Share on resources), section chips and the newest item on section homes, the topic name above a resource title.',
+		),
+	),
 	'0.13.0' => array(
 		'date'    => '2026-11-17',
 		'changes' => array(

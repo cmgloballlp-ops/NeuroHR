@@ -197,3 +197,132 @@
 		}, { passive: true } );
 	}
 } )();
+
+/* NeuroHR App 0.1: answer taps at once, load pages early, app header, tables. */
+( function () {
+	'use strict';
+	var cfg = window.nhmApp || {};
+	var phone = window.matchMedia( '(max-width: 768px)' );
+	var root = document.documentElement;
+	var here = location.origin;
+	var skelTimer = null;
+
+	function plainLink( a ) {
+		if ( ! a || ! a.href || a.target === '_blank' || a.hasAttribute( 'download' ) || a.closest( '.no-prefetch' ) ) { return false; }
+		var u;
+		try { u = new URL( a.href, location.href ); } catch ( e ) { return false; }
+		if ( u.origin !== here || ( u.pathname === location.pathname && u.search === location.search ) ) { return false; }
+		return u;
+	}
+	function earlyOk( u ) {
+		if ( ! u || u.search ) { return false; }
+		return ! ( cfg.never || [] ).some( function ( p ) { return u.pathname.indexOf( p ) !== -1; } );
+	}
+
+	/* ---------- Load early (Chrome / Android) ---------- */
+	var canSpec = window.HTMLScriptElement && HTMLScriptElement.supports && HTMLScriptElement.supports( 'speculationrules' );
+	var asked = {};
+	function prefetch( urls ) {
+		urls = urls.filter( function ( u ) { return ! asked[ u ]; } );
+		if ( ! canSpec || ! urls.length ) { return; }
+		urls.forEach( function ( u ) { asked[ u ] = 1; } );
+		var s = document.createElement( 'script' );
+		s.type = 'speculationrules';
+		s.textContent = JSON.stringify( { prefetch: [ { source: 'list', urls: urls, eagerness: 'immediate' } ] } );
+		document.head.appendChild( s );
+	}
+	if ( cfg.prefetch ) {
+		document.addEventListener( 'touchstart', function ( e ) {
+			var a = e.target.closest && e.target.closest( 'a[href]' );
+			var u = plainLink( a );
+			if ( earlyOk( u ) ) { prefetch( [ u.href ] ); }
+		}, { passive: true, capture: true } );
+		var slow = navigator.connection && ( navigator.connection.saveData || /2g/.test( navigator.connection.effectiveType || '' ) );
+		if ( cfg.ahead && cfg.ahead.length && ! slow ) {
+			window.addEventListener( 'load', function () {
+				var go = function () { prefetch( cfg.ahead ); };
+				if ( window.requestIdleCallback ) { requestIdleCallback( go, { timeout: 2500 } ); } else { setTimeout( go, 1200 ); }
+			} );
+		}
+	}
+
+	/* ---------- Answer every tap at once ---------- */
+	function going() {
+		root.classList.add( 'nha-going' );
+		clearTimeout( skelTimer );
+		skelTimer = setTimeout( function () { root.classList.add( 'nha-skeleton' ); }, 180 );
+		setTimeout( arrived, 12000 ); // Never stay stuck (e.g. a link that downloads a file).
+	}
+	function arrived() {
+		clearTimeout( skelTimer );
+		root.classList.remove( 'nha-going', 'nha-skeleton' );
+	}
+	window.addEventListener( 'pageshow', arrived );
+	window.addEventListener( 'pagehide', function () { setTimeout( arrived, 0 ); } );
+
+	document.addEventListener( 'click', function ( e ) {
+		if ( e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey ) { return; }
+		var a = e.target.closest && e.target.closest( 'a[href]' );
+		if ( ! a ) { return; }
+		// Back: go back in history when we came from this site (the old page often shows at once).
+		if ( a.hasAttribute( 'data-nha-back' ) && document.referrer.indexOf( here ) === 0 && history.length > 1 ) {
+			e.preventDefault();
+			if ( cfg.feedback && phone.matches ) { going(); }
+			history.back();
+			return;
+		}
+		var u = plainLink( a );
+		if ( ! u || ! cfg.feedback || ! phone.matches || u.hash && u.pathname === location.pathname ) { return; }
+		if ( /\/logout|nh_download|nh_video|\/wp-content\/|\.(pdf|docx?|xlsx?|pptx?|zip|csv|png|jpe?g)$/i.test( u.href ) ) { return; }
+		if ( a.hasAttribute( 'data-nha-tab' ) ) {
+			document.querySelectorAll( '.nha-tab.is-on' ).forEach( function ( t ) { t.classList.remove( 'is-on' ); } );
+			a.classList.add( 'is-on' );
+		}
+		going();
+	} );
+
+	/* ---------- App header: show the title once the page title has scrolled away ---------- */
+	var head = document.querySelector( '[data-nha-head]' );
+	if ( head ) {
+		var h1 = document.querySelector( '.nh-article__title, .nhs-main h1:not(.nha-head__title)' );
+		if ( h1 && window.IntersectionObserver ) {
+			new IntersectionObserver( function ( en ) {
+				head.classList.toggle( 'is-scrolled', ! en[ 0 ].isIntersecting && en[ 0 ].boundingClientRect.top < 0 );
+			}, { rootMargin: '-60px 0px 0px 0px' } ).observe( h1 );
+		}
+	}
+
+	/* ---------- Tables: only the table moves sideways ---------- */
+	function tables() {
+		document.querySelectorAll( '.nh-article__content table, .nhs-content table, .nhs-main .entry-content table' ).forEach( function ( t ) {
+			if ( t.closest( '.nha-table, form, .nhm, .nhm-account, .nh-hub-admin' ) || t.closest( 'table' ) !== t ) { return; }
+			var box = document.createElement( 'div' );
+			box.className = 'nha-table';
+			var sc = document.createElement( 'div' );
+			sc.className = 'nha-table__scroll';
+			sc.setAttribute( 'tabindex', '0' );
+			t.parentNode.insertBefore( box, t );
+			sc.appendChild( t );
+			box.appendChild( sc );
+			var fade = document.createElement( 'span' );
+			fade.className = 'nha-table__fade';
+			box.appendChild( fade );
+			var hint = document.createElement( 'p' );
+			hint.className = 'nha-table__hint';
+			hint.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14M15 8l4 4-4 4"/></svg>';
+			hint.appendChild( document.createTextNode( ( cfg.strings && cfg.strings.more ) || 'Swipe the table to see more' ) );
+			box.appendChild( hint );
+			var check = function () {
+				var fit = sc.scrollWidth <= sc.clientWidth + 2;
+				box.classList.toggle( 'is-fit', fit );
+				box.classList.toggle( 'is-end', fit || sc.scrollLeft + sc.clientWidth >= sc.scrollWidth - 4 );
+			};
+			sc.addEventListener( 'scroll', check, { passive: true } );
+			window.addEventListener( 'resize', check );
+			check();
+		} );
+	}
+	if ( phone.matches ) {
+		if ( 'loading' === document.readyState ) { document.addEventListener( 'DOMContentLoaded', tables ); } else { tables(); }
+	}
+} )();

@@ -8,6 +8,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 return array(
+	'0.6.0' => array(
+		'date'  => '27 Nov 2026',
+		'items' => array(
+			'The phone app (bottom bar, search screen, More sheet, app home, install as an app) moved to its own plugin, NeuroHR App. Install it with this version; your settings are taken over.',
+			'The greeting [nhm_greeting] stays here (Settings → Member Area → Greeting).',
+		),
+	),
 	'0.5.0' => array(
 		'date'  => '17 Nov 2026',
 		'items' => array(

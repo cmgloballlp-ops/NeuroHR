@@ -1,8 +1,13 @@
-# NeuroHR Members — v0.5.0
+# NeuroHR Members — v0.6.0
 
 Replaces MemberPress on neurohr.com.my. It manages levels, personal plans, company accounts with seats, plan end dates and reminders, the login / registration / account pages (as shortcodes on your own pages), and members-only pages.
 It also tells the Knowledge Hub (0.8.1) and Simple Payroll (0.5.0) which level each person has, gives logged-in people one member-area layout on every page, and hides WordPress's own login screens.
 Members pay their invoice online (Stripe: card, FPX, GrabPay), by bank transfer or by DuitNow QR (with a slip you approve). The plan starts when the invoice is paid. Card auto-renew (personal plans) and refunds are in since 0.4.3.
+
+## New in 0.6.0
+
+- The phone app moved to its own plugin **NeuroHR App** (Members → Phone App). Install NeuroHR App 0.1 together with this version (and Knowledge Hub 0.14). Settings from 0.5 are taken over automatically.
+- `[nhm_greeting]` stays in Members.
 
 ## New in 0.5.0
 

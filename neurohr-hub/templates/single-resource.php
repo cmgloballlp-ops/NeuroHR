@@ -57,6 +57,9 @@ while ( have_posts() ) :
 					<article <?php post_class( 'nh-article' ); ?> lang="<?php echo esc_attr( NH_Lang::all()[ NH_Lang::of_post( $nh_post ) ]['hreflang'] ); ?>">
 						<?php echo $nh_print ? NH_Print::head_html( $nh_post ) : ''; // phpcs:ignore WordPress.Security.EscapeOutput -- escaped in method. ?>
 						<header class="nh-article__header">
+							<?php if ( $nh_topic ) : ?>
+								<a class="nh-apptopic" href="<?php echo esc_url( NH_Rewrite::url( $nh_section, $nh_topic->slug ) ); ?>"><?php echo esc_html( $nh_topic->name ); ?></a>
+							<?php endif; ?>
 							<h1 class="nh-article__title"><?php the_title(); ?></h1>
 							<div class="nh-article__meta">
 								<?php if ( ! $nh_is_faq && ! in_array( $nh_kind, array( 'video', 'download' ), true ) ) : ?>

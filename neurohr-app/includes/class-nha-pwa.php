@@ -1,6 +1,6 @@
 <?php
 /**
- * Install the member area as an app (PWA, 0.5).
+ * Install the member area as an app (PWA). Moved here from NeuroHR Members 0.5; addresses unchanged.
  *
  * - /nhm-manifest.webmanifest : name, icons, colours, opens on the Dashboard.
  * - /nhm-sw.js                : service worker at the site root (so it covers every page).
@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-class NHM_PWA {
+class NHA_PWA {
 
 	const CACHE_V = 1;
 
@@ -25,7 +25,7 @@ class NHM_PWA {
 	}
 
 	public static function on() {
-		return (bool) NHM_Settings::get( 'pwa_on' ) && (bool) self::icon_url( 512 );
+		return (bool) NHA_Settings::get( 'pwa_on' ) && (bool) self::icon_url( 512 );
 	}
 
 	/** Which of our files was asked for: manifest | sw | offline | ''. */
@@ -45,7 +45,7 @@ class NHM_PWA {
 
 	public static function serve() {
 		$what = self::route();
-		if ( '' === $what || ! NHM_Settings::get( 'pwa_on' ) ) {
+		if ( '' === $what || ! NHA_Settings::get( 'pwa_on' ) ) {
 			return;
 		}
 		nocache_headers();
@@ -67,7 +67,7 @@ class NHM_PWA {
 
 	/** Icon URL at about $size px: the App Icon setting, else the Site Icon. */
 	public static function icon_url( $size = 512 ) {
-		$own = trim( (string) NHM_Settings::get( 'pwa_icon' ) );
+		$own = trim( (string) NHA_Settings::get( 'pwa_icon' ) );
 		if ( '' !== $own ) {
 			$id = attachment_url_to_postid( $own );
 			if ( $id ) {
@@ -123,15 +123,15 @@ class NHM_PWA {
 		}
 		$manifest = array(
 			'id'               => wp_parse_url( $start, PHP_URL_PATH ),
-			'name'             => (string) NHM_Settings::get( 'pwa_name' ),
-			'short_name'       => (string) NHM_Settings::get( 'pwa_short' ),
+			'name'             => (string) NHA_Settings::get( 'pwa_name' ),
+			'short_name'       => (string) NHA_Settings::get( 'pwa_short' ),
 			'description'      => get_bloginfo( 'description' ),
 			'start_url'        => add_query_arg( 'source', 'app', $start ),
 			'scope'            => home_url( '/' ),
 			'display'          => 'standalone',
 			'orientation'      => 'portrait',
-			'theme_color'      => (string) NHM_Settings::get( 'pwa_color' ),
-			'background_color' => (string) NHM_Settings::get( 'pwa_bg' ),
+			'theme_color'      => (string) NHA_Settings::get( 'pwa_color' ),
+			'background_color' => (string) NHA_Settings::get( 'pwa_bg' ),
 			'lang'             => get_bloginfo( 'language' ),
 			'icons'            => $icons,
 		);
@@ -144,9 +144,9 @@ class NHM_PWA {
 		if ( ! self::on() ) {
 			return;
 		}
-		$name = (string) NHM_Settings::get( 'pwa_short' );
+		$name = (string) NHA_Settings::get( 'pwa_short' );
 		echo '<link rel="manifest" href="' . esc_url( home_url( '/nhm-manifest.webmanifest' ) ) . '">' . "\n";
-		echo '<meta name="theme-color" content="' . esc_attr( NHM_Settings::get( 'pwa_color' ) ) . '">' . "\n";
+		echo '<meta name="theme-color" content="' . esc_attr( NHA_Settings::get( 'pwa_color' ) ) . '">' . "\n";
 		echo '<meta name="mobile-web-app-capable" content="yes">' . "\n";
 		echo '<meta name="apple-mobile-web-app-capable" content="yes">' . "\n";
 		echo '<meta name="apple-mobile-web-app-status-bar-style" content="default">' . "\n";
@@ -158,7 +158,7 @@ class NHM_PWA {
 
 	public static function service_worker() {
 		$offline = home_url( '/nhm-offline/' );
-		$cache   = 'nhm-v' . self::CACHE_V . '-' . NHM_VERSION;
+		$cache   = 'nhm-v' . self::CACHE_V . '-' . NHA_VERSION;
 		$skip    = array( '/wp-admin', '/wp-login.php', '/wp-json', 'admin-ajax.php', 'nhm_download', 'nh_file', 'nh-file', 'stripe' );
 		$skip    = apply_filters( 'nhm_pwa_never_cache', $skip );
 		$js      = <<<'JS'
@@ -221,12 +221,12 @@ JS;
 	}
 
 	public static function offline_html() {
-		$name  = (string) NHM_Settings::get( 'pwa_name' );
-		$brand = (string) NHM_Settings::get( 'pwa_color' );
+		$name  = (string) NHA_Settings::get( 'pwa_name' );
+		$brand = (string) NHA_Settings::get( 'pwa_color' );
 		$icon  = self::icon_url( 192 );
 		return '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex"><title>' . esc_html( $name ) . '</title>'
-			. '<style>html,body{margin:0;height:100%;background:' . esc_attr( NHM_Settings::get( 'pwa_bg' ) ) . ';font-family:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",sans-serif;color:#1d2330}main{min-height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:32px 28px;box-sizing:border-box}img{width:72px;height:72px;border-radius:20px;box-shadow:0 10px 30px rgba(29,35,48,.12);margin-bottom:22px}h1{font-size:22px;margin:0 0 8px}p{margin:0 0 26px;color:#6b7280;line-height:1.55;max-width:300px}button{border:0;border-radius:999px;background:' . esc_attr( $brand ) . ';color:#fff;font:inherit;font-weight:700;padding:14px 28px;font-size:15px}</style></head>'
-			. '<body><main>' . ( $icon ? '<img src="' . esc_url( $icon ) . '" alt="">' : '' ) . '<h1>' . esc_html__( "You're offline", 'neurohr-members' ) . '</h1><p>' . esc_html__( 'No internet connection right now. Check your Wi-Fi or data, then try again.', 'neurohr-members' ) . '</p><button type="button" onclick="location.reload()">' . esc_html__( 'Try Again', 'neurohr-members' ) . '</button></main></body></html>';
+			. '<style>html,body{margin:0;height:100%;background:' . esc_attr( NHA_Settings::get( 'pwa_bg' ) ) . ';font-family:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",sans-serif;color:#1d2330}main{min-height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:32px 28px;box-sizing:border-box}img{width:72px;height:72px;border-radius:20px;box-shadow:0 10px 30px rgba(29,35,48,.12);margin-bottom:22px}h1{font-size:22px;margin:0 0 8px}p{margin:0 0 26px;color:#6b7280;line-height:1.55;max-width:300px}button{border:0;border-radius:999px;background:' . esc_attr( $brand ) . ';color:#fff;font:inherit;font-weight:700;padding:14px 28px;font-size:15px}</style></head>'
+			. '<body><main>' . ( $icon ? '<img src="' . esc_url( $icon ) . '" alt="">' : '' ) . '<h1>' . esc_html__( "You're offline", 'neurohr-app' ) . '</h1><p>' . esc_html__( 'No internet connection right now. Check your Wi-Fi or data, then try again.', 'neurohr-app' ) . '</p><button type="button" onclick="location.reload()">' . esc_html__( 'Try Again', 'neurohr-app' ) . '</button></main></body></html>';
 	}
 
 	/* ---------- iPhone: how to install ---------- */
@@ -237,9 +237,9 @@ JS;
 		$h     = '<div class="nhm-iosinstall" id="nhm-iosinstall" role="dialog" aria-modal="true" aria-labelledby="nhm-iosinstall-t" hidden><div class="nhm-iosinstall__card">';
 		$h    .= '<img src="' . esc_url( self::icon_url( 192 ) ) . '" alt="" width="64" height="64">';
 		/* translators: %s: app name */
-		$h .= '<h2 id="nhm-iosinstall-t">' . esc_html( sprintf( __( 'Add %s to your Home Screen', 'neurohr-members' ), NHM_Settings::get( 'pwa_short' ) ) ) . '</h2>';
-		$h .= '<ol><li><span>' . $share . '</span>' . esc_html__( 'Tap the Share button in Safari.', 'neurohr-members' ) . '</li><li><span>' . $plus . '</span>' . esc_html__( 'Choose "Add to Home Screen".', 'neurohr-members' ) . '</li><li><span>✓</span>' . esc_html__( 'Tap "Add". The app is on your Home Screen.', 'neurohr-members' ) . '</li></ol>';
-		$h .= '<button type="button" class="nhm-btn" data-nhm-ios-close>' . esc_html__( 'Got It', 'neurohr-members' ) . '</button></div></div>';
+		$h .= '<h2 id="nhm-iosinstall-t">' . esc_html( sprintf( __( 'Add %s to your Home Screen', 'neurohr-app' ), NHA_Settings::get( 'pwa_short' ) ) ) . '</h2>';
+		$h .= '<ol><li><span>' . $share . '</span>' . esc_html__( 'Tap the Share button in Safari.', 'neurohr-app' ) . '</li><li><span>' . $plus . '</span>' . esc_html__( 'Choose "Add to Home Screen".', 'neurohr-app' ) . '</li><li><span>✓</span>' . esc_html__( 'Tap "Add". The app is on your Home Screen.', 'neurohr-app' ) . '</li></ol>';
+		$h .= '<button type="button" class="nhm-btn" data-nhm-ios-close>' . esc_html__( 'Got It', 'neurohr-app' ) . '</button></div></div>';
 		return $h;
 	}
 }

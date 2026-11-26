@@ -1,4 +1,6 @@
-# NeuroHR Knowledge Hub — v0.13.0
+# NeuroHR Knowledge Hub — v0.14.0
+
+**New in 0.14:** the phone look (timeline lists, template cards, article, template bar) moved to the **NeuroHR App** plugin, which also adds a header with a back button, section chips and the newest item on phones. Install NeuroHR App 0.1 together with this version.
 
 **New in 0.13:** *Saved* (bookmark on every resource; list at `/{HR Insights address}/saved/`, e.g. `/hr-insights/saved/`), a *Share* button, and the phone look: timeline lists with dates, template cards with file badges and download/lock icons, Save + Share on resources, a sticky "Ready-to-use template" bar (from the resource's Templates to Download). Feeds "Latest for You" (in the reader's language) and the bottom-bar / More links of NeuroHR Members 0.5; hidden sections get no link. If the Saved page gives a 404 after updating, Settings → Permalinks → Save once.
 

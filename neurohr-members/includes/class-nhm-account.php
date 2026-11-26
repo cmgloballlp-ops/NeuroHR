@@ -580,10 +580,10 @@ class NHM_Account {
 		}
 		$html .= NHM_Forms::render_messages( 'account' );
 
-		// Phones (app layout): My account opens as a list; each item opens its section with a back link.
+		// Phones (NeuroHR App): My account opens as a list; each item opens its section with a back link.
 		$base = remove_query_arg( array( 'nhm_msg', 'nhm_invite', 'tab' ), NHM_Forms::current_url() );
 		$wrap = 'nhm-account';
-		if ( class_exists( 'NHM_App' ) && NHM_App::on() && count( $tabs ) > 1 ) {
+		if ( apply_filters( 'nhm_app_active', false ) && count( $tabs ) > 1 ) { // Phone app layout (NeuroHR App plugin).
 			// phpcs:ignore WordPress.Security.NonceVerification
 			if ( ! isset( $_GET['tab'] ) && $tab === key( $tabs ) && ! $token ) {
 				$html .= self::app_menu( $tabs, $m, $base );
