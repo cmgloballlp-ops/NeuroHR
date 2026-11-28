@@ -29,7 +29,7 @@ if ( '' !== $nh_keyword ) {
 
 nh_hub_header();
 ?>
-<main id="primary" class="nh-hub nh-section-list nh-section--<?php echo esc_attr( $nh_section ); ?>">
+<main id="primary" class="nh-hub nh-section-list nh-section--<?php echo esc_attr( $nh_section ); ?><?php echo '' !== $nh_keyword ? ' has-keyword' : ''; ?>">
 	<div class="nh-wrap nh-wrap--list">
 
 		<nav class="nh-breadcrumb nh-breadcrumb--pill" aria-label="<?php esc_attr_e( 'Breadcrumb', 'neurohr-hub' ); ?>">

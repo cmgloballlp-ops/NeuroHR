@@ -91,29 +91,52 @@ class NH_Toc {
 		return ob_get_clean();
 	}
 
-	/** Highlights the section being read (desktop sidebar). */
+	/**
+	 * Desktop sidebar: highlights the section being read, opens only its sub-headings,
+	 * greys out sections already read and shows how much has been read.
+	 */
 	public static function print_script() {
 		?>
 		<script>
 		( function () {
-			var links = document.querySelectorAll( '.nh-toc--side .nh-toc__item a' );
-			if ( ! links.length || ! ( 'IntersectionObserver' in window ) ) { return; }
-			var map = {};
-			links.forEach( function ( a ) { map[ a.getAttribute( 'data-target' ) ] = a; } );
-			var current;
-			var io = new IntersectionObserver( function ( entries ) {
-				entries.forEach( function ( e ) {
-					if ( e.isIntersecting && map[ e.target.id ] ) {
-						if ( current ) { current.classList.remove( 'is-active' ); }
-						current = map[ e.target.id ];
-						current.classList.add( 'is-active' );
-					}
+			var nav = document.querySelector( '.nh-toc--side' );
+			if ( ! nav ) { return; }
+			var items = [].slice.call( nav.querySelectorAll( '.nh-toc__item' ) );
+			var rows = items.map( function ( li ) {
+				var a = li.querySelector( 'a' );
+				return { li: li, a: a, h3: li.classList.contains( 'nh-toc__item--h3' ), el: document.getElementById( a.getAttribute( 'data-target' ) ) };
+			} ).filter( function ( r ) { return r.el; } );
+			var body = document.querySelector( '.nh-article__content' );
+			var pct = nav.querySelector( '[data-nh-pct]' ), bar = nav.querySelector( '[data-nh-bar]' );
+			var top = 140, last = -2, ticking = false;
+			function update() {
+				ticking = false;
+				var cur = -1;
+				rows.forEach( function ( r, i ) { if ( r.el.getBoundingClientRect().top < top ) { cur = i; } } );
+				if ( body && ( pct || bar ) ) {
+					var b = body.getBoundingClientRect();
+					var done = Math.max( 0, Math.min( 1, ( top - b.top ) / Math.max( 1, b.height - window.innerHeight + top ) ) );
+					var p = Math.round( done * 100 );
+					if ( pct ) { pct.textContent = p + '% read'; }
+					if ( bar ) { bar.style.width = p + '%'; }
+				}
+				if ( cur === last ) { return; }
+				last = cur;
+				var group = -1; // The main heading (h2) of the section being read.
+				for ( var i = Math.max( cur, 0 ); i >= 0; i-- ) { if ( ! rows[ i ].h3 ) { group = i; break; } }
+				var inGroup = false;
+				rows.forEach( function ( r, i ) {
+					if ( ! r.h3 ) { inGroup = i === group; }
+					r.a.classList.toggle( 'is-active', i === cur || ( cur < 0 && i === 0 ) );
+					r.li.classList.toggle( 'is-done', i < cur && i !== group );
+					r.li.classList.toggle( 'is-open', r.h3 && inGroup );
 				} );
-			}, { rootMargin: '0px 0px -70% 0px' } );
-			Object.keys( map ).forEach( function ( id ) {
-				var el = document.getElementById( id );
-				if ( el ) { io.observe( el ); }
-			} );
+			}
+			function onScroll() { if ( ! ticking ) { ticking = true; requestAnimationFrame( update ); } }
+			window.addEventListener( 'scroll', onScroll, { passive: true } );
+			window.addEventListener( 'resize', onScroll );
+			nav.classList.add( 'is-smart' );
+			update();
 		} )();
 		</script>
 		<?php

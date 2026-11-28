@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       NeuroHR Knowledge Hub
  * Description:       Lightweight knowledge hub for NeuroHR: Knowledge Hub, Legal Case Insights, FAQ, Templates (protected downloads) and Videos, with level-based access from NeuroHR Members (or MemberPress).
- * Version:           0.13.0
+ * Version:           0.15.0
  * Author:            NeuroHR
  * Requires at least: 6.0
  * Requires PHP:      7.4
@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'NH_HUB_VERSION', '0.13.0' );
+define( 'NH_HUB_VERSION', '0.15.0' );
 define( 'NH_HUB_FILE', __FILE__ );
 define( 'NH_HUB_DIR', plugin_dir_path( __FILE__ ) );
 define( 'NH_HUB_URL', plugin_dir_url( __FILE__ ) );

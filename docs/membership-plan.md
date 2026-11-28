@@ -138,6 +138,7 @@ Refunds (phase 2, to build):
 - 0.4.4 (PR #1): invoices table, refund pop-up, invitation page `[nhm_invite]`, seats table with Remove / Send again / Cancel, change-password alignment, code on GitHub (cmgloballlp-ops/NeuroHR).
 - 0.4.5 (PR #2): Bill To Individual / Company (NRIC / Passport No.), Title Case everywhere, full-width admin lists.
 - 0.5.0 + Hub 0.13.0 (PR #3): search box focus fix, `[nhm_greeting]` (spec below), phone app layout (bottom bar, search screen, More sheet with menu location "Phone: More shortcuts", app home on the Dashboard, My Account list), PWA (manifest, service worker, offline page, install prompt), Hub Saved + Share + phone list/template/article styles.
+- NeuroHR App 0.1.0 + Members 0.6.0 + Hub 0.14.0 (PR #4, 27 Nov 2026): phone app is its own plugin (Members → Phone App); bottom bar = floating light capsule with dark pill for the open tab (owner chose style 5 + dark); hub pages get an app header (back, Save/Share), section chips, newest item ("New This Week"/"Latest", always the newest), 2-column topic cards; pages never wider than the phone, tables scroll on their own (owner chose sideways scroll); instant tap feedback + early loading on touch + bottom-bar pages in background (Chrome/Android only; iPhone gets the feedback only).
 
 ## Backlog — to build together later
 

@@ -29,6 +29,7 @@ class NH_App {
 		add_action( 'wp_ajax_' . self::AJAX, array( __CLASS__, 'ajax' ) );
 		add_filter( 'nhm_latest_items', array( __CLASS__, 'latest' ), 10, 2 );
 		add_filter( 'nhm_app_links', array( __CLASS__, 'app_links' ) );
+		add_filter( 'nha_page_context', array( __CLASS__, 'page_context' ) );
 	}
 
 	/* ---------- Saved ---------- */
@@ -121,11 +122,11 @@ class NH_App {
 		return NH_Frontend::locate( 'saved.php', $template );
 	}
 
-	/** Bookmark + share buttons for a resource. */
+	/** Bookmark + share buttons for a resource (news posts: share only). */
 	public static function actions( $post ) {
 		$post = get_post( $post );
 		$h    = '<span class="nh-actions">';
-		if ( is_user_logged_in() ) {
+		if ( is_user_logged_in() && NH_Post_Types::CPT === $post->post_type ) {
 			$on = self::is_saved( $post->ID );
 			$h .= '<button type="button" class="nh-iconbtn nh-save' . ( $on ? ' is-on' : '' ) . '" data-nh-save="' . (int) $post->ID . '" aria-pressed="' . ( $on ? 'true' : 'false' ) . '" aria-label="' . esc_attr__( 'Save', 'neurohr-hub' ) . '" title="' . esc_attr__( 'Save', 'neurohr-hub' ) . '">'
 				. '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12v18l-6-4-6 4z"/></svg></button>';
@@ -188,6 +189,26 @@ class NH_App {
 		return '<div class="nh-tplbar" role="complementary" aria-label="' . esc_attr__( 'Related template', 'neurohr-hub' ) . '"><span><small>' . esc_html__( 'Ready-to-use template', 'neurohr-hub' ) . '</small><b>' . esc_html( get_the_title( $id ) ) . '</b></span><a class="nh-tplbar__btn" href="' . esc_url( get_permalink( $id ) ) . '">' . esc_html__( 'Open', 'neurohr-hub' ) . '</a></div>';
 	}
 
+	/** Desktop sidebar card under the table of contents: the related template, with Download. */
+	public static function side_template( $post_id ) {
+		$id = self::related_template( $post_id );
+		if ( ! $id ) {
+			return '';
+		}
+		$file = NH_Media::get_file( $id );
+		$ext  = $file ? strtoupper( pathinfo( ! empty( $file['name'] ) ? $file['name'] : $file['path'], PATHINFO_EXTENSION ) ) : '';
+		$can  = NH_Access::can_view( get_post( $id ) ) && NH_Media::has_download( $id );
+		$url  = $can ? NH_Media::download_url( $id ) : get_permalink( $id );
+		$h    = '<div class="nh-tplcard"><span class="nh-tplcard__k">' . esc_html__( 'Ready-to-use template', 'neurohr-hub' ) . '</span>';
+		$h   .= '<a class="nh-tplcard__t" href="' . esc_url( get_permalink( $id ) ) . '">' . esc_html( get_the_title( $id ) ) . '</a>';
+		if ( $ext ) {
+			$h .= '<span class="nh-tplcard__s">' . esc_html( $ext ) . '</span>';
+		}
+		$icon = $can ? '<path d="M12 3v12M7 10l5 5 5-5M5 21h14"/>' : '<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>';
+		$h   .= '<a class="nh-tplcard__btn" href="' . esc_url( $url ) . '"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">' . $icon . '</svg>' . esc_html( $can ? __( 'Download', 'neurohr-hub' ) : __( 'See Template', 'neurohr-hub' ) ) . '</a>';
+		return $h . '</div>';
+	}
+
 	/* ---------- For NeuroHR Members ---------- */
 
 	/**
@@ -232,5 +253,85 @@ class NH_App {
 		}
 		$links['saved'] = self::saved_url();
 		return $links;
+	}
+
+	/* ---------- For NeuroHR App (phone layout) ---------- */
+
+	/**
+	 * Header of hub pages on phones: back button, title, buttons. Section homes have none
+	 * (their own title is the header).
+	 */
+	public static function page_context( $ctx ) {
+		if ( self::is_saved_page() ) {
+			return array( 'title' => __( 'Saved', 'neurohr-hub' ), 'back' => NH_Rewrite::url( 'knowledge' ), 'kind' => 'list' );
+		}
+		if ( is_singular( NH_Post_Types::CPT ) || is_singular( 'post' ) ) {
+			$post = get_queried_object();
+			if ( 'post' === $post->post_type ) {
+				$news = (int) get_option( 'page_for_posts' );
+				$back = $news ? get_permalink( $news ) : home_url( '/' );
+			} else {
+				$key   = NH_Sections::of_post( $post );
+				$data  = NH_Sections::get( $key );
+				$terms = $data && $data['taxonomy'] ? get_the_terms( $post, $data['taxonomy'] ) : array();
+				$back  = ( $terms && ! is_wp_error( $terms ) ) ? NH_Rewrite::url( $key, $terms[0]->slug ) : NH_Rewrite::url( $key );
+			}
+			return array(
+				'title'   => html_entity_decode( get_the_title( $post ), ENT_QUOTES, 'UTF-8' ),
+				'back'    => $back,
+				'actions' => self::actions( $post ),
+				'search'  => false,
+				'kind'    => 'single',
+			);
+		}
+		if ( NH_Frontend::is_tag_page() || ( NH_Frontend::is_section_page() && ! NH_Frontend::is_section_home() ) ) {
+			$key  = NH_Frontend::is_tag_page() ? 'knowledge' : NH_Sections::current();
+			$data = NH_Sections::get( $key );
+			return array( 'title' => $data ? $data['label'] : '', 'back' => NH_Rewrite::url( $key ), 'kind' => 'list' );
+		}
+		return $ctx;
+	}
+
+	/**
+	 * Phone-only parts of a section home (shown by NeuroHR App): the sections as chips
+	 * (plus Saved) and the newest item of the section.
+	 */
+	public static function phone_extras( $section ) {
+		if ( ! is_user_logged_in() ) {
+			return '';
+		}
+		$h = '<nav class="nh-appchips" aria-label="' . esc_attr__( 'Sections', 'neurohr-hub' ) . '">';
+		foreach ( NH_Sections::visible() as $key => $data ) {
+			$on = $key === $section;
+			$h .= '<a class="' . ( $on ? 'is-on' : '' ) . '" href="' . esc_url( NH_Rewrite::url( $key ) ) . '"' . ( $on ? ' aria-current="page"' : '' ) . '>' . esc_html( $data['label'] ) . '</a>';
+		}
+		$h .= '<a href="' . esc_url( self::saved_url() ) . '"><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12v18l-6-4-6 4z"/></svg> ' . esc_html__( 'Saved', 'neurohr-hub' ) . '</a></nav>';
+		$q = new WP_Query(
+			array(
+				'post_type'      => NH_Post_Types::CPT,
+				'post_status'    => 'publish',
+				'posts_per_page' => 1,
+				'orderby'        => 'date',
+				'order'          => 'DESC',
+				'no_found_rows'  => true,
+				'tax_query'      => array( NH_Sections::type_clause( $section ) ), // phpcs:ignore WordPress.DB.SlowDBQuery
+			)
+		);
+		if ( $q->posts ) {
+			$p    = $q->posts[0];
+			$new  = ( time() - get_post_time( 'U', true, $p ) ) < WEEK_IN_SECONDS;
+			$data = NH_Sections::get( $section );
+			$sub  = array();
+			if ( 'download' !== NH_Types::of_post( $p ) && 'video' !== NH_Types::of_post( $p ) ) {
+				/* translators: %d: minutes */
+				$sub[] = sprintf( __( '%d min read', 'neurohr-hub' ), NH_Toc::reading_minutes( $p ) );
+			}
+			$terms = $data && $data['taxonomy'] ? get_the_terms( $p, $data['taxonomy'] ) : array();
+			if ( $terms && ! is_wp_error( $terms ) ) {
+				$sub[] = $terms[0]->name;
+			}
+			$h .= '<a class="nh-appfeature" href="' . esc_url( get_permalink( $p ) ) . '"><span class="nh-appfeature__k">' . esc_html( $new ? __( 'New This Week', 'neurohr-hub' ) : __( 'Latest', 'neurohr-hub' ) ) . '</span><span class="nh-appfeature__t">' . esc_html( get_the_title( $p ) ) . '</span><span class="nh-appfeature__s">' . esc_html( implode( ' · ', $sub ) ) . '</span></a>';
+		}
+		return $h;
 	}
 }

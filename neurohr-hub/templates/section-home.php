@@ -24,6 +24,7 @@ nh_hub_header();
 				<?php echo NH_Display::search_box( $nh_section ); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped in method. ?>
 				<?php echo NH_Lang::switcher( $nh_section ); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped in method. ?>
 			</div>
+			<?php echo NH_App::phone_extras( $nh_section ); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped in method. Shown on phones by NeuroHR App. ?>
 			<?php
 			if ( NH_Sections::is_faq( $nh_section ) ) {
 				echo NH_Faq::render_section(); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped in method.

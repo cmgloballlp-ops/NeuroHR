@@ -47,10 +47,14 @@ class NH_Print {
 		);
 	}
 
-	public static function button() {
-		return '<button type="button" class="nh-print-btn" onclick="window.print()">'
-			. '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M6 9V3h12v6M6 18H4a1 1 0 0 1-1-1v-6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6a1 1 0 0 1-1 1h-2"/><path d="M6 14h12v7H6z"/></svg>'
-			. esc_html__( 'Print / PDF', 'neurohr-hub' ) . '</button>';
+	/** $icon: a square icon button (article header) instead of a pill with text. */
+	public static function button( $icon = false ) {
+		$label = __( 'Print / PDF', 'neurohr-hub' );
+		$svg   = '<svg viewBox="0 0 24 24" width="' . ( $icon ? 18 : 16 ) . '" height="' . ( $icon ? 18 : 16 ) . '" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M6 9V3h12v6M6 18H4a1 1 0 0 1-1-1v-6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6a1 1 0 0 1-1 1h-2"/><path d="M6 14h12v7H6z"/></svg>';
+		if ( $icon ) {
+			return '<button type="button" class="nh-iconbtn nh-print-btn--icon" onclick="window.print()" aria-label="' . esc_attr( $label ) . '" title="' . esc_attr( $label ) . '">' . $svg . '</button>';
+		}
+		return '<button type="button" class="nh-print-btn" onclick="window.print()">' . $svg . esc_html( $label ) . '</button>';
 	}
 
 	/** Shown only on paper: site and address at the top. */

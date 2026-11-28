@@ -72,4 +72,13 @@ $_GET = array( 'status' => 'refunds' ); ob_start(); NHM_Admin_Payments::page(); 
 
 $_GET = array(); ob_start(); NHM_Admin_Dashboard::page(); $h = ob_get_clean(); $n++; if ( false === strpos( $h, 'Net in' ) ) { echo "FAIL: dashboard net\n"; }
 
+// NeuroHR App: Members → Phone App.
+if ( ! function_exists( 'get_site_icon_url' ) ) { function get_site_icon_url( $s = 512 ) { return ''; } }
+if ( ! function_exists( 'attachment_url_to_postid' ) ) { function attachment_url_to_postid( $u ) { return 0; } }
+require_once $W . '/neurohr-app/neurohr-app.php';
+$_GET = array(); ob_start(); NHA_Admin::page(); $h = ob_get_clean(); $n++;
+if ( 6 !== substr_count( $h, 'nhm-toggle' ) || false === strpos( $h, 'Version History' ) || false === strpos( $h, 'Add an app icon' ) ) { echo "FAIL: phone app settings page\n"; }
+$_GET = array( 'tab' => 'area' ); ob_start(); NHM_Admin_Settings::page(); $h = ob_get_clean(); $n++;
+if ( false === strpos( $h, 'page=nhm-app' ) || false !== strpos( $h, 'pwa_name' ) ) { echo "FAIL: member area tab points to Phone App\n"; }
+
 echo "$n admin screens rendered\n";
