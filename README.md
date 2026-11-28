@@ -5,7 +5,7 @@ Plugins for [neurohr.com.my](https://www.neurohr.com.my) (WordPress, Blocksy, El
 | Folder | Plugin | Version | What it does |
 |---|---|---|---|
 | `neurohr-members/` | NeuroHR Members | 0.6.0 | Membership levels, personal and company plans, login / registration / My account, member-area layout, invoices (PDF), payments (Stripe card / FPX / GrabPay, bank transfer, DuitNow QR), card auto-renew, refunds with Refund Notes, greeting. Replaces MemberPress. |
-| `neurohr-app/` | NeuroHR App | 0.1.0 | The member area as a phone app: floating bottom bar, search screen, More sheet, app home, hub header, faster page changes, installable app (PWA). Needs NeuroHR Members 0.6+. |
+| `neurohr-app/` | NeuroHR App | 0.1.1 | The member area as a phone app: floating bottom bar, search screen, More sheet, app home, hub header, faster page changes, installable app (PWA). Needs NeuroHR Members 0.6+. |
 | `neurohr-hub/` | NeuroHR Knowledge Hub | 0.14.0 | Knowledge Hub, Legal Case Insights, FAQ, Templates (protected downloads) and Videos, with level-based access from NeuroHR Members. |
 | `neurohr-payroll/` | Simple Payroll | 0.5.0 | Malaysian payslip calculator; payslip extras for higher levels. |
 

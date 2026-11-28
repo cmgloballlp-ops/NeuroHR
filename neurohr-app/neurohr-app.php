@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       NeuroHR App
  * Description:       The NeuroHR member area as a phone app: floating bottom bar, full-screen search, More sheet, app home, app header on Knowledge Hub pages, faster page changes and "install as an app" (PWA). Needs NeuroHR Members; works with NeuroHR Knowledge Hub.
- * Version:           0.1.0
+ * Version:           0.1.1
  * Requires at least: 6.0
  * Requires PHP:      7.4
  * Author:            NeuroHR
@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'NHA_VERSION', '0.1.0' );
+define( 'NHA_VERSION', '0.1.1' );
 define( 'NHA_FILE', __FILE__ );
 define( 'NHA_DIR', plugin_dir_path( __FILE__ ) );
 define( 'NHA_URL', plugin_dir_url( __FILE__ ) );

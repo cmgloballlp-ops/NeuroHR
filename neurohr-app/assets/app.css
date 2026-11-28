@@ -81,8 +81,7 @@
 	.nha-table th, .nha-table td { padding: 10px 12px !important; min-width: 96px; max-width: 240px; vertical-align: top; overflow-wrap: normal !important; word-break: normal !important; border: 0 !important; border-top: 1px solid var(--nha-line) !important; text-align: left; }
 	.nha-table tr:first-child > * { border-top: 0 !important; }
 	.nha-table thead th, .nha-table tr:first-child th { background: #fbf3ec; font-weight: 800; color: #4b5161; }
-	.nha-table tr > :first-child { position: sticky; left: 0; z-index: 1; background: #fff; font-weight: 700; box-shadow: 1px 0 0 var(--nha-line); }
-	.nha-table thead tr > :first-child, .nha-table tr:first-child > th:first-child { background: #fbf3ec; }
+	.nha-table tr > :first-child { font-weight: 700; } /* 0.1.1: the first column scrolls with the rest (no frozen column on small screens). */
 	.nha-table__fade { display: block; position: absolute; top: 0; right: 0; bottom: 0; width: 40px; pointer-events: none; background: linear-gradient(90deg, rgba(247,243,238,0), var(--nha-bg)); transition: opacity .2s; }
 	.nha-table.is-end .nha-table__fade { opacity: 0; }
 	.nha-table__hint { display: flex !important; align-items: center; gap: 6px; margin: 6px 0 0; font-size: 12px; font-weight: 600; color: var(--nha-mut); }

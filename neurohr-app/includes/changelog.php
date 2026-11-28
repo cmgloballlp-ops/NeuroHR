@@ -8,6 +8,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 return array(
+	'0.1.1' => array(
+		'date'  => '28 Nov 2026',
+		'items' => array(
+			'Tables on phones: the first column no longer stays fixed; the whole table scrolls sideways, so small screens see more.',
+		),
+	),
 	'0.1.0' => array(
 		'date'  => '27 Nov 2026',
 		'items' => array(
