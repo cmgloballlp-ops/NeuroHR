@@ -8,6 +8,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 return array(
+	'0.1.2' => array(
+		'date'  => '28 Nov 2026',
+		'items' => array(
+			'Article pages: a thin orange line under the header shows how much has been read.',
+			'Template bar: file type, and Download (or See Template with a lock for members below its plan). Needs Knowledge Hub 0.16.',
+			'News lists get the app header with a back button.',
+		),
+	),
 	'0.1.1' => array(
 		'date'  => '28 Nov 2026',
 		'items' => array(

@@ -1,4 +1,8 @@
-# NeuroHR Knowledge Hub — v0.15.0
+# NeuroHR Knowledge Hub — v0.16.0
+
+**New in 0.16:** **HR News & Updates as a hub section.** News stays ordinary WordPress posts (addresses, Google, RSS for MailerLite unchanged; public), but now has a news home (search, category cards, latest list), hub lists for categories/tags/search, and the new article page (date, Save/Share, In This Guide, template card, free-account invitation for visitors). Posts get two editor boxes: *Related guides and templates (Knowledge Hub)* and *Newer update*. Members can save news; the hub-wide search finds news too.
+**Tidy the categories once:** Knowledge Hub → **News Categories**. Every post is listed with a suggested main category (Employment Law, Payroll & Statutory, Public Holidays, Workplace Safety & Health, Budget & Policy, HR Trends), tags and newer update. Change what you like, then Apply. Post addresses, text and dates are never touched; removed categories (e.g. HR Updates) keep their address, which opens the news home. Category names and one-line descriptions are set there too (shown on the news home). The news title and the line under it: Settings → Look → News posts.
+Phones: the article page matches computers (Updated next to the topic chip, In This Guide card with % read, template bar with Download / See Template).
 
 **New in 0.15:** a calmer article page on computers: dark title with a topic chip, one line of facts with Save / Share / Print buttons, shorter lines and a lead paragraph, tables as soft cards, an "In This Guide" sidebar card with reading progress (only the section being read is opened), the article's template as a Download card under it, a reading bar along the top and a back-to-top button. Content is unchanged.
 

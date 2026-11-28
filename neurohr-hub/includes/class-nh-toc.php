@@ -99,43 +99,52 @@ class NH_Toc {
 		?>
 		<script>
 		( function () {
-			var nav = document.querySelector( '.nh-toc--side' );
-			if ( ! nav ) { return; }
-			var items = [].slice.call( nav.querySelectorAll( '.nh-toc__item' ) );
-			var rows = items.map( function ( li ) {
-				var a = li.querySelector( 'a' );
-				return { li: li, a: a, h3: li.classList.contains( 'nh-toc__item--h3' ), el: document.getElementById( a.getAttribute( 'data-target' ) ) };
-			} ).filter( function ( r ) { return r.el; } );
+			var navs = [].slice.call( document.querySelectorAll( '.nh-toc--side, .nh-toc--inline' ) );
 			var body = document.querySelector( '.nh-article__content' );
-			var pct = nav.querySelector( '[data-nh-pct]' ), bar = nav.querySelector( '[data-nh-bar]' );
-			var top = 140, last = -2, ticking = false;
-			function update() {
-				ticking = false;
-				var cur = -1;
-				rows.forEach( function ( r, i ) { if ( r.el.getBoundingClientRect().top < top ) { cur = i; } } );
-				if ( body && ( pct || bar ) ) {
-					var b = body.getBoundingClientRect();
-					var done = Math.max( 0, Math.min( 1, ( top - b.top ) / Math.max( 1, b.height - window.innerHeight + top ) ) );
-					var p = Math.round( done * 100 );
-					if ( pct ) { pct.textContent = p + '% read'; }
-					if ( bar ) { bar.style.width = p + '%'; }
+			var top = 140, ticking = false;
+			var sets = navs.map( function ( nav ) {
+				var rows = [].slice.call( nav.querySelectorAll( '.nh-toc__item' ) ).map( function ( li ) {
+					var a = li.querySelector( 'a' );
+					return { li: li, a: a, h3: li.classList.contains( 'nh-toc__item--h3' ), el: document.getElementById( a.getAttribute( 'data-target' ) ) };
+				} ).filter( function ( r ) { return r.el; } );
+				nav.classList.add( 'is-smart' );
+				// Phones: tapping a heading jumps there and folds the list.
+				if ( 'DETAILS' === nav.tagName ) {
+					nav.addEventListener( 'click', function ( e ) { if ( e.target.closest( '.nh-toc__item a' ) ) { nav.open = false; } } );
 				}
-				if ( cur === last ) { return; }
-				last = cur;
+				return { nav: nav, rows: rows, last: -2, pct: nav.querySelector( '[data-nh-pct]' ), bar: nav.querySelector( '[data-nh-bar]' ) };
+			} );
+			function paint( s, cur ) {
+				if ( cur === s.last ) { return; }
+				s.last = cur;
 				var group = -1; // The main heading (h2) of the section being read.
-				for ( var i = Math.max( cur, 0 ); i >= 0; i-- ) { if ( ! rows[ i ].h3 ) { group = i; break; } }
+				for ( var i = Math.max( cur, 0 ); i >= 0 && s.rows[ i ]; i-- ) { if ( ! s.rows[ i ].h3 ) { group = i; break; } }
 				var inGroup = false;
-				rows.forEach( function ( r, i ) {
+				s.rows.forEach( function ( r, i ) {
 					if ( ! r.h3 ) { inGroup = i === group; }
 					r.a.classList.toggle( 'is-active', i === cur || ( cur < 0 && i === 0 ) );
 					r.li.classList.toggle( 'is-done', i < cur && i !== group );
 					r.li.classList.toggle( 'is-open', r.h3 && inGroup );
 				} );
 			}
+			function update() {
+				ticking = false;
+				var p = 0;
+				if ( body ) {
+					var b = body.getBoundingClientRect();
+					p = Math.round( Math.max( 0, Math.min( 1, ( top - b.top ) / Math.max( 1, b.height - window.innerHeight + top ) ) ) * 100 );
+				}
+				sets.forEach( function ( s ) {
+					var cur = -1;
+					s.rows.forEach( function ( r, i ) { if ( r.el.getBoundingClientRect().top < top ) { cur = i; } } );
+					if ( s.pct ) { s.pct.textContent = p + '% read'; }
+					if ( s.bar ) { s.bar.style.width = p + '%'; }
+					paint( s, cur );
+				} );
+			}
 			function onScroll() { if ( ! ticking ) { ticking = true; requestAnimationFrame( update ); } }
 			window.addEventListener( 'scroll', onScroll, { passive: true } );
 			window.addEventListener( 'resize', onScroll );
-			nav.classList.add( 'is-smart' );
 			update();
 		} )();
 		</script>

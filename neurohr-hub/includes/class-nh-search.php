@@ -51,6 +51,16 @@ class NH_Search {
 	 * When the hub requires login, guests get nothing.
 	 */
 	public static function ajax() {
+		// News (WordPress posts) is public: anyone may search it.
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only, see above.
+		if ( isset( $_GET['section'] ) && 'news' === sanitize_key( wp_unslash( $_GET['section'] ) ) ) {
+			$nq = isset( $_GET['q'] ) ? sanitize_text_field( wp_unslash( $_GET['q'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			if ( mb_strlen( $nq ) < 2 ) {
+				wp_send_json_success( array( 'items' => array(), 'total' => 0, 'all' => '' ) );
+			}
+			list( $items, $total ) = NH_Blog::search_items( $nq, self::LIMIT );
+			wp_send_json_success( array( 'items' => $items, 'total' => $total, 'all' => add_query_arg( 'q', rawurlencode( $nq ), NH_Blog::news_url() ) ) );
+		}
 		if ( NH_Login::required() && ! is_user_logged_in() ) {
 			wp_send_json_error( array( 'message' => 'login' ), 401 );
 		}
@@ -109,10 +119,18 @@ class NH_Search {
 			);
 		}
 
+		$total = (int) $query->found_posts;
+		// Searching everything also finds the news (a few, after the hub results).
+		if ( 'all' === $section && NH_Blog::enabled() ) {
+			list( $news, $news_total ) = NH_Blog::search_items( $q, 3 );
+			$items = array_merge( $items, $news );
+			$total += $news_total;
+		}
+
 		wp_send_json_success(
 			array(
 				'items' => $items,
-				'total' => (int) $query->found_posts,
+				'total' => $total,
 				'all'   => NH_Rewrite::url( $section, $term ? $term->slug : '', array( 'q' => $q ) ),
 			)
 		);

@@ -77,6 +77,13 @@ class NH_Review {
 		return $reviewed ? sprintf( __( 'Last reviewed %s', 'neurohr-hub' ), $date ) : sprintf( __( 'Published %s', 'neurohr-hub' ), $date );
 	}
 
+	/** "Reviewed 28/11/2026" (article header, 0.15). */
+	public static function short_label( $post ) {
+		$date = date_i18n( get_option( 'date_format' ), self::checked_time( $post ) );
+		/* translators: %s: date */
+		return self::reviewed( $post ) ? sprintf( __( 'Reviewed %s', 'neurohr-hub' ), $date ) : sprintf( __( 'Published %s', 'neurohr-hub' ), $date );
+	}
+
 	public static function badge( $post ) {
 		return self::is_recently_updated( $post ) ? '<span class="nh-updated">' . esc_html__( 'Updated', 'neurohr-hub' ) . '</span>' : '';
 	}

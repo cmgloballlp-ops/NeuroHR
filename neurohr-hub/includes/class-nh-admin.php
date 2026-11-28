@@ -454,7 +454,10 @@ class NH_Admin {
 				<label class="nh-toggle"><input type="checkbox" name="<?php echo esc_attr( NH_Display::OPTION ); ?>[style_posts]" value="1" <?php checked( ! empty( $d['style_posts'] ) ); ?>>
 					<span><strong><?php esc_html_e( 'Use the hub design for WordPress posts', 'neurohr-hub' ); ?></strong><br>
 					<?php esc_html_e( 'Single posts, the posts page and post categories/tags. Posts are not part of the membership levels.', 'neurohr-hub' ); ?></span></label>
-				<?php self::text_row( __( 'Name in breadcrumbs', 'neurohr-hub' ), 'news_label', $d['news_label'] ); ?>
+				<?php self::text_row( __( 'Name of the news section', 'neurohr-hub' ), 'news_label', $d['news_label'] ); ?>
+				<div class="nh-field"><label for="nh-news-intro"><?php esc_html_e( 'Line under the title (news home)', 'neurohr-hub' ); ?></label>
+					<textarea id="nh-news-intro" rows="2" name="<?php echo esc_attr( NH_Display::OPTION ); ?>[news_intro]"><?php echo esc_textarea( $d['news_intro'] ); ?></textarea></div>
+				<p class="description"><?php echo wp_kses_post( sprintf( /* translators: %s: link */ __( 'News stays public. To tidy the categories once: <a href="%s">News Categories</a>.', 'neurohr-hub' ), esc_url( admin_url( 'edit.php?post_type=' . NH_Post_Types::CPT . '&page=nh-news-tidy' ) ) ) ); ?></p>
 				<p class="description"><?php esc_html_e( 'Set Settings → Reading → Posts page so the breadcrumb links to your news list.', 'neurohr-hub' ); ?></p>
 			</section>
 

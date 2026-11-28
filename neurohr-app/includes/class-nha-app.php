@@ -185,7 +185,11 @@ class NHA_App {
 		if ( $ctx['search'] ) {
 			$h .= '<button type="button" class="nha-head__btn" data-nhm-search-open aria-label="' . esc_attr__( 'Search', 'neurohr-app' ) . '">' . self::ico( 'search' ) . '</button>';
 		}
-		return $h . '</span></header>';
+		$h .= '</span>';
+		if ( 'single' === $kind ) {
+			$h .= '<i class="nha-head__prog" data-nha-prog aria-hidden="true"></i>'; // How much of the article has been read.
+		}
+		return $h . '</header>';
 	}
 
 	private static function search_screen() {

@@ -283,6 +283,18 @@
 
 	/* ---------- App header: show the title once the page title has scrolled away ---------- */
 	var head = document.querySelector( '[data-nha-head]' );
+	var prog = document.querySelector( '[data-nha-prog]' );
+	var article = document.querySelector( '.nh-article__content' );
+	if ( prog && article ) {
+		var pt = false;
+		var paint = function () {
+			pt = false;
+			var b = article.getBoundingClientRect();
+			prog.style.transform = 'scaleX(' + Math.max( 0, Math.min( 1, -b.top / Math.max( 1, b.height - window.innerHeight * 0.6 ) ) ).toFixed( 3 ) + ')';
+		};
+		window.addEventListener( 'scroll', function () { if ( ! pt ) { pt = true; requestAnimationFrame( paint ); } }, { passive: true } );
+		paint();
+	}
 	if ( head ) {
 		var h1 = document.querySelector( '.nh-article__title, .nhs-main h1:not(.nha-head__title)' );
 		if ( h1 && window.IntersectionObserver ) {

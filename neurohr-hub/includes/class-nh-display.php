@@ -49,6 +49,7 @@ class NH_Display {
 			'require_login' => 1,
 			'style_posts'   => 1,
 			'news_label'    => 'HR News & Update',
+			'news_intro'    => 'The latest employment law, payroll and policy changes in Malaysia, explained for employers and HR.',
 			'review_months' => 12,
 			'updated_days'  => 30,
 			'print_notice'  => NH_Print::default_notice(),
@@ -80,7 +81,7 @@ class NH_Display {
 				$out[ $key ] = sanitize_text_field( $input[ $key ] );
 			}
 		}
-		foreach ( array( 'intro', 'cases_intro', 'faq_intro', 'templates_intro', 'videos_intro', 'print_notice' ) as $key ) {
+		foreach ( array( 'intro', 'cases_intro', 'faq_intro', 'templates_intro', 'videos_intro', 'print_notice', 'news_intro' ) as $key ) {
 			if ( isset( $input[ $key ] ) ) {
 				$out[ $key ] = sanitize_textarea_field( $input[ $key ] );
 			}

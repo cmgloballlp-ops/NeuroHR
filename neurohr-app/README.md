@@ -1,4 +1,4 @@
-# NeuroHR App — v0.1.1
+# NeuroHR App — v0.1.2
 
 The NeuroHR member area as a phone app. Phones only (768px and narrower); computers keep the NeuroHR Members sidebar.
 Needs **NeuroHR Members 0.6** or newer; works with **NeuroHR Knowledge Hub 0.14** or newer.

@@ -14,7 +14,7 @@ nh_hub_header();
 		<header class="nh-list-head">
 			<div>
 				<h1 class="nh-list-head__title"><?php esc_html_e( 'Saved', 'neurohr-hub' ); ?></h1>
-				<p class="nh-list-head__meta"><?php esc_html_e( 'Guides, cases and templates you saved for later.', 'neurohr-hub' ); ?></p>
+				<p class="nh-list-head__meta"><?php esc_html_e( 'Guides, cases, templates and news you saved for later.', 'neurohr-hub' ); ?></p>
 			</div>
 		</header>
 		<?php if ( have_posts() && NH_App::saved_ids() ) : ?>

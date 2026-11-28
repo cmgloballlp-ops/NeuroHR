@@ -9,6 +9,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 return array(
+	'0.16.0' => array(
+		'date'    => '2026-11-28',
+		'changes' => array(
+			'HR News & Updates is now a section of the hub, still made of ordinary WordPress posts (same addresses, public, Google and RSS as before): a news home with title, search (results while typing, also for visitors), category cards with their latest news and the latest news list; category, tag and search pages as hub lists with dates.',
+			'News posts use the new article page: category chip, date and reading time, Save and Share, In This Guide, the template card, and for visitors an invitation to create a free account. The editor of a post has "Related guides and templates (Knowledge Hub)" and "Newer update" boxes; an older post can point readers to its newer update.',
+			'Members can save news, and the hub-wide search also finds news.',
+			'Knowledge Hub → News Categories: a one-time tidy-up with suggested categories (Employment Law, Payroll & Statutory, Public Holidays, Workplace Safety & Health, Budget & Policy, HR Trends), tags and newer updates for every post; nothing changes until Apply. Removed categories keep their address (it opens the news home).',
+			'Phones: "Updated" sits next to the topic chip, the facts line is shorter ("Reviewed …"), In This Guide is a card with % read that opens only the section being read, the lead paragraph and sub-heading dots match computers, and the template bar shows the file type with Download or See Template.',
+		),
+	),
 	'0.15.0' => array(
 		'date'    => '2026-11-28',
 		'changes' => array(

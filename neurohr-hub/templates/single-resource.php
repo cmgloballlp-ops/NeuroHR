@@ -55,9 +55,12 @@ while ( have_posts() ) :
 					<article <?php post_class( 'nh-article' ); ?> lang="<?php echo esc_attr( NH_Lang::all()[ NH_Lang::of_post( $nh_post ) ]['hreflang'] ); ?>">
 						<?php echo $nh_print ? NH_Print::head_html( $nh_post ) : ''; // phpcs:ignore WordPress.Security.EscapeOutput -- escaped in method. ?>
 						<header class="nh-article__header">
-							<?php if ( $nh_topic ) : ?>
-								<a class="nh-topicchip nh-apptopic" href="<?php echo esc_url( NH_Rewrite::url( $nh_section, $nh_topic->slug ) ); ?>"><?php echo esc_html( $nh_topic->name ); ?></a>
-							<?php endif; ?>
+							<p class="nh-chiprow">
+								<?php if ( $nh_topic ) : ?>
+									<a class="nh-topicchip nh-apptopic" href="<?php echo esc_url( NH_Rewrite::url( $nh_section, $nh_topic->slug ) ); ?>"><?php echo esc_html( $nh_topic->name ); ?></a>
+								<?php endif; ?>
+								<?php echo NH_Review::badge( $nh_post ); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped in method. Shown here on phones. ?>
+							</p>
 							<h1 class="nh-article__title"><?php the_title(); ?></h1>
 							<div class="nh-article__meta">
 								<?php
@@ -67,7 +70,7 @@ while ( have_posts() ) :
 									/* translators: %d: minutes */
 									$nh_info[] = '<span>' . esc_html( sprintf( _n( '%d min read', '%d min read', NH_Toc::reading_minutes( $nh_post ), 'neurohr-hub' ), NH_Toc::reading_minutes( $nh_post ) ) ) . '</span>';
 								}
-								$nh_info[] = '<span class="nh-article__updated">' . esc_html( NH_Review::label( $nh_post ) ) . '</span>';
+								$nh_info[] = '<span class="nh-article__updated">' . esc_html( NH_Review::short_label( $nh_post ) ) . '</span>';
 								$nh_badge  = NH_Review::badge( $nh_post ) . nh_hub_lock_badge( $nh_post );
 								if ( '' !== $nh_badge ) {
 									$nh_info[] = $nh_badge;
@@ -84,7 +87,10 @@ while ( have_posts() ) :
 
 						<?php if ( $nh_toc_html ) : ?>
 							<details class="nh-toc nh-toc--inline">
-								<summary><?php esc_html_e( 'Table of contents', 'neurohr-hub' ); ?></summary>
+								<summary><span><?php esc_html_e( 'In This Guide', 'neurohr-hub' ); ?></span><?php if ( $nh_can ) : ?><span class="nh-toc__pct" data-nh-pct></span><?php endif; ?></summary>
+								<?php if ( $nh_can ) : ?>
+									<div class="nh-toc__bar" aria-hidden="true"><i data-nh-bar></i></div>
+								<?php endif; ?>
 								<?php echo $nh_toc_html; // phpcs:ignore WordPress.Security.EscapeOutput -- escaped in NH_Toc::render. ?>
 							</details>
 						<?php endif; ?>
