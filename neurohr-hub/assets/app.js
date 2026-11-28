@@ -54,3 +54,30 @@
 		}
 	} );
 } )();
+
+/* Reading progress bar along the top and a "back to top" button (articles). */
+( function () {
+	'use strict';
+	var read = document.querySelector( '[data-nh-read]' );
+	var up = document.querySelector( '[data-nh-totop]' );
+	var body = document.querySelector( '.nh-article__content' );
+	if ( ! read && ! up ) { return; }
+	var ticking = false;
+	function update() {
+		ticking = false;
+		if ( read && body ) {
+			var b = body.getBoundingClientRect();
+			var done = Math.max( 0, Math.min( 1, -b.top / Math.max( 1, b.height - window.innerHeight * 0.6 ) ) );
+			read.style.transform = 'scaleX(' + done.toFixed( 3 ) + ')';
+		}
+		if ( up ) { up.hidden = window.scrollY < 1200; }
+	}
+	window.addEventListener( 'scroll', function () { if ( ! ticking ) { ticking = true; requestAnimationFrame( update ); } }, { passive: true } );
+	if ( up ) {
+		up.addEventListener( 'click', function () {
+			var reduce = window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches;
+			window.scrollTo( { top: 0, behavior: reduce ? 'auto' : 'smooth' } );
+		} );
+	}
+	update();
+} )();

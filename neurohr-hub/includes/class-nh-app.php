@@ -189,6 +189,26 @@ class NH_App {
 		return '<div class="nh-tplbar" role="complementary" aria-label="' . esc_attr__( 'Related template', 'neurohr-hub' ) . '"><span><small>' . esc_html__( 'Ready-to-use template', 'neurohr-hub' ) . '</small><b>' . esc_html( get_the_title( $id ) ) . '</b></span><a class="nh-tplbar__btn" href="' . esc_url( get_permalink( $id ) ) . '">' . esc_html__( 'Open', 'neurohr-hub' ) . '</a></div>';
 	}
 
+	/** Desktop sidebar card under the table of contents: the related template, with Download. */
+	public static function side_template( $post_id ) {
+		$id = self::related_template( $post_id );
+		if ( ! $id ) {
+			return '';
+		}
+		$file = NH_Media::get_file( $id );
+		$ext  = $file ? strtoupper( pathinfo( ! empty( $file['name'] ) ? $file['name'] : $file['path'], PATHINFO_EXTENSION ) ) : '';
+		$can  = NH_Access::can_view( get_post( $id ) ) && NH_Media::has_download( $id );
+		$url  = $can ? NH_Media::download_url( $id ) : get_permalink( $id );
+		$h    = '<div class="nh-tplcard"><span class="nh-tplcard__k">' . esc_html__( 'Ready-to-use template', 'neurohr-hub' ) . '</span>';
+		$h   .= '<a class="nh-tplcard__t" href="' . esc_url( get_permalink( $id ) ) . '">' . esc_html( get_the_title( $id ) ) . '</a>';
+		if ( $ext ) {
+			$h .= '<span class="nh-tplcard__s">' . esc_html( $ext ) . '</span>';
+		}
+		$icon = $can ? '<path d="M12 3v12M7 10l5 5 5-5M5 21h14"/>' : '<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>';
+		$h   .= '<a class="nh-tplcard__btn" href="' . esc_url( $url ) . '"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">' . $icon . '</svg>' . esc_html( $can ? __( 'Download', 'neurohr-hub' ) : __( 'See Template', 'neurohr-hub' ) ) . '</a>';
+		return $h . '</div>';
+	}
+
 	/* ---------- For NeuroHR Members ---------- */
 
 	/**

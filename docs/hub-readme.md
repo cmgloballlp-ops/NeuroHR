@@ -1,4 +1,6 @@
-# NeuroHR Knowledge Hub — v0.14.0
+# NeuroHR Knowledge Hub — v0.15.0
+
+**New in 0.15:** a calmer article page on computers: dark title with a topic chip, one line of facts with Save / Share / Print buttons, shorter lines and a lead paragraph, tables as soft cards, an "In This Guide" sidebar card with reading progress (only the section being read is opened), the article's template as a Download card under it, a reading bar along the top and a back-to-top button. Content is unchanged.
 
 **New in 0.14:** the phone look (timeline lists, template cards, article, template bar) moved to the **NeuroHR App** plugin, which also adds a header with a back button, section chips and the newest item on phones. Install NeuroHR App 0.1 together with this version.
 

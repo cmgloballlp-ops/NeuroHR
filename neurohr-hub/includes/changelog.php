@@ -9,6 +9,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 return array(
+	'0.15.0' => array(
+		'date'    => '2026-11-28',
+		'changes' => array(
+			'New article page on computers: quiet breadcrumb, topic chip, dark title, one line of facts (reading time, reviewed, Updated) with Save, Share and Print as matching buttons, shorter lines, first paragraph as a lead, bigger section headings.',
+			'Tables in articles: a soft card with a light orange heading row, everything aligned left, lines between rows only.',
+			'Sidebar: "In This Guide" card with how much has been read; only the sub-headings of the section being read are open; sections already read turn grey. Below it, the template the article links to ("Templates to Download") with a Download button (or See Template for members below its level).',
+			'A thin reading bar along the top of the page and a back-to-top button.',
+		),
+	),
 	'0.14.0' => array(
 		'date'    => '2026-11-27',
 		'changes' => array(

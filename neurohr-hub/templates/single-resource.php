@@ -42,41 +42,42 @@ while ( have_posts() ) :
 			<div class="nh-single__layout <?php echo $nh_toc_html ? 'has-toc' : ''; ?>">
 
 				<div class="nh-single__main">
-					<nav class="nh-breadcrumb nh-breadcrumb--pill" aria-label="<?php esc_attr_e( 'Breadcrumb', 'neurohr-hub' ); ?>">
+					<nav class="nh-breadcrumb nh-breadcrumb--quiet" aria-label="<?php esc_attr_e( 'Breadcrumb', 'neurohr-hub' ); ?>">
 						<a href="<?php echo esc_url( home_url( '/' ) ); ?>"><?php esc_html_e( 'Home', 'neurohr-hub' ); ?></a>
-						<span aria-hidden="true">/</span>
+						<span aria-hidden="true">›</span>
 						<a href="<?php echo esc_url( NH_Rewrite::url( $nh_section ) ); ?>"><?php echo esc_html( $nh_sdata['label'] ); ?></a>
 						<?php if ( $nh_topic ) : ?>
-							<span aria-hidden="true">/</span>
+							<span aria-hidden="true">›</span>
 							<a href="<?php echo esc_url( NH_Rewrite::url( $nh_section, $nh_topic->slug ) ); ?>"><?php echo esc_html( $nh_topic->name ); ?></a>
 						<?php endif; ?>
-						<span aria-hidden="true">/</span>
-						<span class="nh-breadcrumb__current" aria-current="page"><?php the_title(); ?></span>
 					</nav>
 
 					<article <?php post_class( 'nh-article' ); ?> lang="<?php echo esc_attr( NH_Lang::all()[ NH_Lang::of_post( $nh_post ) ]['hreflang'] ); ?>">
 						<?php echo $nh_print ? NH_Print::head_html( $nh_post ) : ''; // phpcs:ignore WordPress.Security.EscapeOutput -- escaped in method. ?>
 						<header class="nh-article__header">
 							<?php if ( $nh_topic ) : ?>
-								<a class="nh-apptopic" href="<?php echo esc_url( NH_Rewrite::url( $nh_section, $nh_topic->slug ) ); ?>"><?php echo esc_html( $nh_topic->name ); ?></a>
+								<a class="nh-topicchip nh-apptopic" href="<?php echo esc_url( NH_Rewrite::url( $nh_section, $nh_topic->slug ) ); ?>"><?php echo esc_html( $nh_topic->name ); ?></a>
 							<?php endif; ?>
 							<h1 class="nh-article__title"><?php the_title(); ?></h1>
 							<div class="nh-article__meta">
-								<?php if ( ! $nh_is_faq && ! in_array( $nh_kind, array( 'video', 'download' ), true ) ) : ?>
-									<span class="nh-pill">
-										<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
-										<?php
-										/* translators: %d: minutes */
-										echo esc_html( sprintf( _n( '%d min read', '%d min read', NH_Toc::reading_minutes( $nh_post ), 'neurohr-hub' ), NH_Toc::reading_minutes( $nh_post ) ) );
-										?>
-									</span>
-								<?php endif; ?>
-								<?php echo nh_hub_type_badge( $nh_post ); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped in helper. ?>
-								<?php echo nh_hub_lock_badge( $nh_post ); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped in helper. ?>
-								<?php echo NH_Review::badge( $nh_post ); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped in method. ?>
-								<span class="nh-article__updated"><?php echo esc_html( NH_Review::label( $nh_post ) ); ?></span>
-								<?php echo $nh_print ? NH_Print::button() : ''; // phpcs:ignore WordPress.Security.EscapeOutput -- escaped in method. ?>
-								<?php echo NH_App::actions( $nh_post ); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped in method. ?>
+								<?php
+								// Left: one quiet line of facts. Right: Save, Share, Print as matching buttons.
+								$nh_info = array();
+								if ( ! $nh_is_faq && ! in_array( $nh_kind, array( 'video', 'download' ), true ) ) {
+									/* translators: %d: minutes */
+									$nh_info[] = '<span>' . esc_html( sprintf( _n( '%d min read', '%d min read', NH_Toc::reading_minutes( $nh_post ), 'neurohr-hub' ), NH_Toc::reading_minutes( $nh_post ) ) ) . '</span>';
+								}
+								$nh_info[] = '<span class="nh-article__updated">' . esc_html( NH_Review::label( $nh_post ) ) . '</span>';
+								$nh_badge  = NH_Review::badge( $nh_post ) . nh_hub_lock_badge( $nh_post );
+								if ( '' !== $nh_badge ) {
+									$nh_info[] = $nh_badge;
+								}
+								?>
+								<span class="nh-article__info"><?php echo implode( '<i class="nh-dot" aria-hidden="true"></i>', $nh_info ); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped above. ?></span>
+								<span class="nh-article__tools">
+									<?php echo NH_App::actions( $nh_post ); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped in method. ?>
+									<?php echo $nh_print ? NH_Print::button( true ) : ''; // phpcs:ignore WordPress.Security.EscapeOutput -- escaped in method. ?>
+								</span>
 							</div>
 							<?php echo NH_Lang::versions_bar( $nh_post ); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped in method. ?>
 						</header>
@@ -131,13 +132,19 @@ while ( have_posts() ) :
 
 				<?php if ( $nh_toc_html ) : ?>
 					<aside class="nh-single__side">
-						<nav class="nh-toc nh-toc--side" aria-label="<?php esc_attr_e( 'Table of contents', 'neurohr-hub' ); ?>">
-							<p class="nh-toc__title"><?php esc_html_e( 'Table of contents', 'neurohr-hub' ); ?></p>
-							<?php echo $nh_toc_html; // phpcs:ignore WordPress.Security.EscapeOutput -- escaped in NH_Toc::render. ?>
-							<?php if ( ! $nh_can ) : ?>
-								<p class="nh-toc__locked"><a href="#nh-locked">&#128274; <?php esc_html_e( 'Unlock the full analysis', 'neurohr-hub' ); ?></a></p>
-							<?php endif; ?>
-						</nav>
+						<div class="nh-single__sticky">
+							<nav class="nh-toc nh-toc--side" aria-label="<?php esc_attr_e( 'Table of contents', 'neurohr-hub' ); ?>">
+								<p class="nh-toc__title"><?php esc_html_e( 'In This Guide', 'neurohr-hub' ); ?><?php if ( $nh_can ) : ?> <span class="nh-toc__pct" data-nh-pct></span><?php endif; ?></p>
+								<?php if ( $nh_can ) : ?>
+									<div class="nh-toc__bar" aria-hidden="true"><i data-nh-bar></i></div>
+								<?php endif; ?>
+								<?php echo $nh_toc_html; // phpcs:ignore WordPress.Security.EscapeOutput -- escaped in NH_Toc::render. ?>
+								<?php if ( ! $nh_can ) : ?>
+									<p class="nh-toc__locked"><a href="#nh-locked">&#128274; <?php esc_html_e( 'Unlock the full analysis', 'neurohr-hub' ); ?></a></p>
+								<?php endif; ?>
+							</nav>
+							<?php echo NH_App::side_template( $nh_post->ID ); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped in method. ?>
+						</div>
 					</aside>
 				<?php endif; ?>
 
@@ -148,6 +155,10 @@ while ( have_posts() ) :
 	</main>
 	<?php
 	echo NH_App::template_bar( $nh_post->ID ); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped in method.
+	if ( $nh_can && ! $nh_is_faq ) {
+		echo '<div class="nh-readbar" aria-hidden="true"><i data-nh-read></i></div>';
+	}
+	echo '<button type="button" class="nh-totop" data-nh-totop hidden aria-label="' . esc_attr__( 'Back to top', 'neurohr-hub' ) . '"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>';
 	if ( $nh_toc_html && $nh_can ) {
 		NH_Toc::print_script();
 	}
